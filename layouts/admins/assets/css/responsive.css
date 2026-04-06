@@ -590,8 +590,9 @@
         border-color: #404040;
     }
     
-    /* Users Table Mobile */
-    .users-container {
+    /* Users & Contacts Table Mobile */
+    .users-container,
+    .contacts-container {
         padding: 15px;
     }
     
@@ -604,6 +605,12 @@
     .header-actions {
         flex-direction: column;
         gap: 10px;
+    }
+    
+    .stats-summary {
+        flex-direction: row;
+        justify-content: center;
+        gap: 15px;
     }
     
     .filters-container {
@@ -630,18 +637,26 @@
         justify-content: center;
     }
     
+    .bulk-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
     .table-wrapper {
         border-radius: 4px;
         max-height: 60vh;
     }
     
-    .users-table {
+    .users-table,
+    .contacts-table {
         min-width: 800px;
         font-size: 0.8rem;
     }
     
     .users-table th,
-    .users-table td {
+    .users-table td,
+    .contacts-table th,
+    .contacts-table td {
         padding: 8px 12px;
     }
     
@@ -657,5 +672,40 @@
     .action-btn {
         padding: 6px;
         font-size: 0.8rem;
+    }
+    
+    /* Contact Modal Mobile */
+    .modal-container {
+        width: 95%;
+        max-height: 90vh;
+    }
+    
+    .modal-header,
+    .modal-footer {
+        padding: 15px 20px;
+    }
+    
+    .modal-body {
+        padding: 20px;
+    }
+    
+    .info-row {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .info-row label {
+        min-width: auto;
+        font-weight: 600;
+    }
+    
+    .modal-footer {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    
+    .modal-footer .btn {
+        flex: 1;
+        min-width: 120px;
     }
 }

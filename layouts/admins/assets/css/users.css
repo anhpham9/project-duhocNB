@@ -32,7 +32,7 @@
 }
 
 /* Button Components */
-.btn {
+/* .btn {
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -87,7 +87,7 @@
 .btn.btn-danger {
     background: linear-gradient(135deg, #dc3545, #c82333);
     color: white;
-}
+} */
 
 /* Filters Section */
 .users-filters {

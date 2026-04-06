@@ -608,6 +608,79 @@ body {
     font-size: 1rem;
 }
 
+/* Button Components */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    user-select: none;
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #d32f2f, #b71c1c);
+    color: white;
+    border: 1px solid #d32f2f;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: linear-gradient(135deg, #b71c1c, #8d1414);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(211, 47, 47, 0.3);
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+    border: 1px solid #6c757d;
+}
+
+.btn-secondary:hover:not(:disabled) {
+    background: #5a6268;
+    transform: translateY(-1px);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #28a745, #1e7e34);
+    color: white;
+    border: 1px solid #28a745;
+}
+
+.btn-success:hover:not(:disabled) {
+    background: linear-gradient(135deg, #1e7e34, #155724);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+}
+
+.btn-outline {
+    background: transparent;
+    color: #666;
+    border: 1px solid #ddd;
+}
+
+.btn-outline:hover:not(:disabled) {
+    background: #f8f9fa;
+    border-color: #bbb;
+    color: #333;
+}
+
+.btn i {
+    font-size: 0.85rem;
+}
+
 /* ========================================
    MOBILE OVERLAY
 ======================================== */

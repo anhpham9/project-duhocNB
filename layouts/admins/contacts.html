@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Liên Hệ - Du Học NB Admin</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/contacts.css">
+    <link rel="stylesheet" href="assets/css/responsive.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <img src="assets/images/logo01.png" alt="Du Học NB" class="logo-img">
+                <h3 class="logo-text">Du Học NB</h3>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="dashboard.html" class="nav-link">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="users.html" class="nav-link">
+                        <i class="fas fa-users"></i>
+                        <span>Người dùng</span>
+                    </a>
+                </li>
+                <li class="nav-item active">
+                    <a href="contacts.html" class="nav-link">
+                        <i class="fas fa-address-book"></i>
+                        <span>Liên hệ</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="schools.html" class="nav-link">
+                        <i class="fas fa-university"></i>
+                        <span>Trường học</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="programs.html" class="nav-link">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span>Chương trình</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="applications.html" class="nav-link">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Hồ sơ</span>
+                    </a>
+                </li>
+                <li class="nav-item has-submenu">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-newspaper"></i>
+                        <span>Tin tức</span>
+                        <i class="fas fa-chevron-down submenu-arrow"></i>
+                    </a>
+                    <ul class="submenu">
+                        <li><a href="news-list.html">Danh sách tin</a></li>
+                        <li><a href="news-categories.html">Danh mục</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item has-submenu">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-cog"></i>
+                        <span>Cài đặt</span>
+                        <i class="fas fa-chevron-down submenu-arrow"></i>
+                    </a>
+                    <ul class="submenu">
+                        <li><a href="settings-general.html">Chung</a></li>
+                        <li><a href="settings-email.html">Email</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="sidebar-bottom">
+            <a href="login.html" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Đăng xuất</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="main-header">
+            <div class="header-left">
+                <button class="sidebar-toggle mobile-toggle" id="mobileToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="breadcrumb">
+                    <span class="breadcrumb-item">Trang chủ</span>
+                    <i class="fas fa-chevron-right"></i>
+                    <span class="breadcrumb-item active">Quản lý liên hệ</span>
+                </div>
+            </div>
+            
+            <div class="header-right">
+                <div class="header-search">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Tìm kiếm...">
+                    </div>
+                </div>
+                
+                <div class="header-notifications">
+                    <button class="notification-btn">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                </div>
+                
+                <div class="header-profile">
+                    <div class="profile-dropdown">
+                        <button class="profile-btn">
+                            <img src="assets/images/logo01.png" alt="Admin" class="profile-avatar">
+                            <span class="profile-name">Admin</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="profile-menu">
+                            <a href="profile.html"><i class="fas fa-user"></i> Hồ sơ</a>
+                            <a href="settings.html"><i class="fas fa-cog"></i> Cài đặt</a>
+                            <hr>
+                            <a href="login.html"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Contacts Content -->
+        <div class="contacts-container">
+            <div class="page-header">
+                <div class="header-info">
+                    <h1 class="page-title">
+                        <i class="fas fa-address-book"></i>
+                        Quản Lý Liên Hệ
+                    </h1>
+                    <p class="page-description">Quản lý và xử lý các yêu cầu liên hệ từ khách hàng quan tâm du học</p>
+                </div>
+                
+                <div class="header-actions">
+                    <div class="stats-summary">
+                        <div class="stat-item">
+                            <span class="stat-number">4</span>
+                            <span class="stat-label">Mới</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">3</span>
+                            <span class="stat-label">Đang xử lý</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">3</span>
+                            <span class="stat-label">Hoàn thành</span>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary" id="exportBtn">
+                        <i class="fas fa-download"></i>
+                        Xuất Excel
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filters Section -->
+            <div class="filters-container">
+                <div class="filter-group">
+                    <div class="search-filter">
+                        <div class="search-input-wrapper">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="searchInput" placeholder="Tìm theo tên, email, số điện thoại...">
+                        </div>
+                    </div>
+                    
+                    <div class="filter-controls">
+                        <select id="statusFilter" class="filter-select">
+                            <option value="">Tất cả trạng thái</option>
+                            <option value="new">Mới</option>
+                            <option value="in-progress">Đang xử lý</option>
+                            <option value="replied">Đã phản hồi</option>
+                            <option value="completed">Hoàn thành</option>
+                            <option value="archived">Lưu trữ</option>
+                        </select>
+                        
+                        <select id="priorityFilter" class="filter-select">
+                            <option value="">Tất cả độ ưu tiên</option>
+                            <option value="high">Cao</option>
+                            <option value="medium">Trung bình</option>
+                            <option value="low">Thấp</option>
+                        </select>
+                        
+                        <select id="categoryFilter" class="filter-select">
+                            <option value="">Tất cả danh mục</option>
+                            <option value="general">Tư vấn chung</option>
+                            <option value="programs">Thông tin chương trình</option>
+                            <option value="application">Hỗ trợ hồ sơ</option>
+                            <option value="visa">Thủ tục visa</option>
+                            <option value="accommodation">Nhà ở</option>
+                            <option value="other">Khác</option>
+                        </select>
+                        
+                        <input type="date" id="dateFromFilter" class="filter-date">
+                        <input type="date" id="dateToFilter" class="filter-date">
+                        
+                        <button id="clearFilters" class="btn btn-outline">
+                            <i class="fas fa-eraser"></i>
+                            Xóa bộ lọc
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contacts Table -->
+            <div class="contacts-table-container">
+                <div class="table-controls">
+                    <div class="table-info">
+                        <span id="paginationInfo">Hiển thị 1-10 của 15 bản ghi</span>
+                        
+                        <div class="rows-per-page">
+                            <span>Hiển thị:</span>
+                            <select id="rowsPerPage">
+                                <option value="5">5</option>
+                                <option value="10" selected>10</option>
+                                <option value="20">20</option>
+                                <option value="all">Tất cả</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="table-actions">
+                        <div class="bulk-actions">
+                            <select id="bulkAction" disabled>
+                                <option value="">Hành động hàng loạt</option>
+                                <option value="mark-replied">Đánh dấu đã phản hồi</option>
+                                <option value="mark-completed">Đánh dấu hoàn thành</option>
+                                <option value="archive">Lưu trữ</option>
+                                <option value="delete">Xóa</option>
+                            </select>
+                            <button id="applyBulkAction" class="btn btn-secondary" disabled>
+                                Áp dụng
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Loading State -->
+                <div class="table-loading" id="tableLoading" style="display: none;">
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Đang tải dữ liệu...</p>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div class="table-empty" id="tableEmpty" style="display: none;">
+                    <div class="empty-content">
+                        <i class="fas fa-inbox"></i>
+                        <h3>Không có liên hệ nào</h3>
+                        <p>Không tìm thấy liên hệ phù hợp với bộ lọc hiện tại.</p>
+                    </div>
+                </div>
+
+                <!-- Table Wrapper -->
+                <div class="table-wrapper">
+                    <table class="contacts-table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <input type="checkbox" id="selectAll">
+                                </th>
+                                <th class="sortable" data-sort="id">#ID <i class="fas fa-sort"></i></th>
+                                <th>Ưu tiên</th>
+                                <th class="sortable" data-sort="name">Họ tên <i class="fas fa-sort"></i></th>
+                                <th class="sortable" data-sort="email">Email <i class="fas fa-sort"></i></th>
+                                <th class="sortable" data-sort="phone">Số điện thoại <i class="fas fa-sort"></i></th>
+                                <th class="sortable" data-sort="category">Danh mục <i class="fas fa-sort"></i></th>
+                                <th class="sortable" data-sort="status">Trạng thái <i class="fas fa-sort"></i></th>
+                                <th class="sortable" data-sort="created">Ngày tạo <i class="fas fa-sort"></i></th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="contactsTableBody">
+                            <!-- Data will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination-container">
+                    <div class="pagination-info" id="paginationInfoBottom">
+                        Hiển thị 1-10 của 15 bản ghi
+                    </div>
+                    
+                    <div class="table-pagination">
+                        <button class="pagination-btn" id="firstPage" disabled>
+                            <i class="fas fa-angle-double-left"></i>
+                        </button>
+                        <button class="pagination-btn" id="prevPage" disabled>
+                            <i class="fas fa-angle-left"></i>
+                        </button>
+                        
+                        <div class="pagination-numbers" id="paginationNumbers">
+                            <!-- Page numbers will be populated by JavaScript -->
+                        </div>
+                        
+                        <button class="pagination-btn" id="nextPage">
+                            <i class="fas fa-angle-right"></i>
+                        </button>
+                        <button class="pagination-btn" id="lastPage">
+                            <i class="fas fa-angle-double-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+
+    <!-- Contact Detail Modal -->
+    <div class="modal-overlay" id="contactModal" style="display: none;">
+        <div class="modal-container contact-modal">
+            <div class="modal-header">
+                <h3 id="modalTitle">Chi tiết liên hệ</h3>
+                <button class="modal-close" onclick="closeContactModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="contact-info">
+                    <div class="info-row">
+                        <label>Họ tên:</label>
+                        <span id="modalName"></span>
+                    </div>
+                    <div class="info-row">
+                        <label>Email:</label>
+                        <span id="modalEmail"></span>
+                    </div>
+                    <div class="info-row">
+                        <label>Số điện thoại:</label>
+                        <span id="modalPhone"></span>
+                    </div>
+                    <div class="info-row">
+                        <label>Danh mục:</label>
+                        <span id="modalCategory"></span>
+                    </div>
+                    <div class="info-row">
+                        <label>Trạng thái:</label>
+                        <span id="modalStatus"></span>
+                    </div>
+                    <div class="info-row">
+                        <label>Ngày gửi:</label>
+                        <span id="modalDate"></span>
+                    </div>
+                    <div class="info-row full-width">
+                        <label>Tin nhắn:</label>
+                        <div class="message-content" id="modalMessage"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeContactModal()">Đóng</button>
+                <button class="btn btn-success" onclick="replyContactFromModal()">
+                    <i class="fas fa-reply"></i> Phản hồi
+                </button>
+                <button class="btn btn-primary" onclick="markAsCompletedFromModal()">
+                    <i class="fas fa-check"></i> Hoàn thành
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/dashboard.js"></script>
+    <script src="assets/js/contacts.js"></script>
+</body>
+</html>
