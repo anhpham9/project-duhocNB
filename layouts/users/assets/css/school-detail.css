@@ -1,0 +1,1071 @@
+/* School Detail Page Specific Styles */
+
+/* ===============================================
+   SECTION PATTERN STYLES - MATCHING HOMEPAGE
+   =============================================== */
+
+/* Section Layout */
+.about-school,
+.programs,
+.admission-requirements,
+.facilities,
+.testimonials,
+.faq {
+    padding: 80px 0;
+}
+
+.about-school {
+    background: #f8fafc;
+}
+
+.programs {
+    background: #fff;
+}
+
+.admission-requirements {
+    background: #f1f5f9;
+}
+
+.facilities {
+    background: #fff;
+}
+
+.testimonials {
+    background: #f8fafc;
+}
+
+.faq {
+    background: #fff;
+}
+
+/* Section Headers */
+.section-header {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.section-header h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1a202c;
+    margin-bottom: 15px;
+}
+
+.section-header p {
+    font-size: 1.1rem;
+    color: #64748b;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Content Grid */
+.content-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+/* Course Items */
+.course-item {
+    background: #fff;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    border-top: 4px solid #3182ce;
+    text-align: center;
+}
+
+.course-item:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.course-icon {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    color: #fff;
+    font-size: 28px;
+}
+
+.course-item h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1a202c;
+    margin-bottom: 15px;
+}
+
+.course-details p {
+    color: #4a5568;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.course-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+.info-item {
+    background: #f1f5f9;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    color: #2d3748;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.info-item i {
+    color: #fff;
+}
+
+/* Requirement Cards */
+.requirement-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 30px 25px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    border-top: 4px solid #e53e3e;
+    text-align: center;
+}
+
+.requirement-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+}
+
+.requirement-card:nth-child(2) {
+    border-top-color: #38a169;
+}
+
+.requirement-card:nth-child(3) {
+    border-top-color: #ed8936;
+}
+
+.requirement-card:nth-child(4) {
+    border-top-color: #805ad5;
+}
+
+.req-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ff6b6b 0%, #e53e3e 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    color: #fff;
+    font-size: 28px;
+}
+
+.requirement-card:nth-child(2) .req-icon {
+    background: linear-gradient(135deg, #68d391 0%, #38a169 100%);
+}
+
+.requirement-card:nth-child(3) .req-icon {
+    background: linear-gradient(135deg, #fbb6ce 0%, #ed8936 100%);
+}
+
+.requirement-card:nth-child(4) .req-icon {
+    background: linear-gradient(135deg, #b794f6 0%, #805ad5 100%);
+}
+
+.requirement-card h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #1a202c;
+    margin-bottom: 20px;
+}
+
+.requirement-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+}
+
+.requirement-card li {
+    color: #4a5568;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 12px;
+    padding-left: 25px;
+    position: relative;
+}
+
+.requirement-card li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #38a169;
+    font-weight: bold;
+}
+
+/* Facility Cards */
+.facility-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.facility-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+}
+
+.facility-icon {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    color: #fff;
+    font-size: 28px;
+}
+
+.facility-card h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #1a202c;
+    margin-bottom: 15px;
+}
+
+.facility-card p {
+    color: #4a5568;
+    line-height: 1.6;
+}
+
+/* Testimonial Cards */
+.testimonial-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.testimonial-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+}
+
+.testimonial-content {
+    margin-bottom: 25px;
+}
+
+.stars {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 15px;
+}
+
+.stars i {
+    color: #fbbf24;
+    font-size: 16px;
+}
+
+.testimonial-content p {
+    color: #4a5568;
+    line-height: 1.7;
+    font-style: italic;
+    margin: 0;
+}
+
+.student-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.student-info img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.student-details h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1a202c;
+    margin: 0 0 5px 0;
+}
+
+.student-details span {
+    color: #64748b;
+    font-size: 0.9rem;
+}
+
+/* FAQ Styles */
+/* .faq-list {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.faq-item {
+    background: #fff;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+.faq-question {
+    padding: 25px 30px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.faq-question:hover {
+    background: #f8fafc;
+}
+
+.faq-question h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1a202c;
+    margin: 0;
+}
+
+.faq-question i {
+    color: #3182ce;
+    transition: transform 0.3s ease;
+}
+
+.faq-item.active .faq-question i {
+    transform: rotate(45deg);
+}
+
+.faq-answer {
+    padding: 0 30px;
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.faq-item.active .faq-answer {
+    padding: 0 30px 25px;
+    max-height: 200px;
+}
+
+.faq-answer p {
+    color: #4a5568;
+    line-height: 1.7;
+    margin: 0;
+} */
+
+/* About School with Sidebar */
+
+/* =====================================
+   SIDEBAR STYLES
+   ===================================== */
+
+/* Main sidebar container */
+.school-detail-sidebar {
+    padding-left: 40px;
+    position: sticky;
+    top: 20px;
+    height: fit-content;
+}
+
+/* Sidebar widgets base style */
+.sidebar-widget {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 25px 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.sidebar-widget:hover {
+    box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+    transform: translateY(-2px);
+}
+
+/* Sidebar widget headings */
+.sidebar-widget h3 {
+    color: #2d3748;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e2e8f0;
+    position: relative;
+}
+
+.sidebar-widget h3::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 40px;
+    height: 2px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* =====================================
+   CONTACT DETAILS STYLES
+   ===================================== */
+
+.contact-details .contact-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 15px;
+    padding: 12px 0;
+    transition: all 0.2s ease;
+}
+
+.contact-details .contact-item:last-child {
+    margin-bottom: 0;
+}
+
+.contact-details .contact-item:hover {
+    background-color: #f7fafc;
+}
+
+.contact-details .contact-item i {
+    font-size: 16px;
+    margin-right: 12px;
+    margin-top: 2px;
+    width: 20px;
+    flex-shrink: 0;
+}
+
+.contact-details .contact-item i.fa-map-marker-alt {
+    color: #e53e3e;
+}
+
+.contact-details .contact-item i.fa-phone {
+    color: #38a169;
+}
+
+.contact-details .contact-item i.fa-envelope {
+    color: #3182ce;
+}
+
+.contact-details .contact-item > div {
+    flex: 1;
+}
+
+.contact-details .contact-item strong {
+    display: block;
+    color: #2d3748;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.contact-details .contact-item span {
+    color: #4a5568;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+/* =====================================
+   RELATED SCHOOLS STYLES
+   ===================================== */
+
+.related-schools .related-school {
+    display: flex;
+    margin-bottom: 18px;
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+    background: #f7fafc;
+}
+
+.related-schools .related-school:last-child {
+    margin-bottom: 0;
+}
+
+.related-schools .related-school:hover {
+    background-color: #edf2f7;
+    border-color: #cbd5e0;
+    transform: translateX(4px);
+}
+
+.related-schools .school-thumb {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+    margin-right: 12px;
+}
+
+.related-schools .school-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.related-schools .school-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.related-schools .school-info h4 {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.related-schools .school-info h4 a {
+    color: #2d3748;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.related-schools .school-info h4 a:hover {
+    color: #667eea;
+}
+
+.related-schools .school-rating {
+    display: flex;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.related-schools .school-rating .stars {
+    margin-right: 6px;
+}
+
+.related-schools .school-rating .stars i {
+    color: #f6ad55;
+    font-size: 12px;
+}
+
+.related-schools .school-rating span {
+    color: #4a5568;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.related-schools .school-price {
+    color: #e53e3e;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* =====================================
+   SCHEDULE TABLE STYLES
+   ===================================== */
+
+.schedule-table {
+    margin: 40px 0;
+}
+
+.schedule-table h3 {
+    text-align: center;
+    color: #2d3748;
+    margin-bottom: 30px;
+    font-size: 28px;
+    font-weight: 700;
+    position: relative;
+}
+
+.table-container {
+    overflow-x: auto;
+    background: #f7fafc;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.08);
+}
+
+.program-schedule.beautiful-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    font-family: 'Arial', sans-serif;
+}
+
+/* Table header */
+.table-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.table-header th {
+    padding: 20px 15px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 14px;
+    border-right: 1px solid rgba(255,255,255,0.2);
+    min-width: 120px;
+}
+
+.table-header .day-column {
+    min-width: 140px;
+}
+
+.table-header th:last-child {
+    border-right: none;
+}
+
+/* Table rows */
+.schedule-row {
+    transition: all 0.3s ease;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.schedule-row.morning-session:hover {
+    background-color: #f8f9ff;
+}
+
+.schedule-row.afternoon-session:hover {
+    background-color: #fff8f0;
+}
+
+/* Time cells */
+.time-cell {
+    padding: 18px 15px;
+    color: white;
+    text-align: center;
+    font-weight: 600;
+    border-right: 1px solid #e0e0e0;
+}
+
+.morning-session .time-cell:first-child {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.morning-session:nth-child(3) .time-cell {
+    background: linear-gradient(135deg, #ffb347 0%, #ff8c42 100%);
+}
+
+.afternoon-session .time-cell {
+    background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+}
+
+.time-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.time-text {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.session-label {
+    font-size: 11px;
+    opacity: 0.9;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Subject cells */
+.subject-cell {
+    padding: 18px 15px;
+    text-align: center;
+    border-right: 1px solid #f0f0f0;
+}
+
+.subject-cell:last-child {
+    border-right: none;
+}
+
+.subject-cell.grammar {
+    background-color: #fff5f5;
+    border-left: 4px solid #e53e3e;
+}
+
+.subject-cell.vocabulary {
+    background-color: #f0fff4;
+    border-left: 4px solid #38a169;
+}
+
+.subject-cell.reading {
+    background-color: #fffaf0;
+    border-left: 4px solid #ed8936;
+}
+
+.subject-cell.listening {
+    background-color: #f0f8ff;
+    border-left: 4px solid #3182ce;
+}
+
+.subject-cell.test {
+    background-color: #faf5ff;
+    border-left: 4px solid #805ad5;
+}
+
+.subject-cell.conversation {
+    background-color: #e6fffa;
+    border-left: 4px solid #38b2ab;
+}
+
+.subject-cell.eju {
+    background-color: #fff7ed;
+    border-left: 4px solid #f6ad55;
+}
+
+.subject-cell.culture {
+    background-color: #fef5e7;
+    border-left: 4px solid #dd6b20;
+}
+
+.subject-cell.practice {
+    background-color: #f7fafc;
+    border-left: 4px solid #4a5568;
+}
+
+.subject-cell.review {
+    background-color: #edf2f7;
+    border-left: 4px solid #718096;
+}
+
+.subject-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.subject-wrapper i {
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.subject-wrapper span {
+    font-weight: 500;
+    font-size: 13px;
+    color: #2d3748;
+}
+
+/* Subject icon colors */
+.subject-wrapper .fa-book {
+    color: #e53e3e;
+}
+
+.subject-wrapper .fa-spell-check {
+    color: #38a169;
+}
+
+.subject-wrapper .fa-book-open {
+    color: #ed8936;
+}
+
+.subject-wrapper .fa-headphones {
+    color: #3182ce;
+}
+
+.subject-wrapper .fa-clipboard-check {
+    color: #805ad5;
+}
+
+.subject-wrapper .fa-comments {
+    color: #38b2ab;
+}
+
+.subject-wrapper .fa-graduation-cap {
+    color: #f6ad55;
+}
+
+.subject-wrapper .fa-torii-gate {
+    color: #dd6b20;
+}
+
+.subject-wrapper .fa-pen {
+    color: #4a5568;
+}
+
+.subject-wrapper .fa-redo-alt {
+    color: #718096;
+}
+
+/* Activity cell */
+.activity-cell {
+    padding: 25px 20px;
+    text-align: center;
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border-radius: 8px;
+}
+
+.activity-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.activity-wrapper .fa-users {
+    font-size: 24px;
+    color: #d97706;
+    margin-bottom: 8px;
+}
+
+.activity-title {
+    font-weight: 600;
+    font-size: 15px;
+    color: #92400e;
+    margin-bottom: 5px;
+}
+
+.activity-description {
+    color: #a16207;
+    font-size: 12px;
+    font-style: italic;
+}
+
+/* =====================================
+   RESPONSIVE STYLES
+   ===================================== */
+
+@media (max-width: 768px) {
+    .school-detail-sidebar {
+        padding-left: 0;
+        margin-top: 30px;
+        position: static;
+    }
+    
+    .sidebar-widget {
+        padding: 20px 15px;
+        margin-bottom: 20px;
+    }
+    
+    .table-container {
+        padding: 15px;
+    }
+    
+    .schedule-table h3 {
+        font-size: 24px;
+    }
+    
+    .table-header th {
+        padding: 15px 10px;
+        font-size: 12px;
+        min-width: 100px;
+    }
+    
+    .time-cell, .subject-cell {
+        padding: 12px 8px;
+    }
+    
+    .time-text {
+        font-size: 14px;
+    }
+    
+    .session-label {
+        font-size: 10px;
+    }
+    
+    .subject-wrapper i {
+        font-size: 16px;
+    }
+    
+    .subject-wrapper span {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .sidebar-widget {
+        padding: 15px 10px;
+    }
+    
+    .related-schools .related-school {
+        padding: 12px;
+    }
+    
+    .related-schools .school-thumb {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .contact-details .contact-item {
+        padding: 8px 0;
+    }
+    
+    .table-header th {
+        padding: 10px 5px;
+        font-size: 10px;
+        min-width: 80px;
+    }
+    
+    .time-cell, .subject-cell {
+        padding: 8px 4px;
+    }
+    
+    .time-text {
+        font-size: 12px;
+    }
+    
+    .subject-wrapper span {
+        font-size: 10px;
+    }
+}
+
+/* =====================================
+   SCROLL TO TOP BUTTON
+   ===================================== */
+
+.scroll-to-top {
+    position: fixed !important;
+    bottom: 30px !important;
+    right: 30px !important;
+    width: 50px !important;
+    height: 50px !important;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 50% !important;
+    cursor: pointer !important;
+    display: none !important;
+    z-index: 1000 !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3) !important;
+}
+
+.scroll-to-top:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4) !important;
+}
+
+.scroll-to-top i {
+    font-size: 18px !important;
+}
+
+/* =====================================
+   TESTIMONIALS STYLES
+   ===================================== */
+
+.testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.testimonial-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 30px 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    border: 1px solid #e2e8f0;
+}
+
+.testimonial-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+}
+
+.student-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.student-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+.student-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.student-details h4 {
+    margin: 0 0 5px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.student-details span {
+    color: #4a5568;
+    font-size: 13px;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.student-details .rating {
+    display: flex;
+    gap: 2px;
+}
+
+.student-details .rating i {
+    color: #f6ad55;
+    font-size: 14px;
+}
+
+.testimonial-content p {
+    color: #4a5568;
+    line-height: 1.6;
+    font-style: italic;
+    margin: 0;
+    font-size: 14px;
+}
+
+/* =====================================
+   ADDITIONAL RESPONSIVE STYLES
+   ===================================== */
+
+@media (max-width: 768px) {
+    .faq-question {
+        padding: 20px;
+    }
+    
+    .faq-question h4 {
+        font-size: 14px;
+        padding-right: 15px;
+    }
+    
+    .faq-answer p {
+        padding: 0 20px 20px;
+        font-size: 13px;
+    }
+    
+    .testimonials-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .testimonial-card {
+        padding: 25px 20px;
+    }
+    
+    .scroll-to-top {
+        bottom: 20px !important;
+        right: 20px !important;
+        width: 45px !important;
+        height: 45px !important;
+    }
+}

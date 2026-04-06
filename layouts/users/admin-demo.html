@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo: Admin-Editable Content System</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/responsive.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container" style="padding: 40px 0;">
+        <h1>Demo: Hệ Thống Nội Dung Admin-Editable</h1>
+        <p><em>Đây là trang demo để kiểm tra các component có thể được chỉnh sửa từ trang quản trị</em></p>
+
+        <!-- Admin Toolbar Demo -->
+        <div class="admin-toolbar">
+            <button class="admin-btn active" data-action="preview">Preview Mode</button>
+            <button class="admin-btn" data-action="edit">Edit Mode</button>
+            <button class="admin-btn" data-action="add-paragraph">+ Paragraph</button>
+            <button class="admin-btn" data-action="add-quote">+ Quote</button>
+            <button class="admin-btn" data-action="add-tips">+ Tips</button>
+            <button class="admin-btn" data-action="add-card">+ Card</button>
+        </div>
+
+        <!-- Demo Content -->
+        <div class="article-content">
+
+            <!-- Editable Paragraph -->
+            <div class="content-block dynamic-component" data-component-type="paragraph" data-editable="true" data-id="para-1">
+                <div class="editable-section" data-type="paragraph">
+                    <p class="editable-paragraph">Đây là một đoạn văn có thể được chỉnh sửa từ trang quản trị. Nội dung này có thể được thay đổi, định dạng lại và cập nhật mà không cần sửa code HTML.</p>
+                </div>
+                <div class="block-controls">
+                    <button class="block-control-btn" title="Edit">✎</button>
+                    <button class="block-control-btn" title="Delete">✕</button>
+                    <button class="block-control-btn" title="Move">⇕</button>
+                </div>
+            </div>
+
+            <!-- Editable Heading -->
+            <div class="content-block dynamic-component" data-component-type="heading" data-editable="true" data-id="head-1">
+                <div class="editable-section" data-type="heading">
+                    <h2 class="editable-h2">Tiêu Đề Có Thể Chỉnh Sửa</h2>
+                </div>
+                <div class="block-controls">
+                    <button class="block-control-btn" title="Edit">✎</button>
+                    <button class="block-control-btn" title="Delete">✕</button>
+                    <button class="block-control-btn" title="Move">⇕</button>
+                </div>
+            </div>
+
+            <!-- Quote Box với các styles khác nhau -->
+            <div class="content-block dynamic-component" data-component-type="quote" data-editable="true" data-id="quote-1">
+                <div class="quote-box editable-quote" data-style="default">
+                    <blockquote>
+                        "Đây là quote box với style mặc định. Nội dung có thể được chỉnh sửa từ admin panel và style có thể được thay đổi thông qua data-style attribute."
+                    </blockquote>
+                </div>
+                <div class="block-controls">
+                    <button class="block-control-btn" title="Edit">✎</button>
+                    <button class="block-control-btn" title="Change Style">⚙</button>
+                    <button class="block-control-btn" title="Delete">✕</button>
+                </div>
+            </div>
+
+            <!-- Quote Box - Simple Style -->
+            <div class="content-block dynamic-component" data-component-type="quote" data-editable="true" data-id="quote-2">
+                <div class="quote-box editable-quote" data-style="simple">
+                    <blockquote>
+                        "Quote box với style đơn giản - không có gradient background"
+                    </blockquote>
+                </div>
+                <div class="block-controls">
+                    <button class="block-control-btn" title="Edit">✎</button>
+                    <button class="block-control-btn" title="Change Style">⚙</button>
+                    <button class="block-control-btn" title="Delete">✕</button>
+                </div>
+            </div>
+
+            <!-- Quote Box - Highlighted Style -->
+            <div class="content-block dynamic-component" data-component-type="quote" data-editable="true" data-id="quote-3">
+                <div class="quote-box editable-quote" data-style="highlighted">
+                    <blockquote>
+                        "Quote box với style nổi bật - có shadow và màu sắc đặc biệt"
+                    </blockquote>
+                </div>
+                <div class="block-controls">
+                    <button class="block-control-btn" title="Edit">✎</button>
+                    <button class="block-control-btn" title="Change Style">⚙</button>
+                    <button class="block-control-btn" title="Delete">✕</button>
+                </div>
+            </div>
+
+            <!-- Two Column Layout -->
+            <div class="content-section" data-layout="two-column">
+                <div class="content-card editable-card" data-editable="true" data-id="card-1">
+                    <h4>Card 1 - Cột Trái</h4>
+                    <p>Đây là nội dung của card 1 trong layout 2 cột. Card này có thể được chỉnh sửa độc lập.</p>
+                    <a href="#" class="editable-button">Button Card 1</a>
+                </div>
+                <div class="content-card editable-card" data-editable="true" data-id="card-2">
+                    <h4>Card 2 - Cột Phải</h4>
+                    <p>Đây là nội dung của card 2. Layout sẽ tự động responsive trên mobile.</p>
+                    <a href="#" class="editable-button secondary">Button Card 2</a>
+                </div>
+            </div>
+
+            <!-- Tips Box với các styles -->
+            <div class="content-block dynamic-component" data-component-type="tips" data-editable="true" data-id="tips-1">
+                <div class="tips-box editable-tips" data-style="default">
+                    <div class="tip-item editable-tip" data-id="tip-1">
+                        <i class="fas fa-lightbulb tip-icon"></i>
+                        <div class="tip-content">
+                            <p><strong>Mẹo 1:</strong> Bắt đầu chuẩn bị hồ sơ từ 6 tháng trước khi nộp để đảm bảo chất lượng tốt nhất.</p>
+                        </div>
+                    </div>
+                    <div class="tip-item editable-tip" data-id="tip-2">
+                        <i class="fas fa-book-open tip-icon"></i>
+                        <div class="tip-content">
+                            <p><strong>Mẹo 2:</strong> Học tiếng Nhật cơ bản sẽ tăng cơ hội được chọn đáng kể.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="block-controls">
+                    <button class="block-control-btn" title="Add Tip">+</button>
+                    <button class="block-control-btn" title="Edit">✎</button>
+                    <button class="block-control-btn" title="Delete">✕</button>
+                </div>
+            </div>
+
+            <!-- Info Boxes với các loại khác nhau -->
+            <h3 class="editable-h3">Các Loại Thông Báo</h3>
+            
+            <div class="info-box success">
+                <p><strong>Thành công:</strong> Hồ sơ của bạn đã được nộp thành công!</p>
+            </div>
+
+            <div class="info-box warning">
+                <p><strong>Cảnh báo:</strong> Hạn chót nộp hồ sơ còn 7 ngày nữa.</p>
+            </div>
+
+            <div class="info-box error">
+                <p><strong>Lỗi:</strong> Vui lòng kiểm tra lại thông tin trong form.</p>
+            </div>
+
+            <div class="info-box info">
+                <p><strong>Thông tin:</strong> Kết quả sơ tuyển sẽ được công bố vào tháng 8.</p>
+            </div>
+
+            <!-- Three Column Layout -->
+            <div class="content-section" data-layout="three-column">
+                <div class="content-card bordered">
+                    <h4>Card Viền</h4>
+                    <p>Card với style có viền</p>
+                </div>
+                <div class="content-card colored">
+                    <h4>Card Màu</h4>
+                    <p>Card với style có màu và gradient</p>
+                </div>
+                <div class="content-card">
+                    <h4>Card Cơ Bản</h4>
+                    <p>Card với style mặc định</p>
+                </div>
+            </div>
+
+            <!-- Editable List -->
+            <div class="content-block dynamic-component" data-component-type="list" data-editable="true" data-id="list-1">
+                <div class="editable-section" data-type="list">
+                    <h3 class="editable-h3">Danh Sách Có Thể Chỉnh Sửa</h3>
+                    <ul class="editable-list">
+                        <li class="editable-list-item">Mục danh sách đầu tiên</li>
+                        <li class="editable-list-item">Mục danh sách thứ hai với <span class="highlight-text">text được highlight</span></li>
+                        <li class="editable-list-item">Mục danh sách có <a href="#" class="editable-link">liên kết</a> bên trong</li>
+                    </ul>
+                </div>
+                <div class="block-controls">
+                    <button class="block-control-btn" title="Add Item">+</button>
+                    <button class="block-control-btn" title="Edit">✎</button>
+                    <button class="block-control-btn" title="Delete">✕</button>
+                </div>
+            </div>
+
+            <!-- Editable Image -->
+            <div class="content-block dynamic-component" data-component-type="image" data-editable="true" data-id="img-1">
+                <div class="editable-image">
+                    <img src="assets/images/news-featured.jpg" alt="Hình ảnh có thể chỉnh sửa">
+                    <div class="image-caption">Caption của hình ảnh có thể được chỉnh sửa từ admin</div>
+                </div>
+                <div class="block-controls">
+                    <button class="block-control-btn" title="Change Image">🖼</button>
+                    <button class="block-control-btn" title="Edit Caption">✎</button>
+                    <button class="block-control-btn" title="Delete">✕</button>
+                </div>
+            </div>
+
+            <!-- Editable Tags -->
+            <div class="content-block dynamic-component" data-component-type="tags" data-editable="true" data-id="tags-1">
+                <div class="editable-tags">
+                    <h3>Từ Khóa có thể chỉnh sửa:</h3>
+                    <div class="editable-tag-list">
+                        <a href="#" class="editable-tag">Tag cơ bản</a>
+                        <a href="#" class="editable-tag" data-style="outline">Tag viền</a>
+                        <a href="#" class="editable-tag" data-style="gradient">Tag gradient</a>
+                        <a href="#" class="editable-tag">Admin Panel</a>
+                        <a href="#" class="editable-tag" data-style="outline">CMS System</a>
+                    </div>
+                </div>
+                <div class="block-controls">
+                    <button class="block-control-btn" title="Add Tag">+</button>
+                    <button class="block-control-btn" title="Edit Tags">✎</button>
+                    <button class="block-control-btn" title="Delete">✕</button>
+                </div>
+            </div>
+
+            <!-- Utility Classes Demo -->
+            <h3 class="editable-h3">Demo Utility Classes</h3>
+            
+            <div class="spacing-medium">
+                <p class="text-center">Text canh giữa với spacing medium</p>
+            </div>
+
+            <div class="bg-light padding-medium">
+                <p class="text-primary"><strong>Text màu primary</strong> trong background light với padding medium</p>
+            </div>
+
+            <div class="bg-gradient padding-small text-center">
+                <p style="color: white; margin: 0;">Background gradient với padding small và text canh giữa</p>
+            </div>
+
+        </div>
+
+        <!-- WYSIWYG Editor Demo -->
+        <h2>Demo WYSIWYG Editor</h2>
+        <div class="admin-toolbar">
+            <button class="admin-btn" data-action="bold"><strong>B</strong></button>
+            <button class="admin-btn" data-action="italic"><em>I</em></button>
+            <button class="admin-btn" data-action="link">🔗</button>
+            <button class="admin-btn" data-action="list">📝</button>
+            <button class="admin-btn" data-action="image">🖼</button>
+        </div>
+        
+        <div class="editor-content" contenteditable="true">
+            <div class="placeholder">Nhập nội dung tại đây... (contenteditable demo)</div>
+        </div>
+
+        <!-- Demo Instructions -->
+        <div class="tips-box" style="margin-top: 40px;">
+            <div class="tip-item">
+                <i class="fas fa-info-circle tip-icon"></i>
+                <div class="tip-content">
+                    <p><strong>Hướng dẫn:</strong> Hover vào các content blocks để thấy controls chỉnh sửa. Trong thực tế, admin panel sẽ kết nối với database để lưu/load nội dung.</p>
+                </div>
+            </div>
+            <div class="tip-item">
+                <i class="fas fa-code tip-icon"></i>
+                <div class="tip-content">
+                    <p><strong>Developer:</strong> Xem file <code>admin-content-guide.md</code> để hiểu cách triển khai hệ thống CMS với các class CSS này.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Demo JavaScript for admin controls
+        document.querySelectorAll('.block-control-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const action = btn.getAttribute('title');
+                alert(`Action: ${action}\nTrong thực tế sẽ mở modal/form để ${action.toLowerCase()}`);
+            });
+        });
+
+        document.querySelectorAll('.admin-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const action = btn.getAttribute('data-action');
+                
+                // Toggle active state
+                document.querySelectorAll('.admin-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                console.log(`Admin action: ${action}`);
+                // Trong thực tế sẽ có logic xử lý tương ứng
+            });
+        });
+
+        // Demo contenteditable placeholder
+        const editor = document.querySelector('.editor-content');
+        const placeholder = editor.querySelector('.placeholder');
+        
+        editor.addEventListener('focus', () => {
+            if (placeholder) placeholder.style.display = 'none';
+        });
+        
+        editor.addEventListener('blur', () => {
+            if (editor.textContent.trim() === '' && placeholder) {
+                placeholder.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+
+</html>
