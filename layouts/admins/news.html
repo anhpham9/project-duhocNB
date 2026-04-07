@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản Lý Trường Học - Du Học NB Admin</title>
+    <title>Quản Lý Tin Tức - Du Học NB Admin</title>
     <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/schools.css">
+    <link rel="stylesheet" href="assets/css/news.css">
     <link rel="stylesheet" href="assets/css/responsive.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
@@ -44,7 +44,7 @@
                         <span>Liên hệ</span>
                     </a>
                 </li>
-                <li class="nav-item active">
+                <li class="nav-item">
                     <a href="schools.html" class="nav-link">
                         <i class="fas fa-university"></i>
                         <span>Trường học</span>
@@ -62,14 +62,14 @@
                         <span>Hồ sơ</span>
                     </a>
                 </li>
-                <li class="nav-item has-submenu">
+                <li class="nav-item has-submenu active">
                     <a href="#" class="nav-link">
                         <i class="fas fa-newspaper"></i>
                         <span>Tin tức</span>
                         <i class="fas fa-chevron-down submenu-arrow"></i>
                     </a>
                     <ul class="submenu">
-                        <li><a href="news.html">Danh sách tin</a></li>
+                        <li><a href="news.html" class="active">Danh sách tin</a></li>
                         <li><a href="news-categories.html">Danh mục</a></li>
                     </ul>
                 </li>
@@ -107,7 +107,7 @@
                 <div class="breadcrumb">
                     <span class="breadcrumb-item">Trang chủ</span>
                     <i class="fas fa-chevron-right"></i>
-                    <span class="breadcrumb-item active">Quản lý trường học</span>
+                    <span class="breadcrumb-item active">Quản lý tin tức</span>
                 </div>
             </div>
             
@@ -144,37 +144,37 @@
             </div>
         </header>
 
-        <!-- Schools Content -->
-        <div class="schools-container">
+        <!-- News Content -->
+        <div class="news-container">
             <div class="page-header">
                 <div class="header-info">
                     <h1 class="page-title">
-                        <i class="fas fa-university"></i>
-                        Quản Lý Trường Học
+                        <i class="fas fa-newspaper"></i>
+                        Quản Lý Tin Tức
                     </h1>
-                    <p class="page-description">Quản lý danh sách các trường Nhật ngữ và thông tin chi tiết</p>
+                    <p class="page-description">Quản lý danh sách các tin tức và thông tin chi tiết</p>
                 </div>
                 
                 <div class="header-actions">
                     <div class="stats-summary">
                         <div class="stat-item">
                             <span class="stat-number">25</span>
-                            <span class="stat-label">Tổng trường</span>
+                            <span class="stat-label">Tổng tin</span>
                         </div>
                         <div class="stat-item">
                             <span class="stat-number">18</span>
-                            <span class="stat-label">Hoạt động</span>
+                            <span class="stat-label">Hiển thị</span>
                         </div>
                         <div class="stat-item">
-                            <span class="stat-number">12</span>
-                            <span class="stat-label">Đối tác</span>
+                            <span class="stat-number">7</span>
+                            <span class="stat-label">Ẩn</span>
                         </div>
                     </div>
                     
                     <div class="action-buttons">
-                        <button class="btn btn-success" id="addSchoolBtn">
+                        <button class="btn btn-success" id="addNewsBtn">
                             <i class="fas fa-plus"></i>
-                            Thêm trường
+                            Thêm tin
                         </button>
                         <button class="btn btn-primary" id="exportBtn">
                             <i class="fas fa-download"></i>
@@ -190,42 +190,28 @@
                     <div class="search-filter">
                         <div class="search-input-wrapper">
                             <i class="fas fa-search"></i>
-                            <input type="text" id="searchInput" placeholder="Tìm theo tên trường, địa chỉ...">
+                            <input type="text" id="searchInput" placeholder="Tìm theo tiêu đề, nội dung...">
                         </div>
                     </div>
                     
                     <div class="filter-controls">
-                        <select id="regionFilter" class="filter-select">
-                            <option value="">Tất cả vùng miền</option>
-                            <option value="tokyo">Tokyo</option>
-                            <option value="osaka">Osaka</option>
-                            <option value="kyoto">Kyoto</option>
-                            <option value="fukuoka">Fukuoka</option>
-                            <option value="nagoya">Nagoya</option>
-                            <option value="sendai">Sendai</option>
+                        <select id="categoryFilter" class="filter-select">
+                            <option value="">Tất cả thể loại</option>
+                            <option value="news">Tin tức</option>
+                            <option value="rule">Luật lệ</option>
+                            <option value="event">Sự kiện</option>
+                            <option value="blog">Blog</option>
                             <option value="other">Khác</option>
-                        </select>
-                        
-                        <select id="typeFilter" class="filter-select">
-                            <option value="">Tất cả loại hình</option>
-                            <option value="public">Công lập</option>
-                            <option value="private">Tư thục</option>
-                            <option value="corporate">Doanh nghiệp</option>
                         </select>
                         
                         <select id="statusFilter" class="filter-select">
                             <option value="">Tất cả trạng thái</option>
-                            <option value="active">Hoạt động</option>
-                            <option value="inactive">Tạm dừng</option>
-                            <option value="partner">Đối tác</option>
-                            <option value="pending">Chờ duyệt</option>
+                            <option value="active">Hiển thị</option>
+                            <option value="inactive">Tạm ẩn</option>
                         </select>
                         
-                        <div class="tuition-filter">
-                            <input type="number" id="minTuition" placeholder="Học phí tối thiểu" class="filter-number">
-                            <span>-</span>
-                            <input type="number" id="maxTuition" placeholder="Học phí tối đa" class="filter-number">
-                        </div>
+                        <input type="date" id="dateFromFilter" class="filter-date">
+                        <input type="date" id="dateToFilter" class="filter-date">
                         
                         <button id="clearFilters" class="btn btn-outline">
                             <i class="fas fa-eraser"></i>
@@ -235,8 +221,8 @@
                 </div>
             </div>
 
-            <!-- Schools Table -->
-            <div class="schools-table-container">
+            <!-- News Table -->
+            <div class="news-table-container">
                 <div class="table-controls">
                     <div class="table-info">
                         <span>Hiển thị:</span>
@@ -262,9 +248,8 @@
                         <div class="bulk-actions">
                             <select id="bulkAction" disabled>
                                 <option value="">Hành động hàng loạt</option>
-                                <option value="activate">Kích hoạt</option>
-                                <option value="deactivate">Vô hiệu hóa</option>
-                                <option value="mark-partner">Đánh dấu đối tác</option>
+                                <option value="activate">Hiển thị</option>
+                                <option value="deactivate">Tạm ẩn</option>
                                 <option value="delete">Xóa</option>
                             </select>
                             <button id="applyBulkAction" class="btn btn-secondary" disabled>
@@ -285,33 +270,31 @@
                 <!-- Empty State -->
                 <div class="table-empty" id="tableEmpty" style="display: none;">
                     <div class="empty-content">
-                        <i class="fas fa-university"></i>
-                        <h3>Không có trường học nào</h3>
-                        <p>Không tìm thấy trường học phù hợp với bộ lọc hiện tại.</p>
+                        <i class="fas fa-newspaper"></i>
+                        <h3>Không có tin tức nào</h3>
+                        <p>Không tìm thấy tin tức phù hợp với bộ lọc hiện tại.</p>
                     </div>
                 </div>
 
                 <!-- Table View -->
                 <div class="table-wrapper" id="tableView">
-                    <table class="schools-table">
+                    <table class="news-table">
                         <thead>
                             <tr>
                                 <th>
                                     <input type="checkbox" id="selectAll">
                                 </th>
                                 <th class="sortable" data-sort="id">#ID <i class="fas fa-sort"></i></th>
-                                <th>Logo</th>
-                                <th class="sortable" data-sort="name">Tên trường <i class="fas fa-sort"></i></th>
-                                <th class="sortable" data-sort="region">Vùng miền <i class="fas fa-sort"></i></th>
-                                <th class="sortable" data-sort="type">Loại hình <i class="fas fa-sort"></i></th>
-                                <th class="sortable" data-sort="students">SL Học sinh <i class="fas fa-sort"></i></th>
-                                <th class="sortable" data-sort="tuition">Học phí <i class="fas fa-sort"></i></th>
+                                <th class="sortable" data-sort="title">Tiêu đề <i class="fas fa-sort"></i></th>
+                                <th class="sortable" data-sort="category">Thể loại <i class="fas fa-sort"></i></th>
+                                <th class="sortable" data-sort="summary">Tóm tắt <i class="fas fa-sort"></i></th>
+                                <th class="sortable" data-sort="publishDate">Ngày đăng <i class="fas fa-sort"></i></th>
                                 <th class="sortable" data-sort="rating">Đánh giá <i class="fas fa-sort"></i></th>
                                 <th class="sortable" data-sort="status">Trạng thái <i class="fas fa-sort"></i></th>
                                 <th>Hành động</th>
                             </tr>
                         </thead>
-                        <tbody id="schoolsTableBody">
+                        <tbody id="newsTableBody">
                             <!-- Data will be populated by JavaScript -->
                         </tbody>
                     </table>
@@ -319,7 +302,7 @@
 
                 <!-- Grid View -->
                 <div class="grid-wrapper" id="gridView" style="display: none;">
-                    <div class="schools-grid" id="schoolsGrid">
+                    <div class="news-grid" id="newsGrid">
                         <!-- Grid items will be populated by JavaScript -->
                     </div>
                 </div>
@@ -357,90 +340,190 @@
     <!-- Mobile Overlay -->
     <div class="mobile-overlay" id="mobileOverlay"></div>
 
-    <!-- School Detail Modal -->
-    <div class="modal-overlay" id="schoolModal" style="display: none;">
-        <div class="modal-container school-modal">
+    <!-- News Detail Modal -->
+    <div class="modal-overlay" id="newsModal" style="display: none;">
+        <div class="modal-container news-modal">
             <div class="modal-header">
-                <h3 id="modalTitle">Chi tiết trường học</h3>
-                <button class="modal-close" onclick="closeSchoolModal()">
+                <h3 id="modalTitle">Chi tiết Tin tức</h3>
+                <button class="modal-close" onclick="closeNewsModal()">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
             <div class="modal-body">
-                <div class="school-info">
-                    <div class="school-header">
-                        <img id="modalLogo" src="" alt="" class="school-logo-large">
-                        <div class="school-basic-info">
-                            <h4 id="modalName"></h4>
-                            <p id="modalAddress"></p>
-                            <div class="school-badges">
-                                <span id="modalType" class="type-badge"></span>
+                <div class="news-info">
+                    <div class="news-header">
+                        <img id="modalImage" src="" alt="" class="news-image-large">
+                        <div class="news-basic-info">
+                            <h4 id="modalNewsTitle"></h4>
+                            <p class="meta-info">
+                                <span id="modalAuthor"></span> • 
+                                <span id="modalPublishDate"></span>
+                            </p>
+                            <div class="news-badges">
+                                <span id="modalCategory" class="category-badge"></span>
                                 <span id="modalStatus" class="status-badge"></span>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="school-details">
+                    <div class="news-details">
                         <div class="detail-section">
-                            <h5>Thông tin cơ bản</h5>
+                            <h5>Thông tin bài viết</h5>
                             <div class="detail-grid">
                                 <div class="detail-item">
-                                    <label>Vùng miền:</label>
-                                    <span id="modalRegion"></span>
+                                    <label>Thể loại:</label>
+                                    <span id="modalCategoryText"></span>
                                 </div>
                                 <div class="detail-item">
-                                    <label>Số lượng học sinh:</label>
-                                    <span id="modalStudents"></span>
+                                    <label>Tác giả:</label>
+                                    <span id="modalAuthorText"></span>
                                 </div>
                                 <div class="detail-item">
-                                    <label>Học phí:</label>
-                                    <span id="modalTuition"></span>
+                                    <label>Ngày đăng:</label>
+                                    <span id="modalDateText"></span>
                                 </div>
                                 <div class="detail-item">
-                                    <label>Đánh giá:</label>
-                                    <div class="rating-display" id="modalRating"></div>
+                                    <label>Lượt xem:</label>
+                                    <span id="modalViews"></span>
                                 </div>
                             </div>
                         </div>
                         
                         <div class="detail-section">
-                            <h5>Liên hệ</h5>
-                            <div class="detail-grid">
-                                <div class="detail-item">
-                                    <label>Website:</label>
-                                    <a id="modalWebsite" href="#" target="_blank"></a>
-                                </div>
-                                <div class="detail-item">
-                                    <label>Email:</label>
-                                    <span id="modalEmail"></span>
-                                </div>
-                                <div class="detail-item">
-                                    <label>Điện thoại:</label>
-                                    <span id="modalPhone"></span>
-                                </div>
+                            <h5>Nội dung</h5>
+                            <div class="detail-item full-width">
+                                <label>Tóm tắt:</label>
+                                <div id="modalSummary" class="summary-content"></div>
+                            </div>
+                            <div class="detail-item full-width">
+                                <label>Nội dung chi tiết:</label>
+                                <div id="modalContent" class="content-area"></div>
                             </div>
                         </div>
                         
                         <div class="detail-section">
-                            <h5>Mô tả</h5>
-                            <div class="description-content" id="modalDescription"></div>
+                            <h5>Từ khóa & SEO</h5>
+                            <div class="detail-item full-width">
+                                <label>Tags:</label>
+                                <div id="modalTags" class="tags-container"></div>
+                            </div>
                         </div>
                     </div>
+                    
+                    <div class="modal-actions">
+                        <button class="btn btn-primary" id="editNewsBtn">
+                            <i class="fas fa-edit"></i> Sửa
+                        </button>
+                        <button class="btn btn-success" id="toggleStatusBtn">
+                            <i class="fas fa-toggle-on"></i> Đổi trạng thái
+                        </button>
+                        <button class="btn btn-danger" id="deleteNewsBtn">
+                            <i class="fas fa-trash"></i> Xóa
+                        </button>
+                    </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeSchoolModal()">Đóng</button>
-                <button class="btn btn-success" onclick="editSchoolFromModal()">
-                    <i class="fas fa-edit"></i> Chỉnh sửa
-                </button>
-                <button class="btn btn-primary" onclick="viewWebsiteFromModal()">
-                    <i class="fas fa-external-link-alt"></i> Xem Website
-                </button>
             </div>
         </div>
     </div>
 
+    <!-- Add/Edit News Modal -->
+    <div class="modal-overlay" id="addEditNewsModal" style="display: none;">
+        <div class="modal-container add-edit-news-modal">
+            <div class="modal-header">
+                <h3 id="addEditModalTitle">Thêm Tin Tức Mới</h3>
+                <button class="modal-close" onclick="closeAddEditModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="newsForm" class="news-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="newsTitle">Tiêu đề *</label>
+                            <input type="text" id="newsTitle" name="title" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="newsCategory">Thể loại *</label>
+                            <select id="newsCategory" name="category" required>
+                                <option value="">Chọn thể loại</option>
+                                <option value="news">Tin tức</option>
+                                <option value="rule">Luật lệ</option>
+                                <option value="event">Sự kiện</option>
+                                <option value="blog">Blog</option>
+                                <option value="other">Khác</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="newsAuthor">Tác giả</label>
+                            <input type="text" id="newsAuthor" name="author" placeholder="Mặc định: Admin">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="newsStatus">Trạng thái</label>
+                            <select id="newsStatus" name="status">
+                                <option value="active">Hiển thị</option>
+                                <option value="inactive">Tạm ẩn</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="newsSummary">Tóm tắt</label>
+                            <textarea id="newsSummary" name="summary" rows="3" placeholder="Tóm tắt ngắn gọn về nội dung bài viết..."></textarea>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="newsContent">Nội dung *</label>
+                            <textarea id="newsContent" name="content" rows="8" required placeholder="Nội dung chi tiết của bài viết..."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="newsImage">Hình ảnh</label>
+                            <input type="file" id="newsImage" name="image" accept="image/*">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="newsTags">Tags (phân cách bằng dấu phẩy)</label>
+                            <input type="text" id="newsTags" name="tags" placeholder="ví dụ: du học, nhật bản, học bổng">
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeAddEditModal()">Hủy</button>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-save"></i> Lưu
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal-overlay" id="confirmModal" style="display: none;">
+        <div class="modal-container confirm-modal">
+            <div class="modal-header">
+                <h3 id="confirmTitle">Xác nhận</h3>
+                <button class="modal-close" onclick="closeConfirmModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="confirm-content">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p id="confirmMessage">Bạn có chắc chắn muốn thực hiện hành động này?</p>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeConfirmModal()">Hủy</button>
+                <button class="btn btn-danger" id="confirmBtn">Xác nhận</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Files -->
     <script src="assets/js/dashboard.js"></script>
-    <script src="assets/js/schools.js"></script>
+    <script src="assets/js/news.js"></script>
 </body>
 </html>

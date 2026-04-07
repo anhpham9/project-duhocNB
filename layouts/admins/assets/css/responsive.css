@@ -9,43 +9,43 @@
     .sidebar {
         width: 240px;
     }
-    
+
     .main-content {
         margin-left: 240px;
         width: calc(100vw - 240px);
     }
-    
+
     .search-box input {
         width: 200px;
     }
-    
+
     .dashboard-container {
         padding: 20px;
     }
-    
+
     .dashboard-grid {
         grid-template-columns: 1fr;
         gap: 20px;
     }
-    
+
     .chart-card {
         grid-row: auto;
     }
-    
+
     .stats-grid {
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         gap: 15px;
     }
-    
+
     .quick-actions {
         grid-template-columns: repeat(4, 1fr);
         gap: 10px;
     }
-    
+
     .quick-action-btn {
         padding: 15px 10px;
     }
-    
+
     .quick-action-btn span {
         font-size: 0.75rem;
     }
@@ -58,105 +58,105 @@
     body {
         overflow-x: hidden;
     }
-    
+
     /* Sidebar Mobile Behavior */
     .sidebar {
         transform: translateX(-100%);
         width: 280px;
         z-index: 1001;
     }
-    
+
     .sidebar.active {
         transform: translateX(0);
     }
-    
+
     .sidebar-toggle {
         display: block;
     }
-    
+
     .main-content {
         margin-left: 0;
         width: 100vw;
     }
-    
+
     /* Header Mobile */
     .main-header {
         padding: 15px 20px;
         flex-wrap: wrap;
         gap: 15px;
     }
-    
+
     .mobile-toggle {
         display: block;
     }
-    
+
     .header-left {
         flex: 1;
         min-width: 0;
     }
-    
+
     .header-right {
         gap: 15px;
         flex-wrap: wrap;
     }
-    
+
     .header-search {
         order: 3;
         flex: 1 1 100%;
     }
-    
+
     .search-box input {
         width: 100%;
     }
-    
+
     .breadcrumb {
         font-size: 0.8rem;
     }
-    
+
     /* Profile Mobile */
     .profile-name {
         display: none;
     }
-    
+
     .profile-menu {
         right: -50px;
         min-width: 160px;
     }
-    
+
     /* Dashboard Mobile */
     .dashboard-container {
         padding: 15px;
     }
-    
+
     .page-title {
         font-size: 1.6rem;
     }
-    
+
     .stats-grid {
         grid-template-columns: 1fr;
         gap: 12px;
     }
-    
+
     .stat-card {
         padding: 16px;
     }
-    
+
     .stat-number {
         font-size: 1.6rem;
     }
-    
+
     .stat-icon {
         width: 50px;
         height: 50px;
         font-size: 1.2rem;
     }
-    
+
     /* Cards Mobile */
     .dashboard-card {
         padding: 16px;
         border-radius: 8px;
     }
-    
+
     .card-header {
         margin-bottom: 15px;
         padding-bottom: 10px;
@@ -164,81 +164,110 @@
         align-items: flex-start;
         gap: 10px;
     }
-    
+
     .card-title {
         font-size: 1.1rem;
     }
-    
+
     /* Chart Mobile */
     .chart-bars {
         height: 150px;
         gap: 4px;
     }
-    
+
     .chart-labels {
         font-size: 0.7rem;
     }
-    
+
     /* Quick Actions Mobile */
     .quick-actions {
         grid-template-columns: 1fr 1fr;
         gap: 12px;
     }
-    
+
     .quick-action-btn {
         padding: 16px 8px;
     }
-    
+
     .quick-action-btn i {
         font-size: 1.2rem;
     }
-    
+
     .quick-action-btn span {
         font-size: 0.8rem;
     }
-    
+
     /* Activity List Mobile */
     .activity-item {
         gap: 10px;
         padding: 10px 0;
     }
-    
+
     .activity-avatar img {
         width: 35px;
         height: 35px;
     }
-    
+
     .activity-content p {
         font-size: 0.85rem;
     }
-    
+
     .activity-time {
         font-size: 0.75rem;
     }
-    
+
     /* School List Mobile */
     .school-item {
         gap: 12px;
         padding: 12px 0;
     }
-    
+
     .school-rank {
         width: 25px;
         height: 25px;
         font-size: 0.8rem;
     }
-    
+
     .school-info h4 {
         font-size: 0.9rem;
     }
-    
+
     .school-info p {
         font-size: 0.75rem;
     }
-    
+
     .student-count {
         font-size: 0.7rem;
         padding: 3px 6px;
+    }
+
+    /* Pagination Mobile */
+    .pagination-container {
+        flex-direction: column-reverse;
+        text-align: center;
+        gap: 15px;
+    }
+    
+    .page-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+    }
+    
+    .header-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .stats-summary {
+        order: -1;
+        justify-content: space-around;
+    }
+
+    .table-controls {
+        flex-direction: column;
+        gap: 15px;
+        align-items: stretch;
     }
 }
 
@@ -249,54 +278,54 @@
     .main-header {
         padding: 12px 15px;
     }
-    
+
     .dashboard-container {
         padding: 12px;
     }
-    
+
     .page-title {
         font-size: 1.4rem;
     }
-    
+
     .page-subtitle {
         font-size: 0.9rem;
     }
-    
+
     .stats-grid {
         gap: 10px;
     }
-    
+
     .stat-card {
         padding: 12px;
         gap: 12px;
     }
-    
+
     .dashboard-card {
         padding: 12px;
     }
-    
+
     .card-header {
         margin-bottom: 12px;
     }
-    
+
     .dashboard-grid {
         gap: 15px;
     }
-    
+
     .quick-actions {
         gap: 8px;
     }
-    
+
     .quick-action-btn {
         padding: 12px 6px;
     }
-    
+
     .chart-bars {
         height: 120px;
         gap: 3px;
         padding: 0 5px;
     }
-    
+
     .chart-labels {
         padding: 0 5px;
         font-size: 0.65rem;
@@ -310,67 +339,67 @@
     .sidebar {
         width: 100%;
     }
-    
+
     .main-header {
         padding: 10px 12px;
     }
-    
+
     .header-right {
         gap: 10px;
     }
-    
+
     .breadcrumb {
         display: none;
     }
-    
+
     .search-box input {
         padding: 6px 10px 6px 30px;
         font-size: 0.9rem;
     }
-    
+
     .search-box i {
         left: 10px;
     }
-    
+
     .notification-btn {
         font-size: 1.1rem;
     }
-    
+
     .dashboard-container {
         padding: 10px;
     }
-    
+
     .page-header {
         margin-bottom: 20px;
         text-align: center;
     }
-    
+
     .page-title {
         font-size: 1.3rem;
     }
-    
+
     .stat-card {
         flex-direction: column;
         text-align: center;
         gap: 8px;
     }
-    
+
     .stat-icon {
         align-self: center;
         width: 45px;
         height: 45px;
         font-size: 1.1rem;
     }
-    
+
     .stat-number {
         font-size: 1.4rem;
     }
-    
+
     .quick-actions {
         grid-template-columns: 1fr;
         gap: 10px;
     }
-    
+
     .quick-action-btn {
         flex-direction: row;
         justify-content: flex-start;
@@ -378,23 +407,23 @@
         padding: 12px 16px;
         text-align: left;
     }
-    
+
     .activity-item {
         flex-direction: column;
         align-items: flex-start;
         gap: 8px;
     }
-    
+
     .activity-avatar {
         align-self: flex-start;
     }
-    
+
     .school-item {
         flex-direction: column;
         align-items: flex-start;
         gap: 8px;
     }
-    
+
     .school-rank {
         align-self: flex-start;
     }
@@ -407,37 +436,37 @@
     .main-header {
         padding: 8px 10px;
     }
-    
+
     .dashboard-container {
         padding: 8px;
     }
-    
+
     .dashboard-card {
         padding: 10px;
     }
-    
+
     .card-title {
         font-size: 1rem;
     }
-    
+
     .stat-card {
         padding: 10px;
     }
-    
+
     .stat-number {
         font-size: 1.2rem;
     }
-    
+
     .stat-icon {
         width: 40px;
         height: 40px;
         font-size: 1rem;
     }
-    
+
     .quick-action-btn {
         padding: 10px 12px;
     }
-    
+
     .chart-bars {
         height: 100px;
         gap: 2px;
@@ -451,43 +480,43 @@
     .sidebar {
         width: 220px;
     }
-    
+
     .sidebar-header {
         padding: 15px;
     }
-    
+
     .nav-link {
         padding: 8px 15px;
     }
-    
+
     .main-header {
         padding: 10px 20px;
     }
-    
+
     .dashboard-container {
         padding: 15px 20px;
     }
-    
+
     .stats-grid {
         grid-template-columns: repeat(4, 1fr);
     }
-    
+
     .stat-card {
         padding: 15px;
     }
-    
+
     .page-header {
         margin-bottom: 20px;
     }
-    
+
     .page-title {
         font-size: 1.5rem;
     }
-    
+
     .dashboard-grid {
         gap: 20px;
     }
-    
+
     .dashboard-card {
         padding: 15px;
     }
@@ -496,17 +525,18 @@
 /* ========================================
    HIGH DPI DISPLAYS
 ======================================== */
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+@media (-webkit-min-device-pixel-ratio: 2),
+(min-resolution: 192dpi) {
     .logo-img {
         image-rendering: -webkit-optimize-contrast;
         image-rendering: crisp-edges;
     }
-    
+
     .profile-avatar {
         image-rendering: -webkit-optimize-contrast;
         image-rendering: crisp-edges;
     }
-    
+
     .activity-avatar img {
         image-rendering: -webkit-optimize-contrast;
         image-rendering: crisp-edges;
@@ -520,33 +550,33 @@
     .sidebar {
         display: none;
     }
-    
+
     .main-content {
         margin-left: 0;
     }
-    
+
     .main-header {
         display: none;
     }
-    
+
     .dashboard-container {
         padding: 0;
     }
-    
+
     .dashboard-card {
         box-shadow: none;
         border: 1px solid #ddd;
         break-inside: avoid;
     }
-    
+
     .chart-bars {
         filter: grayscale(100%);
     }
-    
+
     .quick-actions {
         display: none;
     }
-    
+
     .notification-toast {
         display: none;
     }
@@ -564,146 +594,147 @@
 }
 
 @media (prefers-color-scheme: dark) {
+
     /* Dark mode support can be added here if needed */
     body {
         background-color: #1a1a1a;
         color: #ffffff;
     }
-    
+
     .sidebar {
         background: #2d2d2d;
         border-right: 1px solid #404040;
     }
-    
+
     .main-header {
         background: #2d2d2d;
         border-bottom: 1px solid #404040;
     }
-    
+
     .dashboard-card {
         background: #2d2d2d;
         border-color: #404040;
     }
-    
+
     .stat-card {
         background: #2d2d2d;
         border-color: #404040;
     }
-    
+
     /* Users & Contacts Table Mobile */
     .users-container,
     .contacts-container {
         padding: 15px;
     }
-    
+
     .page-header {
         flex-direction: column;
         align-items: stretch;
         gap: 15px;
     }
-    
+
     .header-actions {
         flex-direction: column;
         gap: 10px;
     }
-    
+
     .stats-summary {
         flex-direction: row;
         justify-content: center;
         gap: 15px;
     }
-    
+
     .filters-container {
         padding: 15px;
     }
-    
+
     .filter-group {
         flex-direction: column;
         gap: 10px;
     }
-    
+
     .filter-controls {
         flex-direction: column;
         gap: 10px;
     }
-    
+
     .table-controls {
         flex-direction: column;
         align-items: stretch;
         gap: 10px;
     }
-    
+
     .table-info {
         justify-content: center;
     }
-    
+
     .bulk-actions {
         flex-direction: column;
         gap: 8px;
     }
-    
+
     .table-wrapper {
         border-radius: 4px;
         max-height: 60vh;
     }
-    
+
     .users-table,
     .contacts-table {
         min-width: 800px;
         font-size: 0.8rem;
     }
-    
+
     .users-table th,
     .users-table td,
     .contacts-table th,
     .contacts-table td {
         padding: 8px 12px;
     }
-    
+
     .user-avatar {
         width: 30px;
         height: 30px;
     }
-    
+
     .action-buttons {
         gap: 5px;
     }
-    
+
     .action-btn {
         padding: 6px;
         font-size: 0.8rem;
     }
-    
+
     /* Contact Modal Mobile */
     .modal-container {
         width: 95%;
         max-height: 90vh;
     }
-    
+
     .modal-header,
     .modal-footer {
         padding: 15px 20px;
     }
-    
+
     .modal-body {
         padding: 20px;
     }
-    
+
     .info-row {
         flex-direction: column;
         gap: 5px;
     }
-    
+
     .info-row label {
         min-width: auto;
         font-weight: 600;
     }
-    
+
     .modal-footer {
         flex-wrap: wrap;
         gap: 8px;
     }
-    
+
     .modal-footer .btn {
         flex: 1;
         min-width: 120px;
