@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Nội Dung Trang Chủ - Du Học NB Admin</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/responsive.css">
+    <link rel="stylesheet" href="assets/css/notifications.css">
+    <link rel="stylesheet" href="assets/css/homepage-content.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <img src="assets/images/logo01.png" alt="Du Học NB" class="logo-img">
+                <h3 class="logo-text">Du Học NB</h3>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="dashboard.html" class="nav-link">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="users.html" class="nav-link">
+                        <i class="fas fa-users"></i>
+                        <span>Người dùng</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="contacts.html" class="nav-link">
+                        <i class="fas fa-address-book"></i>
+                        <span>Liên hệ</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="schools.html" class="nav-link">
+                        <i class="fas fa-university"></i>
+                        <span>Trường học</span>
+                    </a>
+                </li>
+                <li class="nav-item has-submenu">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-newspaper"></i>
+                        <span>Tin tức</span>
+                        <i class="fas fa-chevron-down submenu-arrow"></i>
+                    </a>
+                    <ul class="submenu">
+                        <li><a href="news.html">Danh sách tin</a></li>
+                        <li><a href="news-categories.html">Danh mục</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item has-submenu active">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Nội dung</span>
+                        <i class="fas fa-chevron-down submenu-arrow"></i>
+                    </a>
+                    <ul class="submenu">
+                        <li><a href="homepage-content.html">Trang chủ</a></li>
+                        <li><a href="about-content.html">Giới thiệu</a></li>
+                        <li><a href="schools-content.html" class="active">Trường học</a></li>
+                        <li><a href="conditions-content.html">Điều kiện</a></li>
+                        <li><a href="news-content.html">Tin tức</a></li>
+                        <li><a href="contact-content.html">Liên hệ</a></li>
+                        <li><a href="faq-content.html">FAQ</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item has-submenu">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-cog"></i>
+                        <span>Cài đặt</span>
+                        <i class="fas fa-chevron-down submenu-arrow"></i>
+                    </a>
+                    <ul class="submenu">
+                        <li><a href="settings-general.html">Chung</a></li>
+                        <li><a href="settings-seo.html">SEO</a></li>
+                        <li><a href="settings-backup.html">Sao lưu & Khôi phục</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <a href="login.html" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Đăng xuất</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="main-header">
+            <div class="header-left">
+                <button class="sidebar-toggle mobile-toggle" id="mobileToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+
+                <div class="breadcrumb">
+                    <span class="breadcrumb-item">Trang chủ</span>
+                    <i class="fas fa-chevron-right"></i>
+                    <span class="breadcrumb-item">Nội dung</span>
+                    <i class="fas fa-chevron-right"></i>
+                    <span class="breadcrumb-item active">Trường học</span>
+                </div>
+            </div>
+
+            <div class="header-right">
+                <div class="header-search">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Tìm kiếm...">
+                    </div>
+                </div>
+                
+                <div class="header-notifications">
+                    <button class="notification-btn">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                    
+                    <!-- Notifications Dropdown -->
+                    <div class="notifications-dropdown" id="notificationsDropdown">
+                        <div class="dropdown-header">
+                            <div class="dropdown-title">
+                                <i class="fas fa-bell"></i>
+                                <span>Thông báo (<span id="notificationCount">3</span>)</span>
+                            </div>
+                            <button class="mark-all-btn" id="markAllReadBtn" onclick="notificationsManager.markAllAsRead()" title="Đánh dấu tất cả đã đọc">
+                                <i class="fas fa-check-double"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="dropdown-body">
+                            <div class="notifications-list" id="notificationsList">
+                                <!-- Notifications will be loaded here by JavaScript -->
+                            </div>
+                        </div>
+                        
+                        <div class="dropdown-footer">
+                            <a href="notifications.html" class="view-all-link">
+                                <i class="fas fa-external-link-alt"></i>
+                                Xem tất cả thông báo
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="header-profile">
+                    <div class="profile-dropdown">
+                        <button class="profile-btn">
+                            <img src="assets/images/av.png" alt="Admin" class="profile-avatar">
+                            <span class="profile-name">Admin</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="profile-menu">
+                            <a href="profile.html"><i class="fas fa-user"></i> Hồ sơ</a>
+                            <hr>
+                            <a href="login.html"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content Container -->
+        <div class="content-container">
+            <div class="page-header">
+                <div class="header-info">
+                    <h1>
+                        <i class="fas fa-home"></i>
+                        Quản Lý Nội Dung Trang Danh sách trường học
+                    </h1>
+                    <p class="page-description">Chỉnh sửa và cập nhật nội dung trang danh sách trường học</p>
+                </div>
+
+                <div class="header-actions">
+                    <div class="action-buttons">
+                        <button type="button" class="btn btn-success pulse" id="saveBtn">
+                            <i class="fas fa-save"></i>
+                            Lưu thay đổi
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Form -->
+            <div class="content-sections">
+                <form id="schoolsContentForm">
+
+                    <!-- SEO Settings Section -->
+                    <div class="content-section">
+                        <div class="section-header">
+                            <h3>
+                                <i class="fas fa-search"></i>
+                                Cài Đặt SEO
+                            </h3>
+                            <p>Thông tin SEO và meta tags cho trang danh sách trường học</p>
+                        </div>
+                        <div class="seo-manager">
+                            <div class="form-grid">
+                                <div class="form-group full-width">
+                                    <label for="seoTitle">Tiêu đề SEO</label>
+                                    <input type="text" id="seoTitle" name="seoTitle"
+                                        value="Du Học NB - Tư vấn Du học Nhật Bản uy tín" maxlength="60">
+                                    <small class="char-count">0/60 ký tự</small>
+                                </div>
+
+                                <div class="form-group full-width">
+                                    <label for="seoDescription">Mô tả SEO</label>
+                                    <textarea id="seoDescription" name="seoDescription" rows="3"
+                                        maxlength="160">Dịch vụ tư vấn du học Nhật Bản chuyên nghiệp, hỗ trợ toàn diện từ hồ sơ đến visa. Uy tín - Chất lượng - Hiệu quả.</textarea>
+                                    <small class="char-count">0/160 ký tự</small>
+                                </div>
+
+                                <div class="form-group full-width">
+                                    <label for="seoKeywords">Từ khóa SEO</label>
+                                    <input type="text" id="seoKeywords" name="seoKeywords"
+                                        value="du học nhật bản, tư vấn du học, visa nhật bản, trường nhật bản">
+                                    <small>Phân cách bằng dấu phẩy</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <button type="button" class="btn btn-outline" id="resetBtn">
+                    <i class="fas fa-undo"></i>
+                    Khôi phục
+                </button>
+                <button type="button" class="btn btn-secondary" id="cancelBtn">
+                    <i class="fas fa-times"></i>
+                    Hủy bỏ
+                </button>
+                <button type="button" class="btn btn-success" id="saveContentBtn">
+                    <i class="fas fa-save"></i>
+                    Lưu thay đổi
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+
+    <!-- External Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script>
+        // Simple notification system
+        function showNotification(message, type = 'info') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                ${message}
+            `;
+
+            // Add to page
+            document.body.appendChild(notification);
+
+            // Show notification
+            setTimeout(() => notification.classList.add('show'), 100);
+
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+    </script>
+
+    <!-- Homepage Content Management -->
+    <script src="assets/js/dashboard.js"></script>
+    <script src="assets/js/notifications.js"></script>
+    <script src="assets/js/homepage-content.js"></script>
+</body>
+
+</html>

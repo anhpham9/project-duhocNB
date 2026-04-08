@@ -90,7 +90,7 @@ class AboutContentManager {
         // Populate basic form fields
         Object.keys(this.originalData).forEach(key => {
             const element = document.getElementById(key) || document.querySelector(`[name="${key}"]`);
-            if (element && typeof this.originalData[key] === 'string' || typeof this.originalData[key] === 'number') {
+            if (element && (typeof this.originalData[key] === 'string' || typeof this.originalData[key] === 'number')) {
                 element.value = this.originalData[key];
             }
         });

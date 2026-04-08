@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Nội Dung Trang Chủ - Du Học NB Admin</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/responsive.css">
+    <link rel="stylesheet" href="assets/css/notifications.css">
+    <link rel="stylesheet" href="assets/css/homepage-content.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <img src="assets/images/logo01.png" alt="Du Học NB" class="logo-img">
+                <h3 class="logo-text">Du Học NB</h3>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="dashboard.html" class="nav-link">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="users.html" class="nav-link">
+                        <i class="fas fa-users"></i>
+                        <span>Người dùng</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="contacts.html" class="nav-link">
+                        <i class="fas fa-address-book"></i>
+                        <span>Liên hệ</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="schools.html" class="nav-link">
+                        <i class="fas fa-university"></i>
+                        <span>Trường học</span>
+                    </a>
+                </li>
+                <li class="nav-item has-submenu">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-newspaper"></i>
+                        <span>Tin tức</span>
+                        <i class="fas fa-chevron-down submenu-arrow"></i>
+                    </a>
+                    <ul class="submenu">
+                        <li><a href="news.html">Danh sách tin</a></li>
+                        <li><a href="news-categories.html">Danh mục</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item has-submenu active">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Nội dung</span>
+                        <i class="fas fa-chevron-down submenu-arrow"></i>
+                    </a>
+                    <ul class="submenu">
+                        <li><a href="homepage-content.html" class="active">Trang chủ</a></li>
+                        <li><a href="about-content.html">Giới thiệu</a></li>
+                        <li><a href="schools-content.html">Trường học</a></li>
+                        <li><a href="conditions-content.html">Điều kiện</a></li>
+                        <li><a href="news-content.html">Tin tức</a></li>
+                        <li><a href="contact-content.html">Liên hệ</a></li>
+                        <li><a href="faq-content.html">FAQ</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item has-submenu">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-cog"></i>
+                        <span>Cài đặt</span>
+                        <i class="fas fa-chevron-down submenu-arrow"></i>
+                    </a>
+                    <ul class="submenu">
+                        <li><a href="settings-general.html">Chung</a></li>
+                        <li><a href="settings-seo.html">SEO</a></li>
+                        <li><a href="settings-backup.html">Sao lưu & Khôi phục</a></li>
+                        <li><a href="settings-email.html">Email</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <a href="login.html" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Đăng xuất</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="main-header">
+            <div class="header-left">
+                <button class="sidebar-toggle mobile-toggle" id="mobileToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+
+                <div class="breadcrumb">
+                    <span class="breadcrumb-item">Trang chủ</span>
+                    <i class="fas fa-chevron-right"></i>
+                    <span class="breadcrumb-item">Nội dung</span>
+                    <i class="fas fa-chevron-right"></i>
+                    <span class="breadcrumb-item active">Trang chủ</span>
+                </div>
+            </div>
+
+            <div class="header-right">
+                <div class="header-search">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Tìm kiếm...">
+                    </div>
+                </div>
+
+                <div class="header-notifications">
+                    <button class="notification-btn">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                </div>
+
+                <div class="header-profile">
+                    <div class="profile-dropdown">
+                        <button class="profile-btn">
+                            <img src="assets/images/av.png" alt="Admin" class="profile-avatar">
+                            <span class="profile-name">Admin</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="profile-menu">
+                            <a href="profile.html"><i class="fas fa-user"></i> Hồ sơ</a>
+                            <hr>
+                            <a href="login.html"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content Container -->
+        <div class="content-container">
+            <div class="page-header">
+                <div class="header-info">
+                    <h1>
+                        <i class="fas fa-home"></i>
+                        Quản Lý Nội Dung Trang Chủ
+                    </h1>
+                    <p class="page-description">Chỉnh sửa và cập nhật nội dung trang chủ website</p>
+                </div>
+
+                <div class="header-actions">
+                    <div class="action-buttons">
+                        <button type="button" class="btn btn-outline" id="previewBtn">
+                            <i class="fas fa-eye"></i>
+                            Xem trước
+                        </button>
+                        <button type="button" class="btn btn-success pulse" id="saveBtn">
+                            <i class="fas fa-save"></i>
+                            Lưu thay đổi
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Form -->
+            <div class="content-sections">
+                <form id="homepageContentForm">
+
+                    <!-- SEO Settings Section -->
+                    <div class="content-section">
+                        <div class="section-header">
+                            <h3>
+                                <i class="fas fa-search"></i>
+                                Cài Đặt SEO
+                            </h3>
+                            <p>Thông tin SEO và meta tags cho trang chủ</p>
+                        </div>
+                        <div class="seo-manager">
+                            <div class="form-grid">
+                                <div class="form-group full-width">
+                                    <label for="seoTitle">Tiêu đề SEO</label>
+                                    <input type="text" id="seoTitle" name="seoTitle"
+                                        value="Du Học NB - Tư vấn Du học Nhật Bản uy tín" maxlength="60">
+                                    <small class="char-count">0/60 ký tự</small>
+                                </div>
+
+                                <div class="form-group full-width">
+                                    <label for="seoDescription">Mô tả SEO</label>
+                                    <textarea id="seoDescription" name="seoDescription" rows="3"
+                                        maxlength="160">Dịch vụ tư vấn du học Nhật Bản chuyên nghiệp, hỗ trợ toàn diện từ hồ sơ đến visa. Uy tín - Chất lượng - Hiệu quả.</textarea>
+                                    <small class="char-count">0/160 ký tự</small>
+                                </div>
+
+                                <div class="form-group full-width">
+                                    <label for="seoKeywords">Từ khóa SEO</label>
+                                    <input type="text" id="seoKeywords" name="seoKeywords"
+                                        value="du học nhật bản, tư vấn du học, visa nhật bản, trường nhật bản">
+                                    <small>Phân cách bằng dấu phẩy</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hero Section -->
+                    <div class="content-section">
+                        <div class="section-header">
+                            <h3>
+                                <i class="fas fa-image"></i>
+                                Banner Chính (Hero Section)
+                            </h3>
+                            <p>Hình ảnh banner chính của trang chủ</p>
+                        </div>
+
+                        <div class="hero-manager">
+                            <div class="form-group">
+                                <label for="heroBannerImage">Hình ảnh banner</label>
+                                <div class="image-upload-container">
+                                    <input type="file" id="heroBannerImage" name="heroBannerImage" accept="image/*">
+                                    <div class="image-preview hero-preview" id="heroBannerPreview">
+                                        <img src="../users/assets/images/banner.jpg" alt="Hero Banner"
+                                            class="preview-img">
+                                        <div class="preview-overlay">
+                                            <i class="fas fa-camera"></i>
+                                            <span>Thay đổi banner</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="heroBannerAlt">Alt text banner</label>
+                                <input type="text" id="heroBannerAlt" name="heroBannerAlt"
+                                    value="Du học Nhật Bản - Vững bước tương lai">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Services Section -->
+                    <div class="content-section">
+                        <div class="section-header">
+                            <h3>
+                                <i class="fas fa-cogs"></i>
+                                Dịch Vụ Chính
+                            </h3>
+                            <p>Quản lý các dịch vụ hiển thị trên trang chủ</p>
+                        </div>
+
+                        <div class="services-manager">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="servicesTitle">Tiêu đề phần</label>
+                                    <input type="text" id="servicesTitle" name="servicesTitle" value="Bạn đang muốn...">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="servicesSubtitle">Mô tả phần</label>
+                                    <input type="text" id="servicesSubtitle" name="servicesSubtitle"
+                                        value="Chúng tôi cung cấp đầy đủ các dịch vụ để bạn thực hiện ước mơ du học">
+                                </div>
+                            </div>
+
+                            <div class="services-list">
+                                <div class="service-item" data-index="0">
+                                    <div class="service-form">
+                                        <div class="service-icon-select">
+                                            <label>Icon dịch vụ</label>
+                                            <div class="icon-picker">
+                                                <input type="hidden" name="serviceIcon0" value="fas fa-graduation-cap">
+                                                <div class="icon-preview">
+                                                    <i class="fas fa-graduation-cap"></i>
+                                                </div>
+                                                <div class="icon-dropdown">
+                                                    <button type="button" class="icon-option active"
+                                                        data-icon="fas fa-graduation-cap" title="Tốt nghiệp">
+                                                        <i class="fas fa-graduation-cap"></i>
+                                                    </button>
+                                                    <button type="button" class="icon-option"
+                                                        data-icon="fas fa-file-signature" title="Hồ sơ">
+                                                        <i class="fas fa-file-signature"></i>
+                                                    </button>
+                                                    <button type="button" class="icon-option"
+                                                        data-icon="fas fa-language" title="Ngôn ngữ">
+                                                        <i class="fas fa-language"></i>
+                                                    </button>
+                                                    <button type="button" class="icon-option"
+                                                        data-icon="fas fa-passport" title="Visa">
+                                                        <i class="fas fa-passport"></i>
+                                                    </button>
+                                                    <button type="button" class="icon-option"
+                                                        data-icon="fas fa-university" title="Trường học">
+                                                        <i class="fas fa-university"></i>
+                                                    </button>
+                                                    <button type="button" class="icon-option" data-icon="fas fa-plane"
+                                                        title="Du lịch">
+                                                        <i class="fas fa-plane"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="service-details">
+                                            <div class="form-group">
+                                                <label>Tiêu đề dịch vụ</label>
+                                                <input type="text" name="serviceTitle0" value="TƯ VẤN CHỌN TRƯỜNG"
+                                                    placeholder="Nhập tiêu đề dịch vụ">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>Mô tả dịch vụ</label>
+                                                <textarea name="serviceDescription0" rows="3"
+                                                    placeholder="Mô tả chi tiết dịch vụ">Tư vấn chọn trường phù hợp với năng lực, sở thích và ngân sách của từng học sinh.</textarea>
+                                            </div>
+                                        </div>
+
+                                        <button type="button" class="btn btn-danger remove-service-btn">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="service-item" data-index="1">
+                                    <div class="service-form">
+                                        <div class="service-icon-select">
+                                            <label>Icon dịch vụ</label>
+                                            <div class="icon-picker">
+                                                <input type="hidden" name="serviceIcon1" value="fas fa-file-signature">
+                                                <div class="icon-preview">
+                                                    <i class="fas fa-file-signature"></i>
+                                                </div>
+                                                <div class="icon-dropdown">
+                                                    <button type="button" class="icon-option"
+                                                        data-icon="fas fa-graduation-cap" title="Tốt nghiệp">
+                                                        <i class="fas fa-graduation-cap"></i>
+                                                    </button>
+                                                    <button type="button" class="icon-option active"
+                                                        data-icon="fas fa-file-signature" title="Hồ sơ">
+                                                        <i class="fas fa-file-signature"></i>
+                                                    </button>
+                                                    <button type="button" class="icon-option"
+                                                        data-icon="fas fa-language" title="Ngôn ngữ">
+                                                        <i class="fas fa-language"></i>
+                                                    </button>
+                                                    <button type="button" class="icon-option"
+                                                        data-icon="fas fa-passport" title="Visa">
+                                                        <i class="fas fa-passport"></i>
+                                                    </button>
+                                                    <button type="button" class="icon-option"
+                                                        data-icon="fas fa-university" title="Trường học">
+                                                        <i class="fas fa-university"></i>
+                                                    </button>
+                                                    <button type="button" class="icon-option" data-icon="fas fa-plane"
+                                                        title="Du lịch">
+                                                        <i class="fas fa-plane"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="service-details">
+                                            <div class="form-group">
+                                                <label>Tiêu đề dịch vụ</label>
+                                                <input type="text" name="serviceTitle1" value="HỖ TRỢ HỒ SƠ"
+                                                    placeholder="Nhập tiêu đề dịch vụ">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>Mô tả dịch vụ</label>
+                                                <textarea name="serviceDescription1" rows="3"
+                                                    placeholder="Mô tả chi tiết dịch vụ">Hướng dẫn chuẩn bị hồ sơ admission và hỗ trợ xin học bổng du học Nhật Bản.</textarea>
+                                            </div>
+                                        </div>
+
+                                        <button type="button" class="btn btn-danger remove-service-btn">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="service-item" data-index="2">
+                                    <div class="service-form">
+                                        <div class="service-icon-select">
+                                            <label>Icon dịch vụ</label>
+                                            <div class="icon-picker">
+                                                <input type="hidden" name="serviceIcon2" value="fas fa-language">
+                                                <div class="icon-preview">
+                                                    <i class="fas fa-language"></i>
+                                                </div>
+                                                <div class="icon-dropdown">
+                                                    <button type="button" class="icon-option"
+                                                        data-icon="fas fa-graduation-cap" title="Tốt nghiệp">
+                                                        <i class="fas fa-graduation-cap"></i>
+                                                    </button>
+                                                    <button type="button" class="icon-option"
+                                                        data-icon="fas fa-file-signature" title="Hồ sơ">
+                                                        <i class="fas fa-file-signature"></i>
+                                                    </button>
+                                                    <button type="button" class="icon-option active"
+                                                        data-icon="fas fa-language" title="Ngôn ngữ">
+                                                        <i class="fas fa-language"></i>
+                                                    </button>
+                                                    <button type="button" class="icon-option"
+                                                        data-icon="fas fa-passport" title="Visa">
+                                                        <i class="fas fa-passport"></i>
+                                                    </button>
+                                                    <button type="button" class="icon-option"
+                                                        data-icon="fas fa-university" title="Trường học">
+                                                        <i class="fas fa-university"></i>
+                                                    </button>
+                                                    <button type="button" class="icon-option" data-icon="fas fa-plane"
+                                                        title="Du lịch">
+                                                        <i class="fas fa-plane"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="service-details">
+                                            <div class="form-group">
+                                                <label>Tiêu đề dịch vụ</label>
+                                                <input type="text" name="serviceTitle2" value="HỌC TIẾNG NHẬT"
+                                                    placeholder="Nhập tiêu đề dịch vụ">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>Mô tả dịch vụ</label>
+                                                <textarea name="serviceDescription2" rows="3"
+                                                    placeholder="Mô tả chi tiết dịch vụ">Khóa học tiếng Nhật từ cơ bản đến nâng cao, luyện thi JLPT N5-N1.</textarea>
+                                            </div>
+                                        </div>
+
+                                        <button type="button" class="btn btn-danger remove-service-btn">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="service-item" data-index="3">
+                                    <div class="service-form">
+                                        <div class="service-icon-select">
+                                            <label>Icon dịch vụ</label>
+                                            <div class="icon-picker">
+                                                <input type="hidden" name="serviceIcon3" value="fas fa-passport">
+                                                <div class="icon-preview">
+                                                    <i class="fas fa-passport"></i>
+                                                </div>
+                                                <div class="icon-dropdown">
+                                                    <button type="button" class="icon-option"
+                                                        data-icon="fas fa-graduation-cap" title="Tốt nghiệp">
+                                                        <i class="fas fa-graduation-cap"></i>
+                                                    </button>
+                                                    <button type="button" class="icon-option"
+                                                        data-icon="fas fa-file-signature" title="Hồ sơ">
+                                                        <i class="fas fa-file-signature"></i>
+                                                    </button>
+                                                    <button type="button" class="icon-option"
+                                                        data-icon="fas fa-language" title="Ngôn ngữ">
+                                                        <i class="fas fa-language"></i>
+                                                    </button>
+                                                    <button type="button" class="icon-option active"
+                                                        data-icon="fas fa-passport" title="Visa">
+                                                        <i class="fas fa-passport"></i>
+                                                    </button>
+                                                    <button type="button" class="icon-option"
+                                                        data-icon="fas fa-university" title="Trường học">
+                                                        <i class="fas fa-university"></i>
+                                                    </button>
+                                                    <button type="button" class="icon-option" data-icon="fas fa-plane"
+                                                        title="Du lịch">
+                                                        <i class="fas fa-plane"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="service-details">
+                                            <div class="form-group">
+                                                <label>Tiêu đề dịch vụ</label>
+                                                <input type="text" name="serviceTitle3" value="VISA & THỦ TỤC"
+                                                    placeholder="Nhập tiêu đề dịch vụ">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>Mô tả dịch vụ</label>
+                                                <textarea name="serviceDescription3" rows="3"
+                                                    placeholder="Mô tả chi tiết dịch vụ">Hỗ trợ làm visa du học và các thủ tục pháp lý cần thiết tại Nhật Bản.</textarea>
+                                            </div>
+                                        </div>
+
+                                        <button type="button" class="btn btn-danger remove-service-btn">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="button" class="btn btn-outline add-service-btn" id="addServiceBtn">
+                                <i class="fas fa-plus"></i>
+                                Thêm dịch vụ
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Why Choose Section -->
+                    <div class="content-section">
+                        <div class="section-header">
+                            <h3>
+                                <i class="fas fa-star"></i>
+                                Tại Sao Chọn Chúng Tôi
+                            </h3>
+                            <p>Các ưu điểm và lý do khách hàng nên chọn dịch vụ</p>
+                        </div>
+
+                        <div class="why-choose-manager">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="whyChooseTitle">Tiêu đề chính</label>
+                                    <input type="text" id="whyChooseTitle" name="whyChooseTitle"
+                                        value="Tại sao lựa chọn">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="whyChooseSubtitle">Tiêu đề phụ</label>
+                                    <input type="text" id="whyChooseSubtitle" name="whyChooseSubtitle"
+                                        value="DU HỌC NHẬT BẢN CÙNG CHÚNG TÔI?">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="whyChooseImage">Hình ảnh minh họa</label>
+                                    <div class="image-upload-container">
+                                        <input type="file" id="whyChooseImage" name="whyChooseImage" accept="image/*">
+                                        <div class="image-preview" id="whyChooseImagePreview">
+                                            <img src="../users/assets/images/students-group.webp" alt="Why Choose Image"
+                                                class="preview-img">
+                                            <div class="preview-overlay">
+                                                <i class="fas fa-camera"></i>
+                                                <span>Thay đổi hình ảnh</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="whyChooseCTA">Text nút call-to-action</label>
+                                    <input type="text" id="whyChooseCTA" name="whyChooseCTA" value="ĐĂNG KÝ TƯ VẤN">
+                                </div>
+                            </div>
+
+                            <div class="advantages-manager">
+                                <h4>Danh sách ưu điểm</h4>
+                                <div class="advantages-list" id="advantagesList">
+                                    <div class="advantage-item" data-index="0">
+                                        <input type="text" name="advantage0"
+                                            value="Đội ngũ tư vấn viên giàu kinh nghiệm, từng du học tại Nhật Bản"
+                                            placeholder="Nhập ưu điểm...">
+                                        <button type="button" class="btn btn-danger remove-advantage-btn">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+
+                                    <div class="advantage-item" data-index="1">
+                                        <input type="text" name="advantage1"
+                                            value="Tỷ lệ visa thành công 98% trong 5 năm qua"
+                                            placeholder="Nhập ưu điểm...">
+                                        <button type="button" class="btn btn-danger remove-advantage-btn">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+
+                                    <div class="advantage-item" data-index="2">
+                                        <input type="text" name="advantage2"
+                                            value="Hỗ trợ học bổng lên đến 100% học phí tại các trường uy tín"
+                                            placeholder="Nhập ưu điểm...">
+                                        <button type="button" class="btn btn-danger remove-advantage-btn">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+
+                                    <div class="advantage-item" data-index="3">
+                                        <input type="text" name="advantage3"
+                                            value="Theo dõi và hỗ trợ sinh viên suốt quá trình học tập tại Nhật"
+                                            placeholder="Nhập ưu điểm...">
+                                        <button type="button" class="btn btn-danger remove-advantage-btn">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+
+                                    <div class="advantage-item" data-index="4">
+                                        <input type="text" name="advantage4"
+                                            value="Chi phí tư vấn minh bạch, không phát sinh thêm chi phí"
+                                            placeholder="Nhập ưu điểm...">
+                                        <button type="button" class="btn btn-danger remove-advantage-btn">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+
+                                    <div class="advantage-item" data-index="5">
+                                        <input type="text" name="advantage5"
+                                            value="Đối tác chính thức với hơn 50 trường đại học và học viện tại Nhật"
+                                            placeholder="Nhập ưu điểm...">
+                                        <button type="button" class="btn btn-danger remove-advantage-btn">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <button type="button" class="btn btn-outline add-advantage-btn" id="addAdvantageBtn">
+                                    <i class="fas fa-plus"></i>
+                                    Thêm ưu điểm
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Conditions Section -->
+                    <div class="content-section">
+                        <div class="section-header">
+                            <h3>
+                                <i class="fas fa-list-check"></i>
+                                Điều Kiện Du Học
+                            </h3>
+                            <p>Quản lý các điều kiện cần thiết để du học Nhật Bản</p>
+                        </div>
+
+                        <div class="conditions-manager">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="conditionsTitle">Tiêu đề phần</label>
+                                    <input type="text" id="conditionsTitle" name="conditionsTitle"
+                                        value="Điều Kiện Du Học Nhật Bản">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="conditionsSubtitle">Mô tả phần</label>
+                                    <input type="text" id="conditionsSubtitle" name="conditionsSubtitle"
+                                        value="Những yêu cầu cần thiết để bạn có thể du học tại Nhật Bản">
+                                </div>
+                            </div>
+
+                            <div class="conditions-list">
+                                <div class="condition-item" data-index="0">
+                                    <div class="condition-form">
+                                        <div class="condition-icon-select">
+                                            <label>Icon điều kiện</label>
+                                            <div class="icon-picker">
+                                                <input type="hidden" name="conditionIcon0" value="fas fa-birthday-cake">
+                                                <div class="icon-preview">
+                                                    <i class="fas fa-birthday-cake"></i>
+                                                </div>
+                                                <div class="icon-dropdown">
+                                                    <button type="button" class="icon-option active"
+                                                        data-icon="fas fa-birthday-cake" title="Tuổi tác">
+                                                        <i class="fas fa-birthday-cake"></i>
+                                                    </button>
+                                                    <button type="button" class="icon-option"
+                                                        data-icon="fas fa-graduation-cap" title="Học vấn">
+                                                        <i class="fas fa-graduation-cap"></i>
+                                                    </button>
+                                                    <button type="button" class="icon-option"
+                                                        data-icon="fas fa-chart-line" title="Điểm số">
+                                                        <i class="fas fa-chart-line"></i>
+                                                    </button>
+                                                    <button type="button" class="icon-option"
+                                                        data-icon="fas fa-language" title="Ngôn ngữ">
+                                                        <i class="fas fa-language"></i>
+                                                    </button>
+                                                    <button type="button" class="icon-option"
+                                                        data-icon="fas fa-money-bill-wave" title="Tài chính">
+                                                        <i class="fas fa-money-bill-wave"></i>
+                                                    </button>
+                                                    <button type="button" class="icon-option"
+                                                        data-icon="fas fa-heartbeat" title="Sức khỏe">
+                                                        <i class="fas fa-heartbeat"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="condition-details">
+                                            <div class="form-group">
+                                                <label>Tiêu đề điều kiện</label>
+                                                <input type="text" name="conditionTitle0" value="Độ Tuổi"
+                                                    placeholder="Nhập tiêu đề điều kiện">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>Mô tả điều kiện</label>
+                                                <input type="text" name="conditionDescription0" value="Từ 18-30 tuổi"
+                                                    placeholder="Mô tả chi tiết điều kiện">
+                                            </div>
+                                        </div>
+
+                                        <button type="button" class="btn btn-danger remove-condition-btn">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="button" class="btn btn-outline add-condition-btn" id="addConditionBtn">
+                                <i class="fas fa-plus"></i>
+                                Thêm điều kiện
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Costs Section -->
+                    <div class="content-section">
+                        <div class="section-header">
+                            <h3>
+                                <i class="fas fa-money-bill-wave"></i>
+                                Chi Phí Du Học Nhật Bản
+                            </h3>
+                            <p>Quản lý thông tin về chi phí du học và sinh hoạt tại Nhật Bản</p>
+                        </div>
+
+                        <div class="costs-manager">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="costsTitle">Tiêu đề phần</label>
+                                    <input type="text" id="costsTitle" name="costsTitle"
+                                        value="Chi Phí Du Học Nhật Bản">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="costsSubtitle">Mô tả phần</label>
+                                    <input type="text" id="costsSubtitle" name="costsSubtitle"
+                                        value="Tổng quan chi phí cần thiết cho chuyến du học Nhật Bản">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="whyChooseImage">Hình ảnh minh họa</label>
+                                    <div class="image-upload-container">
+                                        <input type="file" id="whyChooseImage" name="whyChooseImage" accept="image/*">
+                                        <div class="image-preview" id="whyChooseImagePreview">
+                                            <img src="../users/assets/images/students-group.webp" alt="Why Choose Image"
+                                                class="preview-img">
+                                            <div class="preview-overlay">
+                                                <i class="fas fa-camera"></i>
+                                                <span>Thay đổi hình ảnh</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="costsCTA">Text nút call-to-action</label>
+                                    <input type="text" id="costsCTA" name="costsCTA" value="ĐĂNG KÝ TƯ VẤN">
+                                </div>
+                            </div>
+
+                            <div class="costs-list-manager">
+                                <h4>Danh sách chi phí</h4>
+                                <div class="costs-list" id="costsList">
+                                    <div class="cost-item" data-index="0">
+                                        <input type="text" name="cost0" value="Học phí: 200,000 JPY/năm"
+                                            placeholder="Nhập chi phí...">
+                                        <button type="button" class="btn btn-danger remove-cost-btn">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+
+                                    <div class="cost-item" data-index="1">
+                                        <input type="text" name="cost1"
+                                            value="Tỷ lệ visa thành công 98% trong 5 năm qua"
+                                            placeholder="Nhập chi phí...">
+                                        <button type="button" class="btn btn-danger remove-cost-btn">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+
+                                    <div class="cost-item" data-index="2">
+                                        <input type="text" name="cost2"
+                                            value="Hỗ trợ học bổng lên đến 100% học phí tại các trường uy tín"
+                                            placeholder="Nhập chi phí...">
+                                        <button type="button" class="btn btn-danger remove-cost-btn">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+
+                                    <div class="cost-item" data-index="3">
+                                        <input type="text" name="cost3"
+                                            value="Theo dõi và hỗ trợ sinh viên suốt quá trình học tập tại Nhật"
+                                            placeholder="Nhập chi phí...">
+                                        <button type="button" class="btn btn-danger remove-cost-btn">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+
+                                    <div class="cost-item" data-index="4">
+                                        <input type="text" name="cost4"
+                                            value="Chi phí tư vấn minh bạch, không phát sinh thêm chi phí"
+                                            placeholder="Nhập chi phí...">
+                                        <button type="button" class="btn btn-danger remove-cost-btn">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+
+                                    <div class="cost-item" data-index="5">
+                                        <input type="text" name="cost5"
+                                            value="Đối tác chính thức với hơn 50 trường đại học và học viện tại Nhật"
+                                            placeholder="Nhập chi phí...">
+                                        <button type="button" class="btn btn-danger remove-cost-btn">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <button type="button" class="btn btn-outline add-cost-btn" id="addCostBtn">
+                                    <i class="fas fa-plus"></i>
+                                    Thêm chi phí
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Roadmap Section -->
+                    <div class="content-section">
+                        <div class="section-header">
+                            <h3>
+                                <i class="fas fa-route"></i>
+                                Lộ Trình Du Học Nhật Bản
+                            </h3>
+                            <p>Quản lý các bước trong lộ trình du học từ chuẩn bị đến hoàn thành</p>
+                        </div>
+
+                        <div class="roadmap-manager">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="roadmapTitle">Tiêu đề phần</label>
+                                    <input type="text" id="roadmapTitle" name="roadmapTitle"
+                                        value="Lộ Trình Du Học Nhật Bản">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="roadmapSubtitle">Mô tả phần</label>
+                                    <input type="text" id="roadmapSubtitle" name="roadmapSubtitle"
+                                        value="Hành trình từ chuẩn bị đến thành công trong việc du học tại Nhật Bản">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="roadmapCTA">Text nút call-to-action</label>
+                                    <input type="text" id="roadmapCTA" name="roadmapCTA" value="ĐĂNG KÝ TƯ VẤN">
+                                </div>
+                            </div>
+
+                            <div class="roadmap-list">
+                                <div class="roadmap-item" data-index="0">
+                                    <div class="roadmap-form">
+                                        <div class="roadmap-step-info">
+                                            <div class="form-group">
+                                                <label>Số bước</label>
+                                                <input type="number" name="roadmapStep0" value="1" min="1" max="10"
+                                                    placeholder="Nhập số thứ tự">
+                                            </div>
+                                        </div>
+
+                                        <div class="roadmap-content">
+                                            <div class="form-group">
+                                                <label>Tiêu đề bước</label>
+                                                <input type="text" name="roadmapTitle0" value="Tìm hiểu thông tin"
+                                                    placeholder="Nhập tiêu đề bước">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>Mô tả chi tiết</label>
+                                                <textarea name="roadmapDescription0" rows="3"
+                                                    placeholder="Mô tả chi tiết nội dung của bước này">Tìm hiểu về hệ thống giáo dục, các trường đại học, điều kiện tuyển sinh, chi phí du học và cuộc sống tại Nhật Bản. Thu thập thông tin về các chương trình học phù hợp.</textarea>
+                                            </div>
+                                        </div>
+
+                                        <button type="button" class="btn btn-danger remove-roadmap-btn">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="roadmap-item" data-index="1">
+                                    <div class="roadmap-form">
+                                        <div class="roadmap-step-info">
+                                            <div class="form-group">
+                                                <label>Số bước</label>
+                                                <input type="number" name="roadmapStep1" value="2" min="1" max="10"
+                                                    placeholder="Nhập số thứ tự">
+                                            </div>
+                                        </div>
+
+                                        <div class="roadmap-content">
+                                            <div class="form-group">
+                                                <label>Tiêu đề bước</label>
+                                                <input type="text" name="roadmapTitle1" value="Học tiếng Nhật"
+                                                    placeholder="Nhập tiêu đề bước">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>Mô tả chi tiết</label>
+                                                <textarea name="roadmapDescription1" rows="3"
+                                                    placeholder="Mô tả chi tiết nội dung của bước này">Tham gia khóa học tiếng Nhật để đạt ít nhất trình độ N5. Nhiều trường yêu cầu N3 hoặc N2 để vào đại học. Có thể học tại trung tâm hoặc tự học online.</textarea>
+                                            </div>
+                                        </div>
+
+                                        <button type="button" class="btn btn-danger remove-roadmap-btn">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="roadmap-item" data-index="2">
+                                    <div class="roadmap-form">
+                                        <div class="roadmap-step-info">
+                                            <div class="form-group">
+                                                <label>Số bước</label>
+                                                <input type="number" name="roadmapStep2" value="3" min="1" max="10"
+                                                    placeholder="Nhập số thứ tự">
+                                            </div>
+                                        </div>
+
+                                        <div class="roadmap-content">
+                                            <div class="form-group">
+                                                <label>Tiêu đề bước</label>
+                                                <input type="text" name="roadmapTitle2" value="Chuẩn bị hồ sơ"
+                                                    placeholder="Nhập tiêu đề bước">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>Mô tả chi tiết</label>
+                                                <textarea name="roadmapDescription2" rows="3"
+                                                    placeholder="Mô tả chi tiết nội dung của bước này">Chuẩn bị đầy đủ hồ sơ bao gồm bằng tốt nghiệp, chứng chỉ tiếng Nhật, chứng minh tài chính, CV, thư động lực và các giấy tờ khác theo yêu cầu của từng trường.</textarea>
+                                            </div>
+                                        </div>
+
+                                        <button type="button" class="btn btn-danger remove-roadmap-btn">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="button" class="btn btn-outline add-roadmap-btn" id="addRoadmapBtn">
+                                <i class="fas fa-plus"></i>
+                                Thêm bước
+                            </button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <button type="button" class="btn btn-outline" id="resetBtn">
+                    <i class="fas fa-undo"></i>
+                    Khôi phục
+                </button>
+                <button type="button" class="btn btn-secondary" id="cancelBtn">
+                    <i class="fas fa-times"></i>
+                    Hủy bỏ
+                </button>
+                <button type="button" class="btn btn-success" id="saveContentBtn">
+                    <i class="fas fa-save"></i>
+                    Lưu thay đổi
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Preview Modal -->
+    <div class="modal" id="previewModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Xem trước trang chủ</h3>
+                <button class="modal-close" id="closePreviewModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <iframe id="previewFrame" src="../users/index.html"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+
+    <!-- External Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script>
+        // Simple notification system
+        function showNotification(message, type = 'info') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                ${message}
+            `;
+
+            // Add to page
+            document.body.appendChild(notification);
+
+            // Show notification
+            setTimeout(() => notification.classList.add('show'), 100);
+
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+    </script>
+
+    <!-- Homepage Content Management -->
+    <script src="assets/js/dashboard.js"></script>
+    <script src="assets/js/homepage-content.js"></script>
+</body>
+
+</html>

@@ -187,26 +187,29 @@
                     <div class="content-section">
                         <div class="section-header">
                             <h3>
-                                <i class="fas fa-heading"></i>
-                                Thông Tin Trang
+                                <i class="fas fa-search"></i>
+                                Cài Đặt SEO
                             </h3>
-                            <p>Cài đặt tiêu đề và mô tả chính của trang</p>
+                            <p>Thông tin SEO và meta tags cho trang giới thiệu</p>
                         </div>
                         
                         <div class="form-grid">
-                            <div class="form-group">
-                                <label for="pageTitle">Tiêu đề trang</label>
-                                <input type="text" id="pageTitle" name="pageTitle" value="Giới Thiệu Du Học NB">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="pageSubtitle">Mô tả</label>
-                                <input type="text" id="pageSubtitle" name="pageSubtitle" value="Đồng hành cùng ước mơ du học Nhật Bản của bạn">
+                            <div class="form-group full-width">
+                                <label for="seoTitle">Tiêu đề SEO</label>
+                                <input type="text" id="seoTitle" name="seoTitle" value="Du Học NB - Tư vấn Du học Nhật Bản uy tín" maxlength="60">
+                                <small class="char-count">0/60 ký tự</small>
                             </div>
                             
                             <div class="form-group full-width">
-                                <label for="pageSeoDescription">Mô tả SEO</label>
-                                <textarea id="pageSeoDescription" name="pageSeoDescription" rows="3">Tìm hiểu về Du Học NB - công ty tư vấn du học Nhật Bản uy tín với 6+ năm kinh nghiệm, đã hỗ trợ 2500+ học sinh thực hiện ước mơ du học thành công.</textarea>
+                                <label for="seoDescription">Mô tả SEO</label>
+                                <textarea id="seoDescription" name="seoDescription" rows="3" maxlength="160">Dịch vụ tư vấn du học Nhật Bản chuyên nghiệp, hỗ trợ toàn diện từ hồ sơ đến visa. Uy tín - Chất lượng - Hiệu quả.</textarea>
+                                <small class="char-count">0/160 ký tự</small>
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <label for="seoKeywords">Từ khóa SEO</label>
+                                <input type="text" id="seoKeywords" name="seoKeywords" value="du học nhật bản, tư vấn du học, visa nhật bản, trường nhật bản">
+                                <small>Phân cách bằng dấu phẩy</small>
                             </div>
                         </div>
                     </div>
@@ -674,6 +677,9 @@ Với phương châm "Uy tín - Chất lượng - Tận tâm", Du Học NB khôn
             </div>
         </div>
     </div>
+
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay" id="mobileOverlay"></div>
 
     <script src="assets/js/dashboard.js"></script>
     <script src="assets/js/notifications.js"></script>

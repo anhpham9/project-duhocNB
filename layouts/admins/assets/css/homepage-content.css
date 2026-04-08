@@ -1,0 +1,772 @@
+/* Homepage Content Management Styles */
+.content-container {
+    padding: 30px;
+    flex: 1;
+    background: #f5f5f5;
+    width: 100%;
+    max-width: none;
+    overflow-x: hidden;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 30px;
+    gap: 20px;
+}
+
+.header-info h1 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-info .page-description {
+    color: #666;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.header-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-end;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+/* Base Styling */
+.content-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.content-section {
+    margin-bottom: 30px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    border: 1px solid #e8e8e8;
+}
+
+.section-header {
+    background: #f8f9fa;
+    padding: 20px 24px;
+    border-bottom: 1px solid #e8e8e8;
+}
+
+.section-header h3 {
+    margin: 0 0 6px 0;
+    color: #333;
+    font-size: 1.1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.section-header h3 i {
+    color: #007bff;
+    font-size: 1rem;
+}
+
+.section-header p {
+    margin: 0;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+/* Form Grid */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+
+
+.seo-manager, .header-manager, .hero-manager {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 24px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    font-weight: 500;
+    color: #333;
+    font-size: 0.9rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+}
+
+/* Image Upload Styling */
+.image-upload-container {
+    position: relative;
+}
+
+.image-preview {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+}
+
+.image-preview:hover {
+    border-color: #007bff;
+}
+
+.image-preview.hero-preview {
+    height: 120px;
+}
+
+.image-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.preview-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    color: white;
+    font-size: 0.9rem;
+}
+
+.image-preview:hover .preview-overlay {
+    opacity: 1;
+}
+
+.preview-overlay i {
+    font-size: 2rem;
+    margin-bottom: 8px;
+}
+
+/* Icon Picker Styles */
+.icon-picker {
+    position: relative;
+    display: inline-block;
+}
+
+.icon-preview {
+    width: 50px;
+    height: 50px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.icon-preview:hover {
+    border-color: #007bff;
+}
+
+.icon-preview i {
+    font-size: 1.5rem;
+    color: #333;
+}
+
+.icon-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 8px;
+    display: none;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+    z-index: 10;
+    min-width: 150px;
+}
+
+.icon-dropdown.show {
+    display: grid;
+}
+
+.icon-option {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.icon-option:hover {
+    border-color: #007bff;
+    background: #f0f8ff;
+}
+
+.icon-option.active {
+    border-color: #007bff;
+    background: #e3f2fd;
+}
+
+.icon-option i {
+    font-size: 1rem;
+    color: #333;
+}
+
+/* Services Manager */
+.services-manager {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 24px;
+}
+
+.services-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.service-item {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    padding: 20px;
+}
+
+.service-form {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 20px;
+    align-items: start;
+}
+
+.service-icon-select {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+}
+
+.service-icon-select label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #666;
+}
+
+.service-details {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.remove-service-btn,
+.remove-condition-btn,
+.remove-faq-btn {
+    height: fit-content;
+    padding: 8px 10px;
+    min-width: auto;
+    justify-self: end;
+}
+
+.remove-advantage-btn,
+.remove-cost-btn {
+    align-self: flex-end;
+}
+
+/* Why Choose Manager */
+.why-choose-manager, .costs-manager {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 24px;
+}
+
+.advantages-manager, .costs-list-manager {
+    background: #f8f9fa;
+    border-radius: 6px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.advantages-manager h4, .costs-list-manager h4 {
+    color: #333;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.advantages-list, .costs-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.advantage-item, .cost-item {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.advantage-item input, .cost-item input {
+    flex: 1;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Conditions Manager */
+.conditions-manager {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 24px;
+}
+
+.conditions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.condition-item {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    padding: 20px;
+}
+
+.condition-form {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 20px;
+    align-items: start;
+}
+
+.condition-icon-select {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+}
+
+.condition-icon-select label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #666;
+}
+
+.condition-details {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Roadmap Manager */
+.roadmap-manager {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 24px;
+}
+
+.roadmap-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.roadmap-item {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.roadmap-item::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(135deg, #007bff, #0056b3);
+}
+
+.roadmap-form {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 20px;
+    align-items: start;
+}
+
+.roadmap-step-info {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    min-width: 120px;
+}
+
+.roadmap-step-info .form-group {
+    width: 100%;
+    text-align: center;
+}
+
+.roadmap-step-info input[type="number"] {
+    text-align: center;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #007bff;
+    border: 2px solid #007bff;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    padding: 0;
+    margin: 0 auto;
+    display: block;
+}
+
+.roadmap-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.roadmap-content .form-group label {
+    font-weight: 600;
+    color: #333;
+}
+
+.remove-roadmap-btn {
+    height: fit-content;
+    padding: 8px 10px;
+    min-width: auto;
+    justify-self: end;
+}
+
+.add-roadmap-btn {
+    align-self: flex-start;
+    padding: 12px 20px;
+    font-weight: 500;
+}
+
+/* Special styling for roadmap timeline effect */
+
+.roadmap-list .roadmap-item:first-child::before {
+    background: linear-gradient(135deg, #28a745, #20c997);
+}
+
+.roadmap-list .roadmap-item:nth-child(2)::before {
+    background: linear-gradient(135deg, #ffc107, #fd7e14);
+}
+
+.roadmap-list .roadmap-item:nth-child(3)::before {
+    background: linear-gradient(135deg, #dc3545, #e83e8c);
+}
+
+.roadmap-list .roadmap-item:nth-child(4)::before {
+    background: linear-gradient(135deg, #6f42c1, #6610f2);
+}
+
+.roadmap-list .roadmap-item:nth-child(n+5):nth-child(odd)::before {
+    background: linear-gradient(135deg, #17a2b8, #20c997);
+}
+
+.roadmap-list .roadmap-item:nth-child(n+5):nth-child(even)::before {
+    background: linear-gradient(135deg, #fd7e14, #f39c12);
+}
+
+/* FAQ Manager */
+.faq-manager {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 24px;
+}
+
+/* .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+} */
+
+.faq-item {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    padding: 20px;
+}
+
+.faq-form {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    align-items: start;
+}
+
+.faq-form .form-group {
+    margin-bottom: 12px;
+}
+
+.faq-form .form-group:last-child {
+    margin-bottom: 0;
+}
+
+/* Add Buttons */
+.add-service-btn,
+.add-condition-btn,
+.add-advantage-btn,
+.add-faq-btn,
+.add-cost-btn {
+    align-self: flex-start;
+    padding: 12px 20px;
+    font-weight: 500;
+}
+
+/* Form Actions */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 20px;
+    background: white;
+    border-top: 1px solid #e9ecef;
+    margin-top: 24px;
+    border-radius: 8px;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.modal.show {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    max-width: 90vw;
+    max-height: 90vh;
+    width: 1200px;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #333;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #666;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-close:hover {
+    color: #333;
+}
+
+.modal-body {
+    padding: 0;
+    flex: 1;
+    overflow: hidden;
+}
+
+.modal-body iframe {
+    width: 100%;
+    height: 600px;
+    border: none;
+}
+
+/* Character Counter */
+.char-counter {
+    font-size: 0.8rem;
+    color: #666;
+    text-align: right;
+    margin-top: 4px;
+}
+
+.char-counter.warning {
+    color: #f39c12;
+}
+
+.char-counter.danger {
+    color: #e74c3c;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    height: auto;
+}
+
+.btn-outline {
+    background: transparent;
+    color: #007bff;
+    border: 2px solid #007bff;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .roadmap-form {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .service-form,
+    .condition-form {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    
+    .faq-form {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    
+    .service-icon-select,
+    .condition-icon-select {
+        flex-direction: row;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .advantage-item {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+    
+    .modal-content {
+        width: 95vw;
+        height: 95vh;
+    }
+    
+    .modal-body iframe {
+        height: calc(95vh - 60px);
+    }
+}
+
+@media (max-width: 480px) {
+    .content-section {
+        padding: 16px;
+    }
+    
+    .icon-dropdown {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .service-item,
+    .condition-item,
+    .faq-item {
+        padding: 16px;
+    }
+}
