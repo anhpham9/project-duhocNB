@@ -113,20 +113,63 @@ if (navToggle && navMenu) {
 if (faqItems.length > 0) {
     faqItems.forEach(item => {
         const question = item.querySelector('.faq-question');
+        const answer = item.querySelector('.faq-answer');
         
         question.addEventListener('click', () => {
+            // Check if current item is already active
+            const isActive = item.classList.contains('active');
+            
             // Close other open items
             faqItems.forEach(otherItem => {
                 if (otherItem !== item) {
                     otherItem.classList.remove('active');
+                    
+                    const otherAnswer = otherItem.querySelector('.faq-answer');
+                    if (otherAnswer) {
+                        otherAnswer.style.height = otherAnswer.scrollHeight + "px";
+                        requestAnimationFrame(() => {
+                            otherAnswer.style.height = "0px";
+                        });
+                    }
+                    const otherIcon = otherItem.querySelector('.faq-icon');
+                    if (otherIcon) {
+                        otherIcon.classList.remove('fa-minus');
+                        otherIcon.classList.add('fa-plus');
+                    }
                 }
             });
             
             // Toggle current item
-            item.classList.toggle('active');
+            if (isActive) {
+                // Currently open - close it
+                item.classList.remove('active');
+                answer.style.height = answer.scrollHeight + "px";
+                requestAnimationFrame(() => {
+                    answer.style.height = "0px";
+                });
+                
+                // Update icon to plus
+                const faqIcon = item.querySelector('.faq-icon');
+                if (faqIcon) {
+                    faqIcon.classList.remove('fa-minus');
+                    faqIcon.classList.add('fa-plus');
+                }
+            } else {
+                // Currently closed - open it
+                item.classList.add('active');
+                answer.style.height = answer.scrollHeight + "px";
+                
+                // Update icon to minus
+                const faqIcon = item.querySelector('.faq-icon');
+                if (faqIcon) {
+                    faqIcon.classList.remove('fa-plus');
+                    faqIcon.classList.add('fa-minus');
+                }
+            }
         });
     });
 }
+
 
 // Contact Form Handling
 if (contactForm) {
