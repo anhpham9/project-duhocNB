@@ -13,8 +13,16 @@
 
     /* Footer */
     .footer-content {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: 1fr 1fr;
         gap: 30px;
+    }
+
+    .footer-section:nth-child(1) {
+        grid-column: 1 / -1;
+    }
+
+    .footer-section:nth-child(3) {
+        text-align: right;
     }
 
     /* ===================
@@ -70,6 +78,58 @@
 
     .footer {
         padding: 220px 0 15px;
+    }
+
+    /* ===================
+    about
+    ===================== */
+    .page-hero {
+        padding: 100px 0 60px;
+    }
+
+    .page-hero h1 {
+        font-size: 2.2rem;
+    }
+
+    .about-company .about-content {
+        grid-template-columns: 550px 1fr;
+        gap: 20px;
+    }
+
+    .vision-mission-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+    
+    .values-card {
+        grid-column: 1 / -1;
+    }
+
+    .company-stats .stats-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 25px;
+    }
+
+    .reasons-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .team-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 30px;
+    }
+
+    .timeline-item {
+        margin-bottom: 20px;
+    }
+
+    .timeline-item:nth-child(odd) .timeline-content {
+        margin-left: calc(50% + 30px);
+    }
+
+    .timeline-item:nth-child(even) .timeline-content {
+        margin-right: calc(50% + 30px);
     }
 }
 
@@ -215,10 +275,10 @@
     }
 
     /* Footer */
-    .footer-content {
+    /* .footer-content {
         grid-template-columns: 1fr;
         gap: 30px;
-    }
+    } */
 
     /* ===================
     index style
@@ -341,6 +401,112 @@
         padding: 270px 0 15px;
     }
 
+    /* ===================
+    about style
+    ===================== */
+    .page-hero {
+        padding: 80px 0 40px;
+        margin-top: 60px;
+    }
+
+    .page-hero h1 {
+        font-size: 1.8rem;
+    }
+
+    .page-hero p {
+        font-size: 1rem;
+    }
+
+    .about-company .about-content {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .about-description {
+        text-align: center;
+    }
+
+    .vision-mission-grid {
+        gap: 10px;
+    }
+
+    .vision-card,
+    .mission-card,
+    .values-card {
+        padding: 30px 20px;
+    }
+
+    .company-stats .stat-item {
+        padding: 30px 20px;
+    }
+
+    .company-stats .stat-number {
+        font-size: 2.5rem;
+    }
+
+    .member-photo {
+        height: 250px;
+    }
+
+    .member-info {
+        padding: 25px 20px;
+    }
+
+    .company-history .timeline {
+        padding-left: 30px;
+        max-width: 100%;
+    }
+
+    .company-history .timeline::before {
+        left: 15px;
+        transform: none;
+    }
+
+    .timeline {
+        padding-left: 25px;
+        margin: 25px 0;
+    }
+
+    .timeline:before {
+        left: 12px;
+    }
+
+    .timeline-item {
+        margin-bottom: 40px;
+        justify-content: flex-start !important;
+    }
+
+    .timeline-item:before {
+        left: -14px;
+        width: 10px;
+        height: 10px;
+    }
+
+    .timeline-item:nth-child(odd) .timeline-content,
+    .timeline-item:nth-child(even) .timeline-content {
+        margin-left: 75px;
+        margin-right: 0;
+        text-align: left;
+        max-width: calc(100% - 70px);
+    }
+
+    .timeline-item:nth-child(odd) .timeline-content::before,
+    .timeline-item:nth-child(even) .timeline-content::before {
+        left: -15px;
+        right: auto;
+        border-left: none;
+        border-right: 15px solid white;
+        border-top: 15px solid transparent;
+        border-bottom: 15px solid transparent;
+    }
+
+    .timeline-year {
+        left: 0px;
+        transform: none;
+        width: 80px;
+        height: 80px;
+        font-size: 1rem;
+    }
 
 }
 
@@ -387,6 +553,107 @@
     .btn {
         width: 100%;
         font-size: 0.9rem;
+    }
+
+    /* ===================
+    about style
+    ===================== */
+    .about-company,
+    .vision-mission,
+    .company-stats,
+    .why-choose-us,
+    .our-team,
+    .company-history {
+        padding: 60px 0;
+    }
+
+    .vision-mission-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .vision-card,
+    .mission-card,
+    .values-card {
+        padding: 25px 15px;
+    }
+
+    .vm-icon {
+        width: 60px;
+        height: 60px;
+    }
+
+    .vm-icon i {
+        font-size: 1.5rem;
+    }
+
+    .company-stats .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .company-stats .stat-item {
+        padding: 25px 15px;
+    }
+
+    .company-stats .stat-number {
+        font-size: 2rem;
+    }
+
+    .reasons-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .reason-card {
+        padding: 25px 15px;
+    }
+
+    .reason-icon {
+        width: 60px;
+        height: 60px;
+    }
+
+    .reason-icon::after {
+        width: 80px;
+        height: 80px;
+    }
+
+    .reason-icon i {
+        font-size: 1.5rem;
+    }
+    
+    .team-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .member-photo {
+        height: 200px;
+    }
+
+    .member-info {
+        padding: 20px 15px;
+    }
+
+    .timeline-year {
+        width: 60px;
+        height: 60px;
+        font-size: 0.9rem;
+    }
+
+    .timeline-item:nth-child(odd) .timeline-content,
+    .timeline-item:nth-child(even) .timeline-content {
+        padding: 20px;
+        /* max-width: calc(100% - 85px); */
+        margin-left: 50px;
+    }
+
+    .footer-content {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+     .footer-section:nth-child(3) {
+        text-align: left;
     }
 }
 

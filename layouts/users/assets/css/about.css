@@ -17,21 +17,21 @@
     position: relative;
 }
 
-.about-text .section-header {
+.about-company .section-header {
     margin-bottom: 40px;
 }
 
-.about-text .section-header h2 {
+/* .about-company .section-header h2 {
     font-size: 2.5rem;
     color: #d32f2f;
     margin-bottom: 15px;
     font-weight: 700;
 }
 
-.about-text .section-header p {
+.about-company .section-header p {
     font-size: 1.1rem;
     color: #666;
-}
+} */
 
 .about-description {
     display: flex;
