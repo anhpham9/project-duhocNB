@@ -100,7 +100,7 @@
         grid-template-columns: 1fr 1fr;
         gap: 20px;
     }
-    
+
     .values-card {
         grid-column: 1 / -1;
     }
@@ -175,6 +175,33 @@
         padding: 10px 12px;
         font-size: 0.85rem;
     }
+
+    /* ===================
+    news style
+    ===================== */
+    .news-content {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .featured-article .article-image {
+        height: 250px;
+    }
+
+    .featured-article h2 a {
+        font-size: 1.4rem;
+    }
+
+    .news-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 25px;
+    }
+
+    .sidebar-widget {
+        padding: 25px;
+    }
+
+
 }
 
 /* Mobile */
@@ -687,6 +714,78 @@
         font-size: 0.75rem;
     }
 
+    /* ===================
+    news style 
+    ===================== */
+    .news-section {
+        padding: 60px 0;
+    }
+
+    .featured-article .article-image {
+        height: 200px;
+    }
+
+    .featured-article .article-content {
+        padding: 25px 20px;
+    }
+
+    .article-content h2 {
+        font-size: 1.4rem;
+        margin: 25px 0 12px;
+    }
+
+    .featured-article h2 a {
+        font-size: 1.3rem;
+    }
+
+    .article-meta {
+        flex-wrap: wrap;
+    }
+
+    .news-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .news-image {
+        height: 180px;
+    }
+
+    .news-card-content {
+        padding: 20px;
+    }
+
+    .news-card-content h3 a {
+        font-size: 1.1rem;
+    }
+
+    .pagination {
+        gap: 8px;
+    }
+
+    .page-link {
+        width: 35px;
+        height: 35px;
+    }
+
+    .sidebar-widget {
+        padding: 20px;
+    }
+
+    .sidebar-widget h3 {
+        font-size: 1.2rem;
+        margin-bottom: 15px;
+    }
+
+    .recent-post {
+        gap: 12px;
+    }
+
+        .recent-post-image {
+        width: 70px;
+        height: 70px;
+    }
+
 }
 
 /* Small Mobile */
@@ -749,7 +848,7 @@
     .vision-mission-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .vision-card,
     .mission-card,
     .values-card {
@@ -799,7 +898,7 @@
     .reason-icon i {
         font-size: 1.5rem;
     }
-    
+
     .team-grid {
         grid-template-columns: 1fr;
         gap: 15px;
@@ -831,7 +930,7 @@
         gap: 20px;
     }
 
-     .footer-section:nth-child(3) {
+    .footer-section:nth-child(3) {
         text-align: left;
     }
 }
