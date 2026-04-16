@@ -217,3 +217,39 @@ export const useApi = (url, options = {}) => {
     });
 };
 ```
+
+## 🧱 PHẦN 4 — Frontend: Route Middleware
+
+### 🧱 Middleware
+
+📁 middleware/auth.ts
+
+```
+export default defineNuxtRouteMiddleware(() => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+        return navigateTo("/login");
+    }
+});
+```
+
+### 🧱 Apply vào các page cần auth
+
+```
+<script setup>
+definePageMeta({
+  middleware: "auth",
+});
+</script>
+```
+
+### 🎯 Sau bước này bạn sẽ có
+
+```
+✔ Login
+✔ JWT
+✔ Protected API
+✔ RBAC backend
+✔ Protected frontend route
+```
