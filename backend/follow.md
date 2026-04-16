@@ -46,7 +46,9 @@ npm install --save-dev nodemon
 
 ## ✅ Bước 5: Tạo server cơ bản
 
-`📄 backend/src/app.js`
+```
+📄 backend/src/app.js
+```
 
 ```
 import express from "express";
@@ -101,6 +103,10 @@ git push origin feature/init-backend
 
 
 # Ngày 2
+
+```
+feature/database-design
+```
 
 ## 🎯 PHẦN 2.1 — Thiết kế bảng users (admin)
 
@@ -661,8 +667,372 @@ INSERT INTO settings (key, value) VALUES
 ('google_map_iframe', '<iframe ...>');
 ```
 
+## Đẩy code lên github
+
+```
+# BASH
+
+git add .
+git commit -m "feat: initialize backend with database schema"
+git push origin feature/init-backend
+
+git checkout develop
+git merge feature/init-backend
+git push -u origin develop
+```
+
+# Ngày 3
+
+```
+git checkout develop
+git checkout -b feature/auth
+```
+
+## 🎯 PHẦN 3.1 — Chuẩn bị
+
+👉 Mục tiêu:
+
+- login bằng username
+- mã hóa password bằng bcrypt
+- trả về JWT
+
+### 🧱 Bước 1: Cài thư viện
+
+```
+npm install bcrypt jsonwebtoken pg
+
+npm install nodemon --save-dev
+
+```
+
+### 🧱 Bước 2: Cấu trúc thư mục (chuẩn thực tế)
+
+```
+src/
+  ├── app.js
+  ├── routes/
+  │     └── auth.routes.js
+  ├── controllers/
+  │     └── auth.controller.js
+  ├── services/
+  │     └── auth.service.js
+  ├── middlewares/
+  │     └── auth.middleware.js
+  ├── utils/
+  │     └── jwt.js
+  └── config/
+        └── db.js
+```
+
+📁 Tạo file backend/.env
 
 
+```
+DB_USER=postgres
+DB_HOST=localhost
+DB_NAME=your_db
+DB_PASSWORD=your_password
+DB_PORT=5432
+
+JWT_SECRET=mysecretkey
+PORT=5000
+```
+
+### 🧱 Bước 3: Kết nối DB
+
+
+📁 src/config/db.js
+
+```
+import pkg from "pg";
+const { Pool } = pkg;
+
+const pool = new Pool({
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  port: Number(process.env.DB_PORT),
+});
+
+export default {
+  query: (text, params) => pool.query(text, params),
+};
+```
+
+### 🧱 Bước 4: Hash password (tạo user)
+
+Tạo role_id = 1 cho Super Admin nếu chưa có
+
+👉 kiểm tra:
+
+```
+# SQL
+
+SELECT * FROM roles;
+```
+
+👉 nếu chưa có → phải insert trước:
+
+```
+# SQL
+
+INSERT INTO roles (id, name, description) VALUES (1, 'superadmin', 'Day la nguoi co quyen cao nhat');
+```
+
+📁 script tạo user admin (chạy 1 lần)
+
+```
+// scripts/createAdmin.js
+import dotenv from "dotenv";
+dotenv.config();
+
+import bcrypt from "bcrypt";
+import db from "../src/config/db.js";
+
+const run = async () => {
+    try {
+        const hash = await bcrypt.hash("123456", 10);
+
+        await db.query(
+            `
+      INSERT INTO users 
+      (name, username, email, phone, password, role_id)
+      VALUES ($1, $2, $3, $4, $5, $6)
+      ON CONFLICT (username) DO NOTHING
+      `,
+            [
+                "Super Admin",          // name
+                "superadmin",                // username
+                "superadmin@example.com",    // email
+                null,                   // phone (có thể null)
+                hash,                   // password đã hash
+                1                       // role_id (phải tồn tại trong roles)
+            ]
+        );
+
+        console.log("✅ Admin created");
+    } catch (err) {
+        console.error("❌ Error:", err.message);
+    }
+};
+
+run();
+```
+
+👉 chạy:
+
+```
+node scripts/createAdmin.js
+```
+
+## 🎯 PHẦN 3.2 — Setup Auth cơ bản (Login + JWT)
+
+### 🧱 Bước 5: JWT
+
+📁 src/utils/jwt.js
+
+```
+import jwt from "jsonwebtoken";
+
+const SECRET = process.env.JWT_SECRET;
+
+export const generateToken = (user) => {
+    return jwt.sign(
+        {
+            id: user.id,
+            role_id: user.role_id,
+        },
+        SECRET,
+        { expiresIn: "1d" }
+    );
+};
+
+export const verifyToken = (token) => {
+    return jwt.verify(token, SECRET);
+};
+```
+
+### 🧱 Bước 6: Login API
+
+📁 src/controllers/auth.controller.js
+
+```
+import bcrypt from "bcrypt";
+import db from "../config/db.js";
+import { generateToken } from "../utils/jwt.js";
+
+export const login = async (req, res) => {
+    const { username, password } = req.body;
+
+    const result = await db.query(
+        "SELECT * FROM users WHERE username = $1",
+        [username]
+    );
+
+    if (result.rows.length === 0) {
+        return res.status(400).json({ message: "User not found" });
+    }
+
+    const user = result.rows[0];
+
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+        return res.status(400).json({ message: "Wrong password" });
+    }
+
+    const token = generateToken(user);
+
+    res.json({ token });
+};
+```
+
+📁 src/routes/auth.routes.js
+
+```
+import express from "express";
+import { login } from "../controllers/auth.controller.js";
+
+const router = express.Router();
+
+router.post("/login", login);
+
+export default router;
+```
+
+## 🎯 PHẦN 3.2 — Middleware kiểm tra đăng nhập
+
+### 🧱 Bước 7: Middleware auth
+
+📁 src/middlewares/auth.middleware.js
+
+```
+import { verifyToken } from "../utils/jwt.js";
+
+export const authenticate = (req, res, next) => {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader) {
+        return res.status(401).json({ message: "No token" });
+    }
+
+    const token = authHeader.split(" ")[1];
+
+    try {
+        const user = verifyToken(token);
+        req.user = user;
+        next();
+    } catch {
+        return res.status(401).json({ message: "Invalid token" });
+    }
+};
+```
+
+## 🎯 PHẦN 3.3 — RBAC (phân quyền)
+
+### 🧱 Bước 8: RBAC (permission)
+
+📁 src/middlewares/permission.middleware.js
+
+```
+import db from "../config/db.js";
+
+export const authorize = (permissionName) => {
+    return async (req, res, next) => {
+        const user = req.user;
+
+        const result = await db.query(
+            `
+      SELECT p.name FROM permissions p
+      JOIN role_permissions rp ON rp.permission_id = p.id
+      WHERE rp.role_id = $1
+      `,
+            [user.role_id]
+        );
+
+        const permissions = result.rows.map((p) => p.name);
+
+        if (!permissions.includes(permissionName)) {
+            return res.status(403).json({ message: "Forbidden" });
+        }
+
+        next();
+    };
+};
+```
+
+### 🧱 Bước 9: Gắn vào app.js
+
+```
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+
+import authRoutes from "./routes/auth.routes.js";
+
+dotenv.config(); // load .env file
+
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+
+// test route
+app.get("/", (req, res) => {
+    res.send("API is running...");
+});
+
+// auth routes
+app.use("/api/auth", authRoutes);
+
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
+```
+
+🧪 TEST
+
+```
+POST http://localhost:5000/api/auth/login
+```
+
+
+```
+{
+  "username": "admin",
+  "password": "123456"
+}
+```
+
+## 🎯 Flow hoàn chỉnh
+
+```
+Login → nhận token
+   ↓
+Lưu localStorage
+   ↓
+Gọi API kèm:
+Authorization: Bearer TOKEN
+   ↓
+Backend check:
+authenticate → authorize
+```
+
+## 🎯 Đẩy code lên github
+
+```
+```
+```
+```
+```
+```
+```
+```
+```
+```
 
 
 
