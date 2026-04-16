@@ -1,4 +1,4 @@
-# Ngày 1
+# Ngày 1 (nối tiếp ngày 3 backend)
 
 ## 🎯 PHẦN 1 — Tạo project Nuxt
 
@@ -176,4 +176,44 @@ POST /api/auth/login
 Backend trả JWT
    ↓
 Frontend lưu localStorage
+```
+
+# Ngày 2 (nối tiếp ngày 4 backend)
+
+## 🧱 PHẦN 3 — Frontend: Auth flow
+
+### 🧱 Update login
+
+📁 pages/login.vue
+
+```
+localStorage.setItem("token", res.token);
+navigateTo("/admin");
+```
+
+### 🧱 Tạo page admin
+
+📁 pages/admin/index.vue
+
+```
+<template>
+    <h1>Admin Dashboard</h1>
+</template>
+```
+
+### 🧱 Gửi token mỗi request
+
+📁 composables/useApi.js
+
+```
+export const useApi = (url, options = {}) => {
+    const token = localStorage.getItem("token");
+
+    return $fetch(url, {
+        ...options,
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+};
 ```

@@ -29,6 +29,7 @@ const handleLogin = async () => {
         });
 
         localStorage.setItem("token", res.token);
+        navigateTo("/admin");
 
         alert("Login success!");
     } catch (err) {
