@@ -1,175 +1,125 @@
 <template>
-  <div>
-    <!-- Loading state while checking permissions -->
-    <div v-if="isCheckingPermission" class="loading-container">
-      <div class="loading">
-        <i class="fas fa-spinner fa-spin"></i>
-        <p>Kiểm tra quyền truy cập...</p>
-      </div>
-    </div>
+  <PermissionGuard 
+    :allowed-roles="[1, 2, 4]" 
+    :show-user-info="true"
+    denied-title="Không thể truy cập Quản lý Liên hệ"
+    denied-message="Chỉ Superadmin, Admin/Manager và Consultant mới có thể truy cập trang này."
+  >
+    <template #default="{ user, userRole }">
+      <div class="contacts-page">
+        <div class="page-header">
+          <h1>
+            <i class="fas fa-address-book"></i>
+            Quản lý Liên hệ
+          </h1>
+          <p>Quản lý và xử lý các yêu cầu liên hệ từ khách hàng</p>
+        </div>
 
-    <!-- Access denied -->
-    <div v-else-if="!hasPermission" class="access-denied">
-      <div class="denied-content">
-        <i class="fas fa-ban"></i>
-        <h2>Truy cập bị từ chối</h2>
-        <p>Bạn không có quyền truy cập trang này.</p>
-        <button @click="$router.push('/admin')" class="btn-back">
-          <i class="fas fa-arrow-left"></i>
-          Quay lại Dashboard
-        </button>
-      </div>
-    </div>
+        <div class="page-content">
+          <!-- Contact management content will go here -->
+          <div class="info-card">
+            <h3>Thông tin truy cập</h3>
+            <p><strong>Người dùng:</strong> {{ user.username }}</p>
+            <p><strong>Quyền:</strong> {{ userRole }}</p>
+            <p><strong>ID:</strong> {{ user.id }}</p>
+          </div>
 
-    <!-- Main content -->
-    <div v-else>
-      <h1>Contact Management</h1>
-      <p>Admin contacts management page</p>
-      <div class="user-info">
-        <small>Đăng nhập với quyền: {{ getUserRoleName() }}</small>
+          <!-- Placeholder for actual contact management functionality -->
+          <div class="placeholder-content">
+            <i class="fas fa-tools"></i>
+            <h3>Đang phát triển</h3>
+            <p>Chức năng quản lý liên hệ sẽ được triển khai sớm...</p>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
+    </template>
+  </PermissionGuard>
 </template>
 
 <script setup>
-import { jwtDecode } from "jwt-decode"
+// Import PermissionGuard component
+import PermissionGuard from '~/components/admin/PermissionGuard.vue'
 
 definePageMeta({
   layout: "admin",
   middleware: ["auth", "permission"],
   ssr: false
 });
-
-const isCheckingPermission = ref(true)
-const hasPermission = ref(false)
-const currentUser = ref(null)
-
-// Check permissions on mount
-onMounted(() => {
-  checkPermissions()
-})
-
-const checkPermissions = () => {
-  if (!process.client) return
-  
-  try {
-    const token = localStorage.getItem('token')
-    if (!token) {
-      navigateTo('/login')
-      return
-    }
-
-    const user = jwtDecode(token)
-    currentUser.value = user
-    
-    // Check if user has permission to access contacts
-    // Superadmin (1), Admin/Manager (2, 3), Consultant (5)
-    hasPermission.value = [1, 2, 3, 5].includes(user.role_id)
-    
-    if (!hasPermission.value) {
-      console.warn('🚫 User does not have permission to access contacts')
-      setTimeout(() => {
-        navigateTo('/admin')
-      }, 2000) // Show access denied message for 2 seconds before redirect
-    }
-  } catch (error) {
-    console.error('❌ Permission check error:', error)
-    navigateTo('/login')
-  } finally {
-    isCheckingPermission.value = false
-  }
-}
-
-const getUserRoleName = () => {
-  if (!currentUser.value) return 'Unknown'
-  
-  const roleMap = {
-    1: 'Superadmin',
-    2: 'Admin', 
-    3: 'Manager',
-    4: 'Editor',
-    5: 'Consultant',
-  }
-  
-  return roleMap[currentUser.value.role_id] || 'Unknown'
-}
 </script>
 
 <style scoped>
-.loading-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 400px;
+.contacts-page {
+  padding: 0;
 }
 
-.loading {
-  text-align: center;
+.page-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #eee;
+}
+
+.page-header h1 {
+  color: #333;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.page-header h1 i {
+  color: #d32f2f;
+}
+
+.page-header p {
   color: #666;
+  margin: 0;
+  font-size: 1.1rem;
 }
 
-.loading i {
-  font-size: 2rem;
-  margin-bottom: 1rem;
-  color: #d32f2f;
+.page-content {
+  display: grid;
+  gap: 2rem;
 }
 
-.access-denied {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 400px;
+.info-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  border-left: 4px solid #d32f2f;
 }
 
-.denied-content {
-  text-align: center;
-  padding: 3rem;
-  background: #f8f9fa;
-  border-radius: 15px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
-
-.denied-content i {
-  font-size: 4rem;
-  color: #d32f2f;
-  margin-bottom: 1.5rem;
-}
-
-.denied-content h2 {
+.info-card h3 {
   color: #333;
   margin-bottom: 1rem;
 }
 
-.denied-content p {
+.info-card p {
+  margin: 0.5rem 0;
+  color: #555;
+}
+
+.placeholder-content {
+  background: #f8f9fa;
+  padding: 3rem 2rem;
+  text-align: center;
+  border-radius: 15px;
+  border: 2px dashed #ddd;
+}
+
+.placeholder-content i {
+  font-size: 3rem;
+  color: #ccc;
+  margin-bottom: 1rem;
+}
+
+.placeholder-content h3 {
   color: #666;
-  margin-bottom: 2rem;
+  margin-bottom: 0.5rem;
 }
 
-.btn-back {
-  background: #d32f2f;
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background 0.3s ease;
-}
-
-.btn-back:hover {
-  background: #b71c1c;
-}
-
-.btn-back i {
-  margin-right: 8px;
-}
-
-.user-info {
-  margin-top: 2rem;
-  padding: 1rem;
-  background: #f0f0f0;
-  border-radius: 8px;
-  color: #666;
+.placeholder-content p {
+  color: #999;
+  margin: 0;
 }
 </style>

@@ -238,7 +238,7 @@ curl http://localhost:5000/api/me \
 * [x] Login bằng username
 * [x] Hash password (bcrypt)
 * [x] JWT Authentication
-* [ ] Middleware authenticate
+* [x] Middleware authenticate
 * [ ] RBAC (role + permission)
 * [ ] Protect API theo permission
 
