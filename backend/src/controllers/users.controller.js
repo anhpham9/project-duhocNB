@@ -31,6 +31,7 @@ export const getUsers = async (req, res) => {
                 u.email,
                 u.role_id,
                 r.name as role_name,
+                COALESCE(u.is_active, true) as is_active,
                 u.created_at,
                 u.updated_at
             FROM users u
@@ -82,6 +83,7 @@ export const getUser = async (req, res) => {
                 u.email,
                 u.role_id,
                 r.name as role_name,
+                COALESCE(u.is_active, true) as is_active,
                 u.created_at,
                 u.updated_at
             FROM users u
@@ -125,7 +127,7 @@ export const getUser = async (req, res) => {
 // Create new user
 export const createUser = async (req, res) => {
     try {
-        const { name, username, email, password, role_id } = req.body;
+        const { name, username, email, password, role_id, is_active = true } = req.body;
         const currentUserRole = req.user.role_id;
 
         // Validate required fields
@@ -133,6 +135,14 @@ export const createUser = async (req, res) => {
             return res.status(400).json({
                 success: false,
                 message: "All fields are required (name, username, email, password, role_id)"
+            });
+        }
+
+        // Validate is_active
+        if (is_active !== undefined && typeof is_active !== 'boolean') {
+            return res.status(400).json({
+                success: false,
+                message: "is_active must be true or false"
             });
         }
 
@@ -195,10 +205,10 @@ export const createUser = async (req, res) => {
 
         // Create user
         const result = await db.query(`
-            INSERT INTO users (name, username, email, password, role_id)
-            VALUES ($1, $2, $3, $4, $5)
-            RETURNING id, name, username, email, role_id, created_at
-        `, [name, username, email, hashedPassword, role_id]);
+            INSERT INTO users (name, username, email, password, role_id, is_active)
+            VALUES ($1, $2, $3, $4, $5, $6)
+            RETURNING id, name, username, email, role_id, COALESCE(is_active, true) as is_active, created_at
+        `, [name, username, email, hashedPassword, role_id, is_active]);
 
         const newUser = result.rows[0];
 
@@ -227,8 +237,16 @@ export const createUser = async (req, res) => {
 export const updateUser = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, username, email, role_id } = req.body;
+        const { name, username, email, role_id, is_active } = req.body;
         const currentUserRole = req.user.role_id;
+
+        // Validate is_active if provided
+        if (is_active !== undefined && typeof is_active !== 'boolean') {
+            return res.status(400).json({
+                success: false,
+                message: "is_active must be true or false"
+            });
+        }
 
         // Check if current user can update users
         if (![1, 2, 3].includes(currentUserRole)) {
@@ -335,6 +353,11 @@ export const updateUser = async (req, res) => {
             values.push(role_id);
         }
 
+        if (is_active !== undefined) {
+            updates.push(`is_active = $${paramCount++}`);
+            values.push(is_active);
+        }
+
         if (updates.length === 0) {
             return res.status(400).json({
                 success: false,
@@ -351,7 +374,7 @@ export const updateUser = async (req, res) => {
             UPDATE users 
             SET ${updates.join(', ')}
             WHERE id = $${paramCount}
-            RETURNING id, name, username, email, role_id, updated_at
+            RETURNING id, name, username, email, role_id, COALESCE(is_active, true) as is_active, updated_at
         `;
 
         const result = await db.query(updateQuery, values);

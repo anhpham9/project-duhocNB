@@ -36,6 +36,7 @@ feature/backend-seeds
 feature/auth-middleware-backend
 feature/rbac-backend
 feature/users-crud-rbac
+feature/news-backend
 
 
 # frontend
@@ -44,7 +45,9 @@ feature/frontend-auth
 feature/frontend-rbac
 feature/frontend-layouts
 fix/frontend-rbac
-feature/frontend-users
+feature/frontend-users-admin
+feature/frontend-news-public
+feature/frontend-news-admin
 
 ```
 ## Các tình huống đặc biệt
