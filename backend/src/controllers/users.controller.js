@@ -1,5 +1,8 @@
 import bcrypt from "bcrypt";
 import db from "../config/db.js";
+import { logError, logInfo, auditLog } from "../utils/logger.js";
+import { InputSanitizer } from "../utils/sanitizer.js";
+import { SecurityLogger } from "../utils/securityLogger.js";
 
 // Role hierarchy for permission checking
 const ROLE_HIERARCHY = {
@@ -55,7 +58,11 @@ export const getUsers = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Get users error:", error);
+        logError('Get users failed', error, {
+            userId: req.user?.id,
+            userRole: req.user?.role_id
+        });
+        
         res.status(500).json({ 
             success: false, 
             message: "Internal server error" 
@@ -117,7 +124,11 @@ export const getUser = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Get user error:", error);
+        logError('Get user failed', error, {
+            requestedUserId: id,
+            requesterId: req.user?.id
+        });
+        
         res.status(500).json({ 
             success: false, 
             message: "Internal server error" 
@@ -128,8 +139,18 @@ export const getUser = async (req, res) => {
 // Create new user
 export const createUser = async (req, res) => {
     try {
-        const { name, username, email, phone, password, role_id, is_active = true } = req.body;
+        // Sanitize input data
+        const sanitizedData = InputSanitizer.sanitizeUserData(req.body);
+        const { name, username, email, phone, password, role_id, is_active } = sanitizedData;
+        
         const currentUserRole = req.user.role_id;
+
+        logInfo('User creation attempt', {
+            createdBy: req.user.id,
+            targetRole: role_id,
+            creatorRole: currentUserRole,
+            data: { name, username, email, phone } // Don't log password
+        });
 
         // Validate required fields
         if (!name || !username || !email || !password || !role_id) {
@@ -231,6 +252,22 @@ export const createUser = async (req, res) => {
         // Get role name
         const roleInfo = roleCheck.rows[0];
 
+        // Audit log successful user creation
+        auditLog('CREATE_USER', req.user.id, {
+            targetUserId: result.id,
+            targetUsername: result.username,
+            targetEmail: result.email,
+            targetRole: roleInfo.name,
+            isActive: result.is_active
+        }, req);
+
+        logInfo('User created successfully', {
+            createdBy: req.user.id,
+            newUserId: result.id,
+            username: result.username,
+            role: roleInfo.name
+        });
+
         res.status(201).json({
             success: true,
             message: "User created successfully",
@@ -241,7 +278,11 @@ export const createUser = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Create user error:", error);
+        logError('Create user failed', error, {
+            createdBy: req.user?.id,
+            targetData: req.body ? { ...req.body, password: '[REDACTED]' } : {}
+        });
+        
         res.status(500).json({ 
             success: false, 
             message: "Internal server error" 
@@ -425,6 +466,19 @@ export const updateUser = async (req, res) => {
             [updatedUser.role_id]
         );
 
+        // Audit log successful user update
+        auditLog('UPDATE_USER', req.user.id, {
+            targetUserId: id,
+            targetUsername: updatedUser.username,
+            updatedFields: Object.keys(updateData)
+        }, req);
+
+        logInfo('User updated successfully', {
+            updatedBy: req.user.id,
+            targetUserId: id,
+            updatedFields: Object.keys(updateData)
+        });
+
         res.json({
             success: true,
             message: "User updated successfully",
@@ -435,7 +489,12 @@ export const updateUser = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Update user error:", error);
+        logError('Update user failed', error, {
+            updatedBy: req.user?.id,
+            targetUserId: req.params?.id,
+            updateData: req.body ? { ...req.body, password: '[REDACTED]' } : {}
+        });
+        
         res.status(500).json({ 
             success: false, 
             message: "Internal server error" 
@@ -490,13 +549,39 @@ export const deleteUser = async (req, res) => {
         // Delete user
         await db.query('DELETE FROM users WHERE id = $1', [id]);
 
+        // Audit log successful user deletion
+        auditLog('DELETE_USER', req.user.id, {
+            targetUserId: id,
+            targetUsername: targetUser.username,
+            targetEmail: targetUser.email
+        }, req);
+
+        // Security log for user deletion
+        SecurityLogger.logSecurityAction(
+            id,
+            req.user.id,
+            'delete_user',
+            'Admin deletion',
+            req.ip
+        );
+
+        logInfo('User deleted successfully', {
+            deletedBy: req.user.id,
+            targetUserId: id,
+            targetUsername: targetUser.username
+        });
+
         res.json({
             success: true,
             message: "User deleted successfully"
         });
 
     } catch (error) {
-        console.error("Delete user error:", error);
+        logError('Delete user failed', error, {
+            deletedBy: req.user?.id,
+            targetUserId: req.params?.id
+        });
+        
         res.status(500).json({ 
             success: false, 
             message: "Internal server error" 
@@ -536,7 +621,10 @@ export const getAvailableRoles = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Get available roles error:", error);
+        logError('Get available roles failed', error, {
+            requesterId: req.user?.id
+        });
+        
         res.status(500).json({ 
             success: false, 
             message: "Internal server error" 
@@ -603,6 +691,26 @@ export const resetPassword = async (req, res) => {
             [hashedPassword, id]
         );
 
+        // Audit log successful password reset
+        auditLog('RESET_PASSWORD', req.user.id, {
+            targetUserId: targetUser.id,
+            targetUsername: targetUser.username
+        }, req);
+
+        // Security log for password reset
+        SecurityLogger.logPasswordEvent(
+            targetUser.id,
+            req.user.id,
+            'admin_reset',
+            req.ip
+        );
+
+        logInfo('Password reset successfully', {
+            resetBy: req.user.id,
+            targetUserId: targetUser.id,
+            targetUsername: targetUser.username
+        });
+
         res.json({
             success: true,
             message: "Password reset successfully",
@@ -619,7 +727,11 @@ export const resetPassword = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Reset password error:", error);
+        logError('Reset password failed', error, {
+            resetBy: req.user?.id,
+            targetUserId: req.params?.id
+        });
+        
         res.status(500).json({ 
             success: false, 
             message: "Internal server error" 

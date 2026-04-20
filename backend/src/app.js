@@ -1,5 +1,7 @@
 import "./config/env.js";
 import { authenticate } from "./middlewares/auth.middleware.js";
+import { requestLogger, logInfo } from "./utils/logger.js";
+import { errorHandler, notFoundHandler } from "./utils/errorHandler.js";
 
 import express from "express";
 import cors from "cors";
@@ -56,6 +58,9 @@ app.use(cors({
 app.use(cookieParser());
 app.use(express.json());
 
+// Request logging middleware
+app.use(requestLogger);
+
 // General rate limiting
 const generalLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
@@ -97,8 +102,18 @@ app.get("/api/me", authenticate, (req, res) => {
   res.json(req.user);
 });
 
+// 404 handler for undefined routes
+app.use(notFoundHandler);
+
+// Global error handling middleware
+app.use(errorHandler);
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    logInfo('Server started successfully', {
+        port: PORT,
+        environment: process.env.NODE_ENV || 'development',
+        timestamp: new Date().toISOString()
+    });
 });

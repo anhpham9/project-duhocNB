@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { authenticate } from "../middlewares/auth.middleware.js";
+import { sanitizeInputs } from "../utils/sanitizer.js";
 import {
     getUsers,
     getUser,
@@ -25,13 +26,13 @@ router.get("/roles", getAvailableRoles);
 router.get("/:id", getUser);
 
 // POST /api/users - Create new user
-router.post("/", createUser);
+router.post("/", sanitizeInputs, createUser);
 
 // PUT /api/users/:id - Update user
-router.put("/:id", updateUser);
+router.put("/:id", sanitizeInputs, updateUser);
 
 // POST /api/users/:id/reset-password - Reset user password
-router.post("/:id/reset-password", resetPassword);
+router.post("/:id/reset-password", sanitizeInputs, resetPassword);
 
 // DELETE /api/users/:id - Delete user
 router.delete("/:id", deleteUser);

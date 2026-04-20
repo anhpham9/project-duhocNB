@@ -1,4 +1,5 @@
 import { verifyToken } from "../utils/jwt.js";
+import { logError } from "../utils/logger.js";
 
 export const authenticate = (req, res, next) => {
     try {
@@ -21,7 +22,13 @@ export const authenticate = (req, res, next) => {
 
         next();
     } catch (err) {
-        console.error("Auth error:", err.message);
+        logError('Authentication failed', err, {
+            ip: req.ip,
+            userAgent: req.get('User-Agent'),
+            url: req.originalUrl,
+            method: req.method,
+            hasToken: !!req.cookies.authToken || !!req.headers.authorization
+        });
         return res.status(401).json({ 
             success: false,
             message: "Invalid or expired token" 
