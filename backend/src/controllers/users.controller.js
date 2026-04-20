@@ -607,12 +607,14 @@ export const resetPassword = async (req, res) => {
             success: true,
             message: "Password reset successfully",
             data: {
-                newPassword: newPassword,
                 user: {
                     id: targetUser.id,
                     name: targetUser.name,
                     username: targetUser.username
-                }
+                },
+                // Không trả về password trong response để bảo mật
+                // Password sẽ được gửi qua email hoặc SMS trong tương lai
+                passwordResetCompleted: true
             }
         });
 
