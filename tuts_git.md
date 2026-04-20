@@ -39,6 +39,7 @@ feature/users-crud-rbac
 feature/news-backend
 feature/users-security
 feature/contacts-crud
+feature/news-crud
 
 
 # frontend
@@ -49,6 +50,7 @@ feature/frontend-layouts
 fix/frontend-rbac
 feature/frontend-users-admin
 feature/frontend-contacts-admin
+feature/frontend-news-admin
 feature/frontend-news-public
 feature/frontend-news-admin
 

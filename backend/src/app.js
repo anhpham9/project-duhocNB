@@ -2,16 +2,18 @@ import "./config/env.js";
 import { authenticate } from "./middlewares/auth.middleware.js";
 import { requestLogger, logInfo } from "./utils/logger.js";
 import { errorHandler, notFoundHandler } from "./utils/errorHandler.js";
+import { rateLimiter } from "./middlewares/rateLimiter.js";
 
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
-import rateLimit from "express-rate-limit";
 import cookieParser from "cookie-parser";
 
 import authRoutes from "./routes/auth.routes.js";
 import usersRoutes from "./routes/users.routes.js";
 import contactsRoutes from "./routes/contacts.routes.js";
+import newsRoutes from "./routes/news.routes.js";
+import categoriesRoutes from "./routes/categories.routes.js";
 
 const app = express();
 
@@ -62,38 +64,8 @@ app.use(express.json());
 // Request logging middleware
 app.use(requestLogger);
 
-// General rate limiting
-const generalLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // limit each IP to 100 requests per windowMs
-    message: 'Too many requests from this IP, please try again later.'
-});
-app.use('/api/', generalLimiter);
-
-// Auth endpoints rate limiting (temporary higher limit for testing)
-const authLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 50, // temporarily increased from 5 to 50 for testing
-    message: 'Too many authentication attempts, please try again later.',
-    skipSuccessfulRequests: true
-});
-app.use('/api/auth/', authLimiter);
-
-// User management rate limiting
-const userLimiter = rateLimit({
-    windowMs: 60 * 1000, // 1 minute
-    max: 10, // limit each IP to 10 requests per minute
-    message: 'Too many user management requests, please slow down.'
-});
-app.use('/api/users/', userLimiter);
-
-// Contact management rate limiting (temporary higher limit for testing)
-const contactLimiter = rateLimit({
-    windowMs: 60 * 1000, // 1 minute
-    max: 100, // temporarily increased from 15 to 100 for testing
-    message: 'Too many contact requests, please slow down.'
-});
-app.use('/api/contacts/', contactLimiter);
+// Apply global rate limiting
+app.use('/api/', rateLimiter.global);
 
 // test route
 app.get("/", (req, res) => {
@@ -108,6 +80,12 @@ app.use("/api/users", usersRoutes);
 
 // contacts CRUD routes (RBAC protected)
 app.use("/api/contacts", contactsRoutes);
+
+// news CRUD routes (RBAC protected)
+app.use("/api/news", newsRoutes);
+
+// categories CRUD routes (RBAC protected)
+app.use("/api/categories", categoriesRoutes);
 
 // test protected route
 app.get("/api/me", authenticate, (req, res) => {

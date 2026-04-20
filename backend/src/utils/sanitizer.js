@@ -359,6 +359,168 @@ export class InputSanitizer {
         return sanitized;
     }
 
+    // Comprehensive news data sanitization
+    static sanitizeNewsData(newsData) {
+        const sanitized = {};
+
+        // Sanitize each field
+        if (newsData.title) {
+            sanitized.title = this.sanitizeText(newsData.title, {
+                maxLength: 255,
+                escapeHtml: false
+            });
+        }
+
+        if (newsData.slug) {
+            sanitized.slug = this.sanitizeSlug(newsData.slug);
+        }
+
+        if (newsData.content) {
+            sanitized.content = this.sanitizeText(newsData.content, {
+                maxLength: 50000, // Allow very long content
+                escapeHtml: false // Keep basic HTML for content
+            });
+        }
+
+        if (newsData.excerpt) {
+            sanitized.excerpt = this.sanitizeText(newsData.excerpt, {
+                maxLength: 500,
+                escapeHtml: false
+            });
+        }
+
+        if (newsData.thumbnail_url) {
+            sanitized.thumbnail_url = this.sanitizeUrl(newsData.thumbnail_url);
+        }
+
+        if (newsData.category_id) {
+            sanitized.category_id = this.sanitizeNumber(newsData.category_id, {
+                min: 1,
+                max: 999999,
+                default: null
+            });
+        }
+
+        if (newsData.status) {
+            const validStatuses = ['draft', 'published', 'archived'];
+            const status = this.sanitizeText(newsData.status, { maxLength: 20 });
+            sanitized.status = validStatuses.includes(status) ? status : 'draft';
+        }
+
+        if (newsData.meta_title) {
+            sanitized.meta_title = this.sanitizeText(newsData.meta_title, {
+                maxLength: 255,
+                escapeHtml: false
+            });
+        }
+
+        if (newsData.meta_description) {
+            sanitized.meta_description = this.sanitizeText(newsData.meta_description, {
+                maxLength: 500,
+                escapeHtml: false
+            });
+        }
+
+        logger.debug('News data sanitized', {
+            originalFields: Object.keys(newsData),
+            sanitizedFields: Object.keys(sanitized)
+        });
+
+        return sanitized;
+    }
+
+    // Comprehensive category data sanitization
+    static sanitizeCategoryData(categoryData) {
+        const sanitized = {};
+
+        // Sanitize each field
+        if (categoryData.name) {
+            sanitized.name = this.sanitizeText(categoryData.name, {
+                maxLength: 100,
+                escapeHtml: false
+            });
+        }
+
+        if (categoryData.slug) {
+            sanitized.slug = this.sanitizeSlug(categoryData.slug);
+        }
+
+        logger.debug('Category data sanitized', {
+            originalFields: Object.keys(categoryData),
+            sanitizedFields: Object.keys(sanitized)
+        });
+
+        return sanitized;
+    }
+
+    // Sanitize URL input
+    static sanitizeUrl(url) {
+        if (typeof url !== 'string') {
+            logger.warn('Non-string URL provided', { url });
+            return '';
+        }
+
+        let sanitized = url.trim();
+        
+        // Remove XSS attempts
+        sanitized = xss(sanitized, {
+            whiteList: {},
+            stripIgnoreTag: true,
+            stripIgnoreTagBody: ['script', 'style']
+        });
+        
+        // Validate URL format
+        try {
+            if (validator.isURL(sanitized, {
+                protocols: ['http', 'https'],
+                require_protocol: true,
+                require_host: true,
+                require_valid_protocol: true,
+                allow_underscores: true
+            })) {
+                return sanitized;
+            }
+        } catch (error) {
+            logger.error('URL validation failed', error, { url });
+        }
+
+        logger.warn('Invalid URL format detected', { 
+            original: url,
+            sanitized 
+        });
+        return '';
+    }
+
+    // Sanitize slug input
+    static sanitizeSlug(slug) {
+        if (typeof slug !== 'string') {
+            logger.warn('Non-string slug provided', { slug });
+            return '';
+        }
+
+        let sanitized = slug.trim().toLowerCase();
+        
+        // Allow only alphanumeric, dash, and underscore
+        sanitized = sanitized.replace(/[^a-z0-9_-]/g, '-');
+        
+        // Remove multiple consecutive dashes
+        sanitized = sanitized.replace(/-{2,}/g, '-');
+        
+        // Remove leading/trailing dashes
+        sanitized = sanitized.replace(/^-+|-+$/g, '');
+        
+        // Length validation
+        if (sanitized.length > 150) {
+            sanitized = sanitized.substring(0, 150);
+            logger.warn('Slug truncated due to length', { 
+                original: slug,
+                truncated: sanitized 
+            });
+        }
+
+        return sanitized;
+    }
+
     // SQL injection prevention helper
     static preventSQLInjection(input) {
         if (typeof input !== 'string') return input;
