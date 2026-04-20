@@ -29,6 +29,7 @@ export const getUsers = async (req, res) => {
                 u.name,
                 u.username,
                 u.email,
+                u.phone,
                 u.role_id,
                 r.name as role_name,
                 COALESCE(u.is_active, true) as is_active,
@@ -127,7 +128,7 @@ export const getUser = async (req, res) => {
 // Create new user
 export const createUser = async (req, res) => {
     try {
-        const { name, username, email, password, role_id, is_active = true } = req.body;
+        const { name, username, email, phone, password, role_id, is_active = true } = req.body;
         const currentUserRole = req.user.role_id;
 
         // Validate required fields
@@ -200,15 +201,30 @@ export const createUser = async (req, res) => {
             });
         }
 
+        // Check if phone already exists (if provided)
+        if (phone && phone.trim()) {
+            const phoneCheck = await db.query(
+                'SELECT id FROM users WHERE phone = $1', 
+                [phone.trim()]
+            );
+
+            if (phoneCheck.rows.length > 0) {
+                return res.status(409).json({
+                    success: false,
+                    message: "Phone already exists"
+                });
+            }
+        }
+
         // Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // Create user
         const result = await db.query(`
-            INSERT INTO users (name, username, email, password, role_id, is_active)
-            VALUES ($1, $2, $3, $4, $5, $6)
-            RETURNING id, name, username, email, role_id, COALESCE(is_active, true) as is_active, created_at
-        `, [name, username, email, hashedPassword, role_id, is_active]);
+            INSERT INTO users (name, username, email, phone, password, role_id, is_active)
+            VALUES ($1, $2, $3, $4, $5, $6, $7)
+            RETURNING id, name, username, email, phone, role_id, COALESCE(is_active, true) as is_active, created_at
+        `, [name, username, email, phone || null, hashedPassword, role_id, is_active]);
 
         const newUser = result.rows[0];
 
@@ -237,7 +253,7 @@ export const createUser = async (req, res) => {
 export const updateUser = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, username, email, role_id, is_active } = req.body;
+        const { name, username, email, phone, role_id, is_active } = req.body;
         const currentUserRole = req.user.role_id;
 
         // Validate is_active if provided
@@ -348,6 +364,29 @@ export const updateUser = async (req, res) => {
             values.push(email);
         }
 
+        if (phone !== undefined && phone !== targetUser.phone) {
+            // Handle phone update (can be null/empty or a value)
+            const trimmedPhone = phone ? phone.trim() : null;
+            
+            if (trimmedPhone) {
+                // Check if new phone is available
+                const phoneCheck = await db.query(
+                    'SELECT id FROM users WHERE phone = $1 AND id != $2', 
+                    [trimmedPhone, id]
+                );
+
+                if (phoneCheck.rows.length > 0) {
+                    return res.status(409).json({
+                        success: false,
+                        message: "Phone already exists"
+                    });
+                }
+            }
+
+            updates.push(`phone = $${paramCount++}`);
+            values.push(trimmedPhone);
+        }
+
         if (role_id) {
             updates.push(`role_id = $${paramCount++}`);
             values.push(role_id);
@@ -374,7 +413,7 @@ export const updateUser = async (req, res) => {
             UPDATE users 
             SET ${updates.join(', ')}
             WHERE id = $${paramCount}
-            RETURNING id, name, username, email, role_id, COALESCE(is_active, true) as is_active, updated_at
+            RETURNING id, name, username, email, phone, role_id, COALESCE(is_active, true) as is_active, updated_at
         `;
 
         const result = await db.query(updateQuery, values);
@@ -498,6 +537,87 @@ export const getAvailableRoles = async (req, res) => {
 
     } catch (error) {
         console.error("Get available roles error:", error);
+        res.status(500).json({ 
+            success: false, 
+            message: "Internal server error" 
+        });
+    }
+};
+
+// Reset user password  
+export const resetPassword = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const currentUserRole = req.user.role_id;
+
+        // Check if current user can reset passwords
+        if (![1, 2, 3].includes(currentUserRole)) {
+            return res.status(403).json({ 
+                message: "Access denied. You cannot reset passwords." 
+            });
+        }
+
+        // Get the target user
+        const userResult = await db.query(
+            'SELECT * FROM users WHERE id = $1', 
+            [id]
+        );
+
+        if (userResult.rows.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+
+        const targetUser = userResult.rows[0];
+
+        // Permission check based on role hierarchy
+        const allowedRoleIds = ROLE_HIERARCHY[currentUserRole] || [];
+        
+        // Superadmin can reset all passwords (including other superadmins)
+        // Other roles can only reset passwords for lower roles
+        if (currentUserRole !== 1 && !allowedRoleIds.includes(targetUser.role_id)) {
+            return res.status(403).json({ 
+                message: "Access denied. You cannot reset this user's password." 
+            });
+        }
+
+        // Generate a random secure password
+        const generateRandomPassword = () => {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%';
+            let password = '';
+            for (let i = 0; i < 12; i++) {
+                password += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return password;
+        };
+
+        const newPassword = generateRandomPassword();
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+        // Update password in database
+        await db.query(
+            'UPDATE users SET password = $1, updated_at = NOW() WHERE id = $2', 
+            [hashedPassword, id]
+        );
+
+        res.json({
+            success: true,
+            message: "Password reset successfully",
+            data: {
+                newPassword: newPassword,
+                user: {
+                    id: targetUser.id,
+                    name: targetUser.name,
+                    username: targetUser.username
+                }
+            }
+        });
+
+    } catch (error) {
+        console.error("Reset password error:", error);
         res.status(500).json({ 
             success: false, 
             message: "Internal server error" 

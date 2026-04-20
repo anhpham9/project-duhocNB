@@ -1,4 +1,5 @@
-import { ref, reactive, onMounted, computed } from 'vue'
+import { ref, reactive, onMounted, computed, watch } from 'vue'
+import { usePaginationSettings } from './usePaginationSettings'
 
 export const useUsersAPI = () => {
     // State
@@ -7,11 +8,18 @@ export const useUsersAPI = () => {
     const loading = ref(false)
     const error = ref(null)
     
+    // Pagination settings (persistent across sessions)
+    const { itemsPerPage, itemsPerPageOptions, setItemsPerPage } = usePaginationSettings()
+    
+    // Watch itemsPerPage changes to reset current page
+    watch(itemsPerPage, () => {
+        currentPage.value = 1
+    })
+    
     // Search and Filter State
     const searchQuery = ref('')
     const selectedRoleFilter = ref('')
     const currentPage = ref(1)
-    const itemsPerPage = ref(20)
     
     // Filtered and paginated users
     const filteredUsers = computed(() => {
@@ -23,7 +31,8 @@ export const useUsersAPI = () => {
             filtered = filtered.filter(user => 
                 user.name.toLowerCase().includes(query) ||
                 user.username.toLowerCase().includes(query) ||
-                user.email.toLowerCase().includes(query)
+                user.email.toLowerCase().includes(query) ||
+                (user.phone && user.phone.toLowerCase().includes(query))
             )
         }
         
@@ -73,14 +82,19 @@ export const useUsersAPI = () => {
     const showCreateForm = ref(false)
     const showEditForm = ref(false)
     const showDeleteConfirm = ref(false)
+    const showResetPasswordForm = ref(false)
     const userToDelete = ref(null)
+    const userToResetPassword = ref(null)
+    const resetPasswordResult = ref(null)
 
     // Form data
     const createForm = reactive({
         name: '',
         username: '',
         email: '',
+        phone: '',
         password: '',
+        confirmPassword: '',
         role_id: null,
         is_active: true
     })
@@ -90,6 +104,7 @@ export const useUsersAPI = () => {
         name: '',
         username: '',
         email: '',
+        phone: '',
         role_id: null,
         is_active: true
     })
@@ -161,7 +176,13 @@ export const useUsersAPI = () => {
             const data = await response.json()
 
             if (!response.ok) {
-                throw new Error(data.message || `HTTP ${response.status}`)
+                // Return detailed error information
+                return {
+                    success: false,
+                    message: data.message || `HTTP ${response.status}`,
+                    error: data, // Include full error response
+                    status: response.status
+                }
             }
 
             // Success
@@ -172,7 +193,11 @@ export const useUsersAPI = () => {
 
         } catch (err) {
             error.value = err.message
-            return { success: false, message: err.message }
+            return {
+                success: false,
+                message: err.message,
+                error: err.message
+            }
         } finally {
             loading.value = false
         }
@@ -193,7 +218,13 @@ export const useUsersAPI = () => {
             const data = await response.json()
 
             if (!response.ok) {
-                throw new Error(data.message || `HTTP ${response.status}`)
+                // Return detailed error information
+                return {
+                    success: false,
+                    message: data.message || `HTTP ${response.status}`,
+                    error: data, // Include full error response
+                    status: response.status
+                }
             }
 
             // Success
@@ -205,7 +236,11 @@ export const useUsersAPI = () => {
 
         } catch (err) {
             error.value = err.message
-            return { success: false, message: err.message }
+            return {
+                success: false,
+                message: err.message,
+                error: err.message
+            }
         } finally {
             loading.value = false
         }
@@ -241,13 +276,47 @@ export const useUsersAPI = () => {
         }
     }
 
+    const resetPassword = async (userId) => {
+        loading.value = true
+        error.value = null
+
+        try {
+            const response = await fetch(`${API_BASE}/users/${userId}/reset-password`, {
+                method: 'POST',
+                headers: getAuthHeaders()
+            })
+
+            const data = await response.json()
+
+            if (!response.ok) {
+                throw new Error(data.message || `HTTP ${response.status}`)
+            }
+
+            // Success - store result to show in modal
+            resetPasswordResult.value = {
+                user: data.data.user,
+                newPassword: data.data.newPassword
+            }
+            
+            return { success: true, message: data.message, data: data.data }
+
+        } catch (err) {
+            error.value = err.message
+            return { success: false, message: err.message }
+        } finally {
+            loading.value = false
+        }
+    }
+
     // Form helpers
     const resetCreateForm = () => {
         Object.assign(createForm, {
             name: '',
             username: '',
             email: '',
+            phone: '',
             password: '',
+            confirmPassword: '',
             role_id: null,
             is_active: true
         })
@@ -259,6 +328,7 @@ export const useUsersAPI = () => {
             name: '',
             username: '',
             email: '',
+            phone: '',
             role_id: null,
             is_active: true
         })
@@ -274,12 +344,7 @@ export const useUsersAPI = () => {
         selectedRoleFilter.value = role
         currentPage.value = 1 // Reset to first page
     }
-    
-    const setItemsPerPage = (items) => {
-        itemsPerPage.value = items
-        currentPage.value = 1 // Reset to first page
-    }
-    
+
     const goToPage = (page) => {
         if (page >= 1 && page <= totalPages.value) {
             currentPage.value = page
@@ -332,6 +397,7 @@ export const useUsersAPI = () => {
             name: user.name,
             username: user.username,
             email: user.email,
+            phone: user.phone || '',
             role_id: user.role_id,
             is_active: user.is_active !== undefined ? user.is_active : true
         })
@@ -343,12 +409,21 @@ export const useUsersAPI = () => {
         showDeleteConfirm.value = true
     }
 
+    const openResetPasswordConfirm = (user) => {
+        userToResetPassword.value = user
+        resetPasswordResult.value = null
+        showResetPasswordForm.value = true
+    }
+
     const closeAllModals = () => {
         showCreateForm.value = false
         showEditForm.value = false
         showDeleteConfirm.value = false
+        showResetPasswordForm.value = false
         editingUser.value = null
         userToDelete.value = null
+        userToResetPassword.value = null
+        resetPasswordResult.value = null
         error.value = null
     }
 
@@ -386,6 +461,27 @@ export const useUsersAPI = () => {
         return colorMap[roleName] || 'badge-default'
     }
 
+    // Permission helper for reset password
+    const canResetPassword = (currentUser, targetUser) => {
+        if (!currentUser || !targetUser) return false
+
+        const currentRole = currentUser.role_id
+        const targetRole = targetUser.role_id
+
+        // Role hierarchy: 1=superadmin, 2=admin, 3=manager, 4=editor, 5=consultant
+        // Superadmin can reset all passwords (including other superadmins)  
+        if (currentRole === 1) return true
+        
+        // Admin can reset for manager, editor, consultant (role_id >= 3)
+        if (currentRole === 2) return targetRole >= 3
+        
+        // Manager can reset for editor, consultant (role_id >= 4)  
+        if (currentRole === 3) return targetRole >= 4
+        
+        // Editor and consultant cannot reset any passwords
+        return false
+    }
+
     // Initialize
     onMounted(async () => {
         await Promise.all([
@@ -407,6 +503,7 @@ export const useUsersAPI = () => {
         selectedRoleFilter,
         currentPage,
         itemsPerPage,
+        itemsPerPageOptions,
         filteredUsers,
         paginatedUsers,
         totalPages,
@@ -416,7 +513,10 @@ export const useUsersAPI = () => {
         showCreateForm,
         showEditForm,
         showDeleteConfirm,
+        showResetPasswordForm,
         userToDelete,
+        userToResetPassword,
+        resetPasswordResult,
         createForm,
         editForm,
         
@@ -426,6 +526,7 @@ export const useUsersAPI = () => {
         createUser,
         updateUser,
         deleteUser,
+        resetPassword,
         
         // Form methods
         resetCreateForm,
@@ -433,6 +534,7 @@ export const useUsersAPI = () => {
         openCreateForm,
         openEditForm,
         openDeleteConfirm,
+        openResetPasswordConfirm,
         closeAllModals,
         
         // Search and Filter Methods
@@ -445,6 +547,7 @@ export const useUsersAPI = () => {
         // Helpers
         getRoleDisplayName,
         getRoleIcon,
-        getRoleBadgeColor
+        getRoleBadgeColor,
+        canResetPassword
     }
 }

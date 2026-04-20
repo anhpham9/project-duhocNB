@@ -6,7 +6,8 @@ import {
     createUser,
     updateUser,
     deleteUser,
-    getAvailableRoles
+    getAvailableRoles,
+    resetPassword
 } from "../controllers/users.controller.js";
 
 const router = Router();
@@ -28,6 +29,9 @@ router.post("/", createUser);
 
 // PUT /api/users/:id - Update user
 router.put("/:id", updateUser);
+
+// POST /api/users/:id/reset-password - Reset user password
+router.post("/:id/reset-password", resetPassword);
 
 // DELETE /api/users/:id - Delete user
 router.delete("/:id", deleteUser);
