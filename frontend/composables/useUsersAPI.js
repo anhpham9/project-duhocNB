@@ -19,6 +19,7 @@ export const useUsersAPI = () => {
     // Search and Filter State
     const searchQuery = ref('')
     const selectedRoleFilter = ref('')
+    const selectedStatusFilter = ref('')
     const currentPage = ref(1)
     
     // Filtered and paginated users
@@ -39,6 +40,15 @@ export const useUsersAPI = () => {
         // Role filter
         if (selectedRoleFilter.value) {
             filtered = filtered.filter(user => user.role_name === selectedRoleFilter.value)
+        }
+        
+        // Status filter
+        if (selectedStatusFilter.value !== '') {
+            const isActive = selectedStatusFilter.value === 'active'
+            filtered = filtered.filter(user => {
+                const userIsActive = user.is_active === true || user.is_active === undefined
+                return userIsActive === isActive
+            })
         }
         
         return filtered
@@ -345,6 +355,11 @@ export const useUsersAPI = () => {
         currentPage.value = 1 // Reset to first page
     }
 
+    const setStatusFilter = (status) => {
+        selectedStatusFilter.value = status
+        currentPage.value = 1 // Reset to first page
+    }
+
     const goToPage = (page) => {
         if (page >= 1 && page <= totalPages.value) {
             currentPage.value = page
@@ -501,6 +516,7 @@ export const useUsersAPI = () => {
         // Search and Filter
         searchQuery,
         selectedRoleFilter,
+        selectedStatusFilter,
         currentPage,
         itemsPerPage,
         itemsPerPageOptions,
@@ -540,6 +556,7 @@ export const useUsersAPI = () => {
         // Search and Filter Methods
         setSearchQuery,
         setRoleFilter,
+        setStatusFilter,
         setItemsPerPage,
         goToPage,
         toggleUserStatus,

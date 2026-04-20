@@ -126,6 +126,17 @@
                                 </select>
                             </div>
 
+                            <!-- Status Filter -->
+                            <div class="filter-group">
+                                <label>Lọc theo trạng thái:</label>
+                                <select :value="selectedStatusFilter" @change="setStatusFilter($event.target.value)"
+                                    class="filter-select">
+                                    <option value="">Tất cả trạng thái</option>
+                                    <option value="active">Đang hoạt động</option>
+                                    <option value="inactive">Tạm khóa</option>
+                                </select>
+                            </div>
+
                             <!-- Items per page -->
                             <div class="filter-group">
                                 <label>Hiển thị:</label>
@@ -648,6 +659,7 @@ const {
     // Search and Filter
     searchQuery,
     selectedRoleFilter,
+    selectedStatusFilter,
     currentPage,
     itemsPerPage,
     itemsPerPageOptions,
@@ -671,6 +683,7 @@ const {
     // Search and Filter Methods
     setSearchQuery,
     setRoleFilter,
+    setStatusFilter,
     setItemsPerPage,
     goToPage,
     toggleUserStatus,
