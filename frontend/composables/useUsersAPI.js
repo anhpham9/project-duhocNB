@@ -22,6 +22,10 @@ export const useUsersAPI = () => {
     const selectedStatusFilter = ref('')
     const currentPage = ref(1)
     
+    // Sort State
+    const sortColumn = ref('')
+    const sortDirection = ref('asc')
+    
     // Filtered and paginated users
     const filteredUsers = computed(() => {
         let filtered = users.value
@@ -50,7 +54,39 @@ export const useUsersAPI = () => {
                 return userIsActive === isActive
             })
         }
-        
+
+        // Apply sorting if column is selected
+        if (sortColumn.value) {
+            filtered.sort((a, b) => {
+                let aVal = a[sortColumn.value]
+                let bVal = b[sortColumn.value]
+                
+                // Handle different data types
+                if (sortColumn.value === 'id') {
+                    aVal = parseInt(aVal)
+                    bVal = parseInt(bVal)
+                } else if (sortColumn.value === 'created_at') {
+                    aVal = new Date(aVal)
+                    bVal = new Date(bVal)
+                } else if (sortColumn.value === 'role_name') {
+                    // Sort by role hierarchy: 1=superadmin, 2=admin, etc.
+                    aVal = a.role_id || 999
+                    bVal = b.role_id || 999
+                } else if (sortColumn.value === 'is_active') {
+                    // Convert boolean to sortable value
+                    aVal = aVal ? 1 : 0
+                    bVal = bVal ? 1 : 0
+                } else {
+                    aVal = aVal ? aVal.toString().toLowerCase() : ''
+                    bVal = bVal ? bVal.toString().toLowerCase() : ''
+                }
+                
+                if (aVal < bVal) return sortDirection.value === 'asc' ? -1 : 1
+                if (aVal > bVal) return sortDirection.value === 'asc' ? 1 : -1
+                return 0
+            })
+        }
+
         return filtered
     })
     
@@ -360,6 +396,18 @@ export const useUsersAPI = () => {
         currentPage.value = 1 // Reset to first page
     }
 
+    // Sort method
+    const handleSort = (column) => {
+        if (sortColumn.value === column) {
+            sortDirection.value = sortDirection.value === 'asc' ? 'desc' : 'asc'
+        } else {
+            sortColumn.value = column
+            sortDirection.value = 'asc'
+        }
+        // Reset to first page when sorting
+        currentPage.value = 1
+    }
+
     const goToPage = (page) => {
         if (page >= 1 && page <= totalPages.value) {
             currentPage.value = page
@@ -517,6 +565,12 @@ export const useUsersAPI = () => {
         searchQuery,
         selectedRoleFilter,
         selectedStatusFilter,
+        
+        // Sort
+        sortColumn,
+        sortDirection,
+        
+        // Pagination
         currentPage,
         itemsPerPage,
         itemsPerPageOptions,
@@ -557,6 +611,7 @@ export const useUsersAPI = () => {
         setSearchQuery,
         setRoleFilter,
         setStatusFilter,
+        handleSort,
         setItemsPerPage,
         goToPage,
         toggleUserStatus,

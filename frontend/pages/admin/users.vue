@@ -168,13 +168,48 @@
                         <table class="users-table">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
-                                    <th>Người dùng</th>
-                                    <th>Email</th>
-                                    <th>Số điện thoại</th>
-                                    <th>Quyền</th>
-                                    <th>Trạng thái</th>
-                                    <th>Ngày tạo</th>
+                                    <th class="sortable" 
+                                        :class="{ 'sort-asc': sortColumn === 'id' && sortDirection === 'asc', 'sort-desc': sortColumn === 'id' && sortDirection === 'desc' }"
+                                        @click="handleSort('id')">
+                                        ID
+                                        <i class="fas fa-sort"></i>
+                                    </th>
+                                    <th class="sortable" 
+                                        :class="{ 'sort-asc': sortColumn === 'name' && sortDirection === 'asc', 'sort-desc': sortColumn === 'name' && sortDirection === 'desc' }"
+                                        @click="handleSort('name')">
+                                        Người dùng
+                                        <i class="fas fa-sort"></i>
+                                    </th>
+                                    <th class="sortable" 
+                                        :class="{ 'sort-asc': sortColumn === 'email' && sortDirection === 'asc', 'sort-desc': sortColumn === 'email' && sortDirection === 'desc' }"
+                                        @click="handleSort('email')">
+                                        Email
+                                        <i class="fas fa-sort"></i>
+                                    </th>
+                                    <th class="sortable" 
+                                        :class="{ 'sort-asc': sortColumn === 'phone' && sortDirection === 'asc', 'sort-desc': sortColumn === 'phone' && sortDirection === 'desc' }"
+                                        @click="handleSort('phone')">
+                                        Số điện thoại
+                                        <i class="fas fa-sort"></i>
+                                    </th>
+                                    <th class="sortable" 
+                                        :class="{ 'sort-asc': sortColumn === 'role_name' && sortDirection === 'asc', 'sort-desc': sortColumn === 'role_name' && sortDirection === 'desc' }"
+                                        @click="handleSort('role_name')">
+                                        Quyền
+                                        <i class="fas fa-sort"></i>
+                                    </th>
+                                    <th class="sortable" 
+                                        :class="{ 'sort-asc': sortColumn === 'is_active' && sortDirection === 'asc', 'sort-desc': sortColumn === 'is_active' && sortDirection === 'desc' }"
+                                        @click="handleSort('is_active')">
+                                        Trạng thái
+                                        <i class="fas fa-sort"></i>
+                                    </th>
+                                    <th class="sortable" 
+                                        :class="{ 'sort-asc': sortColumn === 'created_at' && sortDirection === 'asc', 'sort-desc': sortColumn === 'created_at' && sortDirection === 'desc' }"
+                                        @click="handleSort('created_at')">
+                                        Ngày tạo
+                                        <i class="fas fa-sort"></i>
+                                    </th>
                                     <th>Thao tác</th>
                                 </tr>
                             </thead>
@@ -660,6 +695,12 @@ const {
     searchQuery,
     selectedRoleFilter,
     selectedStatusFilter,
+    
+    // Sort
+    sortColumn,
+    sortDirection,
+    
+    // Pagination
     currentPage,
     itemsPerPage,
     itemsPerPageOptions,
@@ -684,6 +725,7 @@ const {
     setSearchQuery,
     setRoleFilter,
     setStatusFilter,
+    handleSort,
     setItemsPerPage,
     goToPage,
     toggleUserStatus,
@@ -2641,12 +2683,6 @@ span.required {
         font-size: 0.9rem;
     }
 
-    .user-info {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5rem;
-    }
-
     .user-avatar {
         width: 32px;
         height: 32px;
@@ -2709,12 +2745,6 @@ span.required {
     .users-table td {
         padding: 0.75rem 0.5rem;
         font-size: 0.9rem;
-    }
-
-    .user-info {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5rem;
     }
 
     .user-avatar {
@@ -3152,7 +3182,7 @@ span.required {
     color: #28a745;
 }
 
-.user-info {
+.reset-confirmation .user-info {
     background: #f8f9fa;
     border-radius: 8px;
     padding: 1rem;
@@ -3165,6 +3195,7 @@ span.required {
     justify-content: space-between;
     padding: 0.5rem 0;
     border-bottom: 1px solid #e9ecef;
+    gap: 0.5rem;
 }
 
 .info-item:last-child {
@@ -3283,5 +3314,47 @@ span.required {
     margin: 0;
     font-size: 0.9rem;
     line-height: 1.5;
+}
+
+/* =========================
+   SORTABLE HEADERS
+   ========================= */
+.sortable {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    transition: background-color 0.2s ease;
+}
+
+.sortable:hover {
+    background-color: #f5f5f5;
+}
+
+.sortable i {
+    margin-left: 0.5rem;
+    opacity: 0.5;
+    transition: opacity 0.2s ease;
+}
+
+.sortable:hover i {
+    opacity: 0.8;
+}
+
+.sortable.sort-asc i::before {
+    content: '\f0de'; /* fa-sort-up */
+    opacity: 1;
+    color: #1976d2;
+}
+
+.sortable.sort-desc i::before {
+    content: '\f0dd'; /* fa-sort-down */
+    opacity: 1;
+    color: #1976d2;
+}
+
+.sortable.sort-asc,
+.sortable.sort-desc {
+    background-color: #f8f9fa;
+    color: #1976d2;
 }
 </style>
