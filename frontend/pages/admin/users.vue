@@ -98,580 +98,623 @@
                 </div>
             </div>
 
-                <!-- Users Table -->
-                <div class="table-section">
-                    <div class="table-header">
-                        <h2>Danh sách người dùng ({{ filteredUsers.length }})</h2>
-                        <div class="table-actions">
-                            <button @click="exportToExcel" class="btn btn-success" :disabled="loading || filteredUsers.length === 0">
-                                <i class="fas fa-file-excel" :class="{ 'fa-spin': exportingExcel }"></i>
-                                Xuất Excel
-                            </button>
-                            <button @click="fetchUsers" class="btn btn-secondary" :disabled="loading">
-                                <i class="fas fa-sync-alt" :class="{ 'fa-spin': loading }"></i>
-                                Làm mới
-                            </button>
-                        </div>
+            <!-- Users Table -->
+            <div class="table-section">
+                <div class="table-header">
+                    <h2>Danh sách người dùng ({{ filteredUsers.length }})</h2>
+                    <div class="table-actions">
+                        <button @click="exportToExcel" class="btn btn-success"
+                            :disabled="loading || filteredUsers.length === 0">
+                            <i class="fas fa-file-excel" :class="{ 'fa-spin': exportingExcel }"></i>
+                            Xuất Excel
+                        </button>
+                        <button @click="fetchUsers" class="btn btn-secondary" :disabled="loading">
+                            <i class="fas fa-sync-alt" :class="{ 'fa-spin': loading }"></i>
+                            Làm mới
+                        </button>
                     </div>
+                </div>
 
-                    <!-- Search and Filter Controls -->
-                    <div class="table-controls">
-                        <div class="controls-row">
-                            <!-- Search Box -->
-                            <div class="search-box">
-                                <i class="fas fa-search"></i>
-                                <input type="text" :value="searchQuery" @input="setSearchQuery($event.target.value)"
-                                    placeholder="Tìm kiếm theo tên, username, email hoặc số điện thoại..." class="search-input" />
-                                <button v-if="searchQuery" @click="setSearchQuery('')" class="clear-search">
-                                    <i class="fas fa-times"></i>
-                                </button>
-                            </div>
-
-                            <!-- Role Filter -->
-                            <div class="filter-group">
-                                <label>Lọc theo quyền:</label>
-                                <select :value="selectedRoleFilter" @change="setRoleFilter($event.target.value)"
-                                    class="filter-select">
-                                    <option value="">Tất cả quyền</option>
-                                    <option value="Superadmin">Superadmin</option>
-                                    <option value="Admin">Admin</option>
-                                    <option value="Manager">Manager</option>
-                                    <option value="Editor">Editor</option>
-                                    <option value="Consultant">Consultant</option>
-                                </select>
-                            </div>
-
-                            <!-- Status Filter -->
-                            <div class="filter-group">
-                                <label>Lọc theo trạng thái:</label>
-                                <select :value="selectedStatusFilter" @change="setStatusFilter($event.target.value)"
-                                    class="filter-select">
-                                    <option value="">Tất cả trạng thái</option>
-                                    <option value="active">Đang hoạt động</option>
-                                    <option value="inactive">Tạm khóa</option>
-                                </select>
-                            </div>
-
-                            <!-- Items per page -->
-                            <div class="filter-group">
-                                <label>Hiển thị:</label>
-                                <select :value="itemsPerPage" @change="setItemsPerPage(parseInt($event.target.value))"
-                                    class="filter-select">
-                                    <option v-for="option in itemsPerPageOptions" :key="option.value" :value="option.value">
-                                        {{ option.label }}
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Loading State -->
-                    <div v-if="loading" class="loading-state">
-                        <i class="fas fa-spinner fa-spin"></i>
-                        <p>Đang tải danh sách người dùng...</p>
-                    </div>
-
-                    <!-- Error State -->
-                    <div v-else-if="error" class="error-state">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <p>Lỗi: {{ error }}</p>
-                        <button @click="fetchUsers" class="btn btn-primary">Thử lại</button>
-                    </div>
-
-                    <!-- Users Table -->
-                    <div v-else class="table-container">
-                        <table class="users-table">
-                            <thead>
-                                <tr>
-                                    <th class="sortable" 
-                                        :class="{ 'sort-asc': sortColumn === 'id' && sortDirection === 'asc', 'sort-desc': sortColumn === 'id' && sortDirection === 'desc' }"
-                                        @click="handleSort('id')">
-                                        ID
-                                        <i class="fas fa-sort"></i>
-                                    </th>
-                                    <th class="sortable" 
-                                        :class="{ 'sort-asc': sortColumn === 'name' && sortDirection === 'asc', 'sort-desc': sortColumn === 'name' && sortDirection === 'desc' }"
-                                        @click="handleSort('name')">
-                                        Người dùng
-                                        <i class="fas fa-sort"></i>
-                                    </th>
-                                    <th class="sortable" 
-                                        :class="{ 'sort-asc': sortColumn === 'email' && sortDirection === 'asc', 'sort-desc': sortColumn === 'email' && sortDirection === 'desc' }"
-                                        @click="handleSort('email')">
-                                        Email
-                                        <i class="fas fa-sort"></i>
-                                    </th>
-                                    <th class="sortable" 
-                                        :class="{ 'sort-asc': sortColumn === 'phone' && sortDirection === 'asc', 'sort-desc': sortColumn === 'phone' && sortDirection === 'desc' }"
-                                        @click="handleSort('phone')">
-                                        Số điện thoại
-                                        <i class="fas fa-sort"></i>
-                                    </th>
-                                    <th class="sortable" 
-                                        :class="{ 'sort-asc': sortColumn === 'role_name' && sortDirection === 'asc', 'sort-desc': sortColumn === 'role_name' && sortDirection === 'desc' }"
-                                        @click="handleSort('role_name')">
-                                        Quyền
-                                        <i class="fas fa-sort"></i>
-                                    </th>
-                                    <th class="sortable" 
-                                        :class="{ 'sort-asc': sortColumn === 'is_active' && sortDirection === 'asc', 'sort-desc': sortColumn === 'is_active' && sortDirection === 'desc' }"
-                                        @click="handleSort('is_active')">
-                                        Trạng thái
-                                        <i class="fas fa-sort"></i>
-                                    </th>
-                                    <th class="sortable" 
-                                        :class="{ 'sort-asc': sortColumn === 'created_at' && sortDirection === 'asc', 'sort-desc': sortColumn === 'created_at' && sortDirection === 'desc' }"
-                                        @click="handleSort('created_at')">
-                                        Ngày tạo
-                                        <i class="fas fa-sort"></i>
-                                    </th>
-                                    <th>Thao tác</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="user in paginatedUsers" :key="user.id" class="user-row">
-                                    <td class="user-id">#{{ user.id }}</td>
-                                    <td class="user-info">
-                                        <div class="user-avatar">
-                                            <i :class="getRoleIcon(user.role_name)"></i>
-                                        </div>
-                                        <div class="user-details">
-                                            <div class="user-name">{{ user.name }}</div>
-                                            <div class="username">@{{ user.username }}</div>
-                                        </div>
-                                    </td>
-                                    <td class="user-email">{{ user.email }}</td>
-                                    <td class="user-phone">{{ user.phone || '-' }}</td>
-                                    <td class="user-role">
-                                        <span class="role-badge" :class="getRoleBadgeColor(user.role_name)">
-                                            {{ getRoleDisplayName(user.role_name) }}
-                                        </span>
-                                    </td>
-                                    <td class="user-status">
-                                        <button @click="handleToggleStatus(user)" class="status-toggle"
-                                            :class="user.is_active ? 'status-active' : 'status-inactive'"
-                                            :disabled="loading"
-                                            :title="user.is_active ? 'Click để tạm khóa' : 'Click để kích hoạt'">
-                                            <i
-                                                :class="user.is_active ? 'fas fa-check-circle' : 'fas fa-times-circle'"></i>
-                                            <span>{{ user.is_active ? 'Hoạt động' : 'Tạm khóa' }}</span>
-                                        </button>
-                                    </td>
-                                    <td class="user-date">{{ formatDate(user.created_at) }}</td>
-                                    <td>
-                                        <div class="user-actions">
-                                            <button @click="handleOpenEditForm(user)" class="btn-action btn-edit"
-                                                title="Chỉnh sửa">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button v-if="canResetPassword(currentUser, user)" 
-                                                @click="openResetPasswordConfirm(user)" 
-                                                class="btn-action btn-reset"
-                                                title="Reset mật khẩu">
-                                                <i class="fas fa-key"></i>
-                                            </button>
-                                            <button @click="openDeleteConfirm(user)" class="btn-action btn-delete"
-                                                title="Xóa">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <!-- Empty State -->
-                        <div v-if="filteredUsers.length === 0" class="empty-state">
+                <!-- Search and Filter Controls -->
+                <div class="table-controls">
+                    <div class="controls-row">
+                        <!-- Search Box -->
+                        <div class="search-box">
                             <i class="fas fa-search"></i>
-                            <h3>Không tìm thấy kết quả</h3>
-                            <p v-if="searchQuery || selectedRoleFilter">
-                                Không có người dùng nào phù hợp với bộ lọc hiện tại.
-                            </p>
-                            <p v-else>
-                                Chưa có người dùng nào trong hệ thống.
-                            </p>
+                            <input type="text" :value="searchQuery" @input="setSearchQuery($event.target.value)"
+                                placeholder="Tìm kiếm theo tên, username, email hoặc số điện thoại..."
+                                class="search-input" />
+                            <button v-if="searchQuery" @click="setSearchQuery('')" class="clear-search">
+                                <i class="fas fa-times"></i>
+                            </button>
                         </div>
 
-                        <!-- Pagination -->
-                        <div v-if="totalPages > 1" class="pagination">
-                            <div class="pagination-info">
-                                Hiển thị {{ ((currentPage - 1) * itemsPerPage) + 1 }} -
-                                {{ Math.min(currentPage * itemsPerPage, filteredUsers.length) }}
-                                trong tổng số {{ filteredUsers.length }} người dùng
-                            </div>
-                            <div class="pagination-controls">
-                                <button @click="goToPage(1)" :disabled="currentPage === 1"
-                                    class="btn-page btn-page-first">
-                                    <i class="fas fa-angle-double-left"></i>
-                                </button>
-                                <button @click="goToPage(currentPage - 1)" :disabled="currentPage === 1"
-                                    class="btn-page btn-page-prev">
-                                    <i class="fas fa-angle-left"></i>
-                                </button>
+                        <!-- Role Filter -->
+                        <div class="filter-group">
+                            <label>Lọc theo quyền:</label>
+                            <select :value="selectedRoleFilter" @change="setRoleFilter($event.target.value)"
+                                class="filter-select">
+                                <option value="">Tất cả quyền</option>
+                                <option value="Superadmin">Superadmin</option>
+                                <option value="Admin">Admin</option>
+                                <option value="Manager">Manager</option>
+                                <option value="Editor">Editor</option>
+                                <option value="Consultant">Consultant</option>
+                            </select>
+                        </div>
 
-                                <template v-for="page in getVisiblePages()" :key="page">
-                                    <button v-if="page === '...'" class="btn-page btn-page-dots" disabled>
-                                        ...
+                        <!-- Status Filter -->
+                        <div class="filter-group">
+                            <label>Lọc theo trạng thái:</label>
+                            <select :value="selectedStatusFilter" @change="setStatusFilter($event.target.value)"
+                                class="filter-select">
+                                <option value="">Tất cả trạng thái</option>
+                                <option value="active">Đang hoạt động</option>
+                                <option value="inactive">Tạm khóa</option>
+                            </select>
+                        </div>
+
+                        <!-- Items per page -->
+                        <div class="filter-group">
+                            <label>Hiển thị:</label>
+                            <select :value="itemsPerPage" @change="setItemsPerPage(parseInt($event.target.value))"
+                                class="filter-select">
+                                <option v-for="option in itemsPerPageOptions" :key="option.value" :value="option.value">
+                                    {{ option.label }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Loading State -->
+                <div v-if="loading" class="loading-state">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Đang tải danh sách người dùng...</p>
+                </div>
+
+                <!-- Error State -->
+                <div v-else-if="error" class="error-state">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>Lỗi: {{ error }}</p>
+                    <button @click="fetchUsers" class="btn btn-primary">Thử lại</button>
+                </div>
+
+                <!-- Users Table -->
+                <div v-else class="table-container">
+                    <table class="users-table">
+                        <thead>
+                            <tr>
+                                <th class="sortable"
+                                    :class="{ 'sort-asc': sortColumn === 'id' && sortDirection === 'asc', 'sort-desc': sortColumn === 'id' && sortDirection === 'desc' }"
+                                    @click="handleSort('id')">
+                                    ID
+                                    <i class="fas fa-sort"></i>
+                                </th>
+                                <th class="sortable"
+                                    :class="{ 'sort-asc': sortColumn === 'name' && sortDirection === 'asc', 'sort-desc': sortColumn === 'name' && sortDirection === 'desc' }"
+                                    @click="handleSort('name')">
+                                    Người dùng
+                                    <i class="fas fa-sort"></i>
+                                </th>
+                                <th class="sortable"
+                                    :class="{ 'sort-asc': sortColumn === 'email' && sortDirection === 'asc', 'sort-desc': sortColumn === 'email' && sortDirection === 'desc' }"
+                                    @click="handleSort('email')">
+                                    Email
+                                    <i class="fas fa-sort"></i>
+                                </th>
+                                <th class="sortable"
+                                    :class="{ 'sort-asc': sortColumn === 'phone' && sortDirection === 'asc', 'sort-desc': sortColumn === 'phone' && sortDirection === 'desc' }"
+                                    @click="handleSort('phone')">
+                                    Số điện thoại
+                                    <i class="fas fa-sort"></i>
+                                </th>
+                                <th class="sortable"
+                                    :class="{ 'sort-asc': sortColumn === 'role_name' && sortDirection === 'asc', 'sort-desc': sortColumn === 'role_name' && sortDirection === 'desc' }"
+                                    @click="handleSort('role_name')">
+                                    Quyền
+                                    <i class="fas fa-sort"></i>
+                                </th>
+                                <th class="sortable"
+                                    :class="{ 'sort-asc': sortColumn === 'is_active' && sortDirection === 'asc', 'sort-desc': sortColumn === 'is_active' && sortDirection === 'desc' }"
+                                    @click="handleSort('is_active')">
+                                    Trạng thái
+                                    <i class="fas fa-sort"></i>
+                                </th>
+                                <th class="sortable"
+                                    :class="{ 'sort-asc': sortColumn === 'created_at' && sortDirection === 'asc', 'sort-desc': sortColumn === 'created_at' && sortDirection === 'desc' }"
+                                    @click="handleSort('created_at')">
+                                    Ngày tạo
+                                    <i class="fas fa-sort"></i>
+                                </th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="user in paginatedUsers" :key="user.id" class="user-row">
+                                <td class="user-id">#{{ user.id }}</td>
+                                <td class="user-info">
+                                    <div class="user-avatar">
+                                        <i :class="getRoleIcon(user.role_name)"></i>
+                                    </div>
+                                    <div class="user-details">
+                                        <div class="user-name">{{ user.name }}</div>
+                                        <div class="username">@{{ user.username }}</div>
+                                    </div>
+                                </td>
+                                <td class="user-email">{{ user.email }}</td>
+                                <td class="user-phone">{{ user.phone || '-' }}</td>
+                                <td class="user-role">
+                                    <span class="role-badge" :class="getRoleBadgeColor(user.role_name)">
+                                        {{ getRoleDisplayName(user.role_name) }}
+                                    </span>
+                                </td>
+                                <td class="user-status">
+                                    <button @click="handleToggleStatus(user)" class="status-toggle"
+                                        :class="user.is_active ? 'status-active' : 'status-inactive'"
+                                        :disabled="loading"
+                                        :title="user.is_active ? 'Click để tạm khóa' : 'Click để kích hoạt'">
+                                        <i :class="user.is_active ? 'fas fa-check-circle' : 'fas fa-times-circle'"></i>
+                                        <span>{{ user.is_active ? 'Hoạt động' : 'Tạm khóa' }}</span>
                                     </button>
-                                    <button v-else @click="goToPage(page)"
-                                        :class="['btn-page', { 'btn-page-active': page === currentPage }]">
-                                        {{ page }}
-                                    </button>
-                                </template>
+                                </td>
+                                <td class="user-date">{{ formatDate(user.created_at) }}</td>
+                                <td>
+                                    <div class="user-actions">
+                                        <button @click="handleOpenViewDetail(user)" class="btn-action btn-view"
+                                            title="Xem chi tiết">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button @click="handleOpenEditForm(user)" class="btn-action btn-edit"
+                                            title="Chỉnh sửa">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button v-if="canResetPassword(currentUser, user)"
+                                            @click="openResetPasswordConfirm(user)" class="btn-action btn-reset"
+                                            title="Reset mật khẩu">
+                                            <i class="fas fa-key"></i>
+                                        </button>
+                                        <button @click="openDeleteConfirm(user)" class="btn-action btn-delete"
+                                            title="Xóa">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
 
-                                <button @click="goToPage(currentPage + 1)" :disabled="currentPage === totalPages"
-                                    class="btn-page btn-page-next">
-                                    <i class="fas fa-angle-right"></i>
+                    <!-- Empty State -->
+                    <div v-if="filteredUsers.length === 0" class="empty-state">
+                        <i class="fas fa-search"></i>
+                        <h3>Không tìm thấy kết quả</h3>
+                        <p v-if="searchQuery || selectedRoleFilter">
+                            Không có người dùng nào phù hợp với bộ lọc hiện tại.
+                        </p>
+                        <p v-else>
+                            Chưa có người dùng nào trong hệ thống.
+                        </p>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div v-if="totalPages > 1" class="pagination">
+                        <div class="pagination-info">
+                            Hiển thị {{ ((currentPage - 1) * itemsPerPage) + 1 }} -
+                            {{ Math.min(currentPage * itemsPerPage, filteredUsers.length) }}
+                            trong tổng số {{ filteredUsers.length }} người dùng
+                        </div>
+                        <div class="pagination-controls">
+                            <button @click="goToPage(1)" :disabled="currentPage === 1" class="btn-page btn-page-first">
+                                <i class="fas fa-angle-double-left"></i>
+                            </button>
+                            <button @click="goToPage(currentPage - 1)" :disabled="currentPage === 1"
+                                class="btn-page btn-page-prev">
+                                <i class="fas fa-angle-left"></i>
+                            </button>
+
+                            <template v-for="page in getVisiblePages()" :key="page">
+                                <button v-if="page === '...'" class="btn-page btn-page-dots" disabled>
+                                    ...
                                 </button>
-                                <button @click="goToPage(totalPages)" :disabled="currentPage === totalPages"
-                                    class="btn-page btn-page-last">
-                                    <i class="fas fa-angle-double-right"></i>
+                                <button v-else @click="goToPage(page)"
+                                    :class="['btn-page', { 'btn-page-active': page === currentPage }]">
+                                    {{ page }}
                                 </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                            </template>
 
-                <!-- Create User Modal -->
-                <div v-if="showCreateForm" class="modal-overlay">
-                    <div class="modal" @click.stop>
-                        <div class="modal-header">
-                            <h3>Thêm người dùng mới</h3>
-                            <button @click="handleCloseAllModals" class="btn-close">
-                                <i class="fas fa-times"></i>
+                            <button @click="goToPage(currentPage + 1)" :disabled="currentPage === totalPages"
+                                class="btn-page btn-page-next">
+                                <i class="fas fa-angle-right"></i>
                             </button>
-                        </div>
-                        <form @submit.prevent="handleCreateUser" class="modal-body">
-                            <div class="form-group">
-                                <label for="create-name">Họ và tên <span class="required">*</span></label>
-                                <input id="create-name" v-model="createForm.name" type="text" required
-                                    placeholder="Nhập họ và tên" 
-                                    :class="{ 'input-error': validationErrors.name }"
-                                    @blur="validateField('name')" />
-                                <div v-if="validationErrors.name" class="field-error">
-                                    {{ validationErrors.name }}
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="create-username">Tên đăng nhập <span class="required">*</span></label>
-                                <input id="create-username" v-model="createForm.username" type="text" required
-                                    placeholder="Nhập tên đăng nhập" 
-                                    :class="{ 'input-error': validationErrors.username }"
-                                    @blur="validateField('username')" />
-                                <div v-if="validationErrors.username" class="field-error">
-                                    {{ validationErrors.username }}
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="create-email">Email <span class="required">*</span></label>
-                                <input id="create-email" v-model="createForm.email" type="email" required
-                                    placeholder="Nhập địa chỉ email" 
-                                    :class="{ 'input-error': validationErrors.email }"
-                                    @input="checkEmailValidation" 
-                                    @blur="validateField('email')" />
-                                <div v-if="validationErrors.email" class="field-error">
-                                    {{ validationErrors.email }}
-                                </div>
-                                <div v-if="createForm.email && isEmailValid && !validationErrors.email" class="success-message">
-                                    <i class="fas fa-check-circle"></i>
-                                    Địa chỉ email hợp lệ
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="create-phone">Số điện thoại</label>
-                                <input id="create-phone" v-model="createForm.phone" type="tel" 
-                                    placeholder="Nhập số điện thoại (tùy chọn)" 
-                                    :class="{ 'input-error': validationErrors.phone }"
-                                    @input="checkPhoneValidation" 
-                                    @blur="validateField('phone')" />
-                                <div v-if="validationErrors.phone" class="field-error">
-                                    {{ validationErrors.phone }}
-                                </div>
-                                <div v-if="createForm.phone && isPhoneValid && !validationErrors.phone" class="success-message">
-                                    <i class="fas fa-check-circle"></i>
-                                    Số điện thoại hợp lệ
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="create-password">Mật khẩu <span class="required">*</span></label>
-                                <input id="create-password" v-model="createForm.password" type="password" required
-                                    placeholder="Nhập mật khẩu" 
-                                    :class="{ 'input-error': validationErrors.password }"
-                                    @input="checkPasswordStrength" 
-                                    @blur="validateField('password')" />
-                                <div v-if="validationErrors.password" class="field-error">
-                                    {{ validationErrors.password }}
-                                </div>
-                                
-                                <!-- Password Strength Checker -->
-                                <div v-if="createForm.password" class="password-strength">
-                                    <h4>Kiểm tra độ bảo mật mật khẩu:</h4>
-                                    <div class="strength-checks">
-                                        <div class="strength-check" :class="{ 'check-valid': passwordStrength.hasMinLength }">
-                                            <i :class="passwordStrength.hasMinLength ? 'fas fa-check-circle' : 'fas fa-times-circle'"></i>
-                                            <span>Ít nhất 8 ký tự</span>
-                                        </div>
-                                        <div class="strength-check" :class="{ 'check-valid': passwordStrength.hasLettersAndNumbers }">
-                                            <i :class="passwordStrength.hasLettersAndNumbers ? 'fas fa-check-circle' : 'fas fa-times-circle'"></i>
-                                            <span>Gồm chữ và số</span>
-                                        </div>
-                                        <div class="strength-check" :class="{ 'check-valid': passwordStrength.hasMixedCase }">
-                                            <i :class="passwordStrength.hasMixedCase ? 'fas fa-check-circle' : 'fas fa-times-circle'"></i>
-                                            <span>Gồm chữ in hoa và in thường</span>
-                                        </div>
-                                    </div>
-                                    <div class="strength-indicator">
-                                        <div class="strength-bar">
-                                            <div class="strength-progress" :class="getPasswordStrengthClass(passwordStrength)"
-                                                :style="{ width: getPasswordStrengthPercentage(passwordStrength) + '%' }"></div>
-                                        </div>
-                                        <span class="strength-text">{{ getPasswordStrengthText(passwordStrength) }}</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="create-confirm-password">Nhập lại mật khẩu <span class="required">*</span></label>
-                                <input id="create-confirm-password" v-model="createForm.confirmPassword" type="password" required
-                                    placeholder="Nhập lại mật khẩu" 
-                                    :class="{ 'input-error': validationErrors.confirmPassword }"
-                                    @blur="validateField('confirmPassword')" />
-                                <div v-if="validationErrors.confirmPassword" class="field-error">
-                                    {{ validationErrors.confirmPassword }}
-                                </div>
-                                <div v-if="createForm.confirmPassword && passwordsMatch && !validationErrors.confirmPassword" class="success-message">
-                                    <i class="fas fa-check-circle"></i>
-                                    Mật khẩu trùng khớp
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="create-role">Quyền <span class="required">*</span></label>
-                                <select id="create-role" v-model="createForm.role_id" required
-                                    :class="{ 'input-error': validationErrors.role_id }"
-                                    @blur="validateField('role_id')">
-                                    <option value="">Chọn quyền</option>
-                                    <option v-for="role in availableRoles" :key="role.id" :value="role.id">
-                                        {{ getRoleDisplayName(role.name) }}
-                                    </option>
-                                </select>
-                                <div v-if="validationErrors.role_id" class="field-error">
-                                    {{ validationErrors.role_id }}
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="create-status">Trạng thái <span class="required">*</span></label>
-                                <select id="create-status" v-model="createForm.is_active" required>
-                                    <option :value="true">Hoạt động</option>
-                                    <option :value="false">Tạm khóa</option>
-                                </select>
-                            </div>
-                        </form>
-                        <div class="modal-footer">
-                            <button @click="handleCloseAllModals" type="button" class="btn btn-secondary">Hủy</button>
-                            <button @click="handleCreateUser" type="button" class="btn btn-primary" 
-                                :disabled="loading || !isCreateFormValid || phoneCheckingDuplicate">
-                                <i v-if="loading" class="fas fa-spinner fa-spin"></i>
-                                {{ loading ? 'Đang tạo...' : 'Tạo người dùng' }}
+                            <button @click="goToPage(totalPages)" :disabled="currentPage === totalPages"
+                                class="btn-page btn-page-last">
+                                <i class="fas fa-angle-double-right"></i>
                             </button>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Edit User Modal -->
-                <div v-if="showEditForm" class="modal-overlay" @click="handleCloseAllModals">
-                    <div class="modal" @click.stop>
-                        <div class="modal-header">
-                            <h3>Chỉnh sửa người dùng</h3>
-                            <button @click="handleCloseAllModals" class="btn-close">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                        <form @submit.prevent="handleUpdateUser" class="modal-body">
-                            <div class="form-group">
-                                <label for="edit-name">Họ và tên *</label>
-                                <input id="edit-name" v-model="editForm.name" type="text" required
-                                    placeholder="Nhập họ và tên" 
-                                    :class="{ 'input-error': editValidationErrors.name }"
-                                    @blur="validateEditField('name')" />
-                                <div v-if="editValidationErrors.name" class="field-error">
-                                    {{ editValidationErrors.name }}
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="edit-username">Tên đăng nhập *</label>
-                                <input id="edit-username" v-model="editForm.username" type="text" required
-                                    placeholder="Nhập tên đăng nhập" 
-                                    :class="{ 'input-error': editValidationErrors.username }"
-                                    @blur="validateEditField('username')" />
-                                <div v-if="editValidationErrors.username" class="field-error">
-                                    {{ editValidationErrors.username }}
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="edit-email">Email *</label>
-                                <input id="edit-email" v-model="editForm.email" type="email" required
-                                    placeholder="Nhập địa chỉ email" 
-                                    :class="{ 'input-error': editValidationErrors.email }"
-                                    @input="checkEditEmailValidation" 
-                                    @blur="validateEditField('email')" />
-                                <div v-if="editValidationErrors.email" class="field-error">
-                                    {{ editValidationErrors.email }}
-                                </div>
-                                <div v-if="editForm.email && isEditEmailValid && !editValidationErrors.email" class="success-message">
-                                    <i class="fas fa-check-circle"></i>
-                                    Địa chỉ email hợp lệ
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="edit-phone">Số điện thoại</label>
-                                <input id="edit-phone" v-model="editForm.phone" type="tel" 
-                                    placeholder="Nhập số điện thoại (tùy chọn)" 
-                                    :class="{ 'input-error': editValidationErrors.phone }"
-                                    @input="checkEditPhoneValidation" 
-                                    @blur="validateEditField('phone')" />
-                                <div v-if="editValidationErrors.phone" class="field-error">
-                                    {{ editValidationErrors.phone }}
-                                </div>
-                                <div v-if="editForm.phone && isEditPhoneValid && !editValidationErrors.phone" class="success-message">
-                                    <i class="fas fa-check-circle"></i>
-                                    Số điện thoại hợp lệ
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="edit-role">Quyền *</label>
-                                <select id="edit-role" v-model="editForm.role_id" required
-                                    :class="{ 'input-error': editValidationErrors.role_id }"
-                                    @blur="validateEditField('role_id')">
-                                    <option value="">Chọn quyền</option>
-                                    <option v-for="role in availableRoles" :key="role.id" :value="role.id">
-                                        {{ getRoleDisplayName(role.name) }}
-                                    </option>
-                                </select>
-                                <div v-if="editValidationErrors.role_id" class="field-error">
-                                    {{ editValidationErrors.role_id }}
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="edit-status">Trạng thái *</label>
-                                <select id="edit-status" v-model="editForm.is_active" required>
-                                    <option :value="true">Hoạt động</option>
-                                    <option :value="false">Tạm khóa</option>
-                                </select>
-                            </div>
-                        </form>
-                        <div class="modal-footer">
-                            <button @click="handleCloseAllModals" type="button" class="btn btn-secondary">Hủy</button>
-                            <button @click="handleUpdateUser" type="button" class="btn btn-primary" 
-                                :disabled="loading || !isEditFormValid || editPhoneCheckingDuplicate">
-                                <i v-if="loading" class="fas fa-spinner fa-spin"></i>
-                                {{ loading ? 'Đang cập nhật...' : 'Cập nhật' }}
-                            </button>
-                        </div>
+            <!-- Create User Modal -->
+            <div v-if="showCreateForm" class="modal-overlay">
+                <div class="modal" @click.stop>
+                    <div class="modal-header">
+                        <h3>Thêm người dùng mới</h3>
+                        <button @click="handleCloseAllModals" class="btn-close">
+                            <i class="fas fa-times"></i>
+                        </button>
                     </div>
-                </div>
-
-                <!-- Delete Confirmation Modal -->
-                <div v-if="showDeleteConfirm && userToDelete" class="modal-overlay">
-                    <div class="modal modal-small" @click.stop>
-                        <div class="modal-header">
-                            <h3>Xác nhận xóa</h3>
-                            <button @click="handleCloseAllModals" class="btn-close">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="delete-confirmation">
-                                <i class="fas fa-exclamation-triangle warning-icon"></i>
-                                <p>Bạn có chắc chắn muốn xóa người dùng <strong>{{ userToDelete.name }}</strong>?</p>
-                                <p class="warning-text">Thao tác này không thể hoàn tác!</p>
+                    <form @submit.prevent="handleCreateUser" class="modal-body">
+                        <div class="form-group">
+                            <label for="create-name">Họ và tên <span class="required">*</span></label>
+                            <input id="create-name" v-model="createForm.name" type="text" required
+                                placeholder="Nhập họ và tên" :class="{ 'input-error': validationErrors.name }"
+                                @blur="validateField('name')" />
+                            <div v-if="validationErrors.name" class="field-error">
+                                {{ validationErrors.name }}
                             </div>
                         </div>
-                        <div class="modal-footer">
-                            <button @click="handleCloseAllModals" type="button" class="btn btn-secondary">Hủy</button>
-                            <button @click="handleDeleteUser" type="button" class="btn btn-danger" :disabled="loading">
-                                <i v-if="loading" class="fas fa-spinner fa-spin"></i>
-                                {{ loading ? 'Đang xóa...' : 'Xóa người dùng' }}
-                            </button>
+                        <div class="form-group">
+                            <label for="create-username">Tên đăng nhập <span class="required">*</span></label>
+                            <input id="create-username" v-model="createForm.username" type="text" required
+                                placeholder="Nhập tên đăng nhập" :class="{ 'input-error': validationErrors.username }"
+                                @blur="validateField('username')" />
+                            <div v-if="validationErrors.username" class="field-error">
+                                {{ validationErrors.username }}
+                            </div>
                         </div>
-                    </div>
-                </div>
+                        <div class="form-group">
+                            <label for="create-email">Email <span class="required">*</span></label>
+                            <input id="create-email" v-model="createForm.email" type="email" required
+                                placeholder="Nhập địa chỉ email" :class="{ 'input-error': validationErrors.email }"
+                                @input="checkEmailValidation" @blur="validateField('email')" />
+                            <div v-if="validationErrors.email" class="field-error">
+                                {{ validationErrors.email }}
+                            </div>
+                            <div v-if="createForm.email && isEmailValid && !validationErrors.email"
+                                class="success-message">
+                                <i class="fas fa-check-circle"></i>
+                                Địa chỉ email hợp lệ
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="create-phone">Số điện thoại</label>
+                            <input id="create-phone" v-model="createForm.phone" type="tel"
+                                placeholder="Nhập số điện thoại (tùy chọn)"
+                                :class="{ 'input-error': validationErrors.phone }" @input="checkPhoneValidation"
+                                @blur="validateField('phone')" />
+                            <div v-if="validationErrors.phone" class="field-error">
+                                {{ validationErrors.phone }}
+                            </div>
+                            <div v-if="createForm.phone && isPhoneValid && !validationErrors.phone"
+                                class="success-message">
+                                <i class="fas fa-check-circle"></i>
+                                Số điện thoại hợp lệ
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="create-password">Mật khẩu <span class="required">*</span></label>
+                            <input id="create-password" v-model="createForm.password" type="password" required
+                                placeholder="Nhập mật khẩu" :class="{ 'input-error': validationErrors.password }"
+                                @input="checkPasswordStrength" @blur="validateField('password')" />
+                            <div v-if="validationErrors.password" class="field-error">
+                                {{ validationErrors.password }}
+                            </div>
 
-                <!-- Reset Password Modal -->
-                <div v-if="showResetPasswordForm && userToResetPassword" class="modal-overlay">
-                    <div class="modal modal-medium" @click.stop>
-                        <div class="modal-header">
-                            <h3>Reset mật khẩu</h3>
-                            <button @click="handleCloseAllModals" class="btn-close">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <!-- Confirmation Step -->
-                            <div v-if="!resetPasswordResult" class="reset-confirmation">
-                                <i class="fas fa-key warning-icon"></i>
-                                <p>Bạn có chắc chắn muốn reset mật khẩu cho người dùng <strong>{{ userToResetPassword.name }}</strong>?</p>
-                                <div class="user-info">
-                                    <div class="info-item">
-                                        <span class="label">Tên đăng nhập:</span>
-                                        <span class="value">{{ userToResetPassword.username }}</span>
+                            <!-- Password Strength Checker -->
+                            <div v-if="createForm.password" class="password-strength">
+                                <h4>Kiểm tra độ bảo mật mật khẩu:</h4>
+                                <div class="strength-checks">
+                                    <div class="strength-check"
+                                        :class="{ 'check-valid': passwordStrength.hasMinLength }">
+                                        <i
+                                            :class="passwordStrength.hasMinLength ? 'fas fa-check-circle' : 'fas fa-times-circle'"></i>
+                                        <span>Ít nhất 8 ký tự</span>
                                     </div>
-                                    <div class="info-item">
-                                        <span class="label">Email:</span>
-                                        <span class="value">{{ userToResetPassword.email }}</span>
+                                    <div class="strength-check"
+                                        :class="{ 'check-valid': passwordStrength.hasLettersAndNumbers }">
+                                        <i
+                                            :class="passwordStrength.hasLettersAndNumbers ? 'fas fa-check-circle' : 'fas fa-times-circle'"></i>
+                                        <span>Gồm chữ và số</span>
                                     </div>
-                                    <div class="info-item">
-                                        <span class="label">Quyền:</span>
-                                        <span class="value">{{ getRoleDisplayName(userToResetPassword.role_name) }}</span>
+                                    <div class="strength-check"
+                                        :class="{ 'check-valid': passwordStrength.hasMixedCase }">
+                                        <i
+                                            :class="passwordStrength.hasMixedCase ? 'fas fa-check-circle' : 'fas fa-times-circle'"></i>
+                                        <span>Gồm chữ in hoa và in thường</span>
                                     </div>
                                 </div>
-                                <p class="warning-text">Hệ thống sẽ tự động tạo mật khẩu mới và hiển thị cho bạn!</p>
-                            </div>
-                            
-                            <!-- Result Step -->
-                            <div v-else class="reset-result">
-                                <i class="fas fa-check-circle success-icon"></i>
-                                <p class="success-text">Reset mật khẩu thành công!</p>
-                                <div class="password-result">
-                                    <h4>Thông tin đăng nhập mới:</h4>
-                                    <div class="credential-item">
-                                        <span class="credential-label">Tên đăng nhập:</span>
-                                        <div class="credential-value">
-                                            <input type="text" :value="resetPasswordResult.user.username" readonly class="credential-input">
-                                            <button @click="copyToClipboard(resetPasswordResult.user.username)" class="btn-copy" title="Copy">
-                                                <i class="fas fa-copy"></i>
-                                            </button>
+                                <div class="strength-indicator">
+                                    <div class="strength-bar">
+                                        <div class="strength-progress"
+                                            :class="getPasswordStrengthClass(passwordStrength)"
+                                            :style="{ width: getPasswordStrengthPercentage(passwordStrength) + '%' }">
                                         </div>
                                     </div>
-                                    <div class="credential-item">
-                                        <span class="credential-label">Mật khẩu mới:</span>
-                                        <div class="credential-value">
-                                            <input type="text" :value="resetPasswordResult.newPassword" readonly class="credential-input password-field">
-                                            <button @click="copyToClipboard(resetPasswordResult.newPassword)" class="btn-copy" title="Copy">
-                                                <i class="fas fa-copy"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="important-note">
-                                    <i class="fas fa-exclamation-triangle"></i>
-                                    <p><strong>Quan trọng:</strong> Hãy copy và gửi thông tin này cho người dùng ngay. Sau khi đóng modal này, bạn sẽ không thể xem lại mật khẩu!</p>
+                                    <span class="strength-text">{{ getPasswordStrengthText(passwordStrength) }}</span>
                                 </div>
                             </div>
                         </div>
-                        <div class="modal-footer">
-                            <button v-if="!resetPasswordResult" @click="handleCloseAllModals" type="button" class="btn btn-secondary">Hủy</button>
-                            <button v-if="!resetPasswordResult" @click="handleResetPassword" type="button" class="btn btn-warning" :disabled="loading">
-                                <i v-if="loading" class="fas fa-spinner fa-spin"></i>
-                                {{ loading ? 'Đang reset...' : 'Reset mật khẩu' }}
-                            </button>
-                            <button v-else @click="handleCloseAllModals" type="button" class="btn btn-primary">Đóng</button>
+                        <div class="form-group">
+                            <label for="create-confirm-password">Nhập lại mật khẩu <span
+                                    class="required">*</span></label>
+                            <input id="create-confirm-password" v-model="createForm.confirmPassword" type="password"
+                                required placeholder="Nhập lại mật khẩu"
+                                :class="{ 'input-error': validationErrors.confirmPassword }"
+                                @blur="validateField('confirmPassword')" />
+                            <div v-if="validationErrors.confirmPassword" class="field-error">
+                                {{ validationErrors.confirmPassword }}
+                            </div>
+                            <div v-if="createForm.confirmPassword && passwordsMatch && !validationErrors.confirmPassword"
+                                class="success-message">
+                                <i class="fas fa-check-circle"></i>
+                                Mật khẩu trùng khớp
+                            </div>
                         </div>
+                        <div class="form-group">
+                            <label for="create-role">Quyền <span class="required">*</span></label>
+                            <select id="create-role" v-model="createForm.role_id" required
+                                :class="{ 'input-error': validationErrors.role_id }" @blur="validateField('role_id')">
+                                <option value="">Chọn quyền</option>
+                                <option v-for="role in availableRoles" :key="role.id" :value="role.id">
+                                    {{ getRoleDisplayName(role.name) }}
+                                </option>
+                            </select>
+                            <div v-if="validationErrors.role_id" class="field-error">
+                                {{ validationErrors.role_id }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="create-status">Trạng thái <span class="required">*</span></label>
+                            <select id="create-status" v-model="createForm.is_active" required>
+                                <option :value="true">Hoạt động</option>
+                                <option :value="false">Tạm khóa</option>
+                            </select>
+                        </div>
+                    </form>
+                    <div class="modal-footer">
+                        <button @click="handleCloseAllModals" type="button" class="btn btn-secondary">Hủy</button>
+                        <button @click="handleCreateUser" type="button" class="btn btn-primary"
+                            :disabled="loading || !isCreateFormValid || phoneCheckingDuplicate">
+                            <i v-if="loading" class="fas fa-spinner fa-spin"></i>
+                            {{ loading ? 'Đang tạo...' : 'Tạo người dùng' }}
+                        </button>
                     </div>
                 </div>
+            </div>
 
-                <!-- Toast Notification -->
-                <Toast />
+            <!-- Edit User Modal -->
+            <div v-if="showEditForm" class="modal-overlay">
+                <div class="modal" @click.stop>
+                    <div class="modal-header">
+                        <h3>Chỉnh sửa người dùng</h3>
+                        <button @click="handleCloseAllModals" class="btn-close">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <form @submit.prevent="handleUpdateUser" class="modal-body">
+                        <div class="form-group">
+                            <label for="edit-name">Họ và tên *</label>
+                            <input id="edit-name" v-model="editForm.name" type="text" required
+                                placeholder="Nhập họ và tên" :class="{ 'input-error': editValidationErrors.name }"
+                                @blur="validateEditField('name')" />
+                            <div v-if="editValidationErrors.name" class="field-error">
+                                {{ editValidationErrors.name }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-username">Tên đăng nhập *</label>
+                            <input id="edit-username" v-model="editForm.username" type="text" required
+                                placeholder="Nhập tên đăng nhập"
+                                :class="{ 'input-error': editValidationErrors.username }"
+                                @blur="validateEditField('username')" />
+                            <div v-if="editValidationErrors.username" class="field-error">
+                                {{ editValidationErrors.username }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-email">Email *</label>
+                            <input id="edit-email" v-model="editForm.email" type="email" required
+                                placeholder="Nhập địa chỉ email" :class="{ 'input-error': editValidationErrors.email }"
+                                @input="checkEditEmailValidation" @blur="validateEditField('email')" />
+                            <div v-if="editValidationErrors.email" class="field-error">
+                                {{ editValidationErrors.email }}
+                            </div>
+                            <div v-if="editForm.email && isEditEmailValid && !editValidationErrors.email"
+                                class="success-message">
+                                <i class="fas fa-check-circle"></i>
+                                Địa chỉ email hợp lệ
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-phone">Số điện thoại</label>
+                            <input id="edit-phone" v-model="editForm.phone" type="tel"
+                                placeholder="Nhập số điện thoại (tùy chọn)"
+                                :class="{ 'input-error': editValidationErrors.phone }" @input="checkEditPhoneValidation"
+                                @blur="validateEditField('phone')" />
+                            <div v-if="editValidationErrors.phone" class="field-error">
+                                {{ editValidationErrors.phone }}
+                            </div>
+                            <div v-if="editForm.phone && isEditPhoneValid && !editValidationErrors.phone"
+                                class="success-message">
+                                <i class="fas fa-check-circle"></i>
+                                Số điện thoại hợp lệ
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-role">Quyền *</label>
+                            <select id="edit-role" v-model="editForm.role_id" required
+                                :class="{ 'input-error': editValidationErrors.role_id }"
+                                @blur="validateEditField('role_id')">
+                                <option value="">Chọn quyền</option>
+                                <option v-for="role in availableRoles" :key="role.id" :value="role.id">
+                                    {{ getRoleDisplayName(role.name) }}
+                                </option>
+                            </select>
+                            <div v-if="editValidationErrors.role_id" class="field-error">
+                                {{ editValidationErrors.role_id }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-status">Trạng thái *</label>
+                            <select id="edit-status" v-model="editForm.is_active" required>
+                                <option :value="true">Hoạt động</option>
+                                <option :value="false">Tạm khóa</option>
+                            </select>
+                        </div>
+                    </form>
+                    <div class="modal-footer">
+                        <button @click="handleCloseAllModals" type="button" class="btn btn-secondary">Hủy</button>
+                        <button @click="handleUpdateUser" type="button" class="btn btn-primary"
+                            :disabled="loading || !isEditFormValid || editPhoneCheckingDuplicate">
+                            <i v-if="loading" class="fas fa-spinner fa-spin"></i>
+                            {{ loading ? 'Đang cập nhật...' : 'Cập nhật' }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Delete Confirmation Modal -->
+            <div v-if="showDeleteConfirm && userToDelete" class="modal-overlay">
+                <div class="modal modal-small" @click.stop>
+                    <div class="modal-header">
+                        <h3>Xác nhận xóa</h3>
+                        <button @click="handleCloseAllModals" class="btn-close">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="delete-confirmation">
+                            <i class="fas fa-exclamation-triangle warning-icon"></i>
+                            <p>Bạn có chắc chắn muốn xóa người dùng <strong>{{ userToDelete.name }}</strong>?</p>
+                            <p class="warning-text">Thao tác này không thể hoàn tác!</p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button @click="handleCloseAllModals" type="button" class="btn btn-secondary">Hủy</button>
+                        <button @click="handleDeleteUser" type="button" class="btn btn-danger" :disabled="loading">
+                            <i v-if="loading" class="fas fa-spinner fa-spin"></i>
+                            {{ loading ? 'Đang xóa...' : 'Xóa người dùng' }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reset Password Modal -->
+            <div v-if="showResetPasswordForm && userToResetPassword" class="modal-overlay">
+                <div class="modal modal-medium" @click.stop>
+                    <div class="modal-header">
+                        <h3>Reset mật khẩu</h3>
+                        <button @click="handleCloseAllModals" class="btn-close">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Confirmation Step -->
+                        <div v-if="!resetPasswordResult" class="reset-confirmation">
+                            <i class="fas fa-key warning-icon"></i>
+                            <p>Bạn có chắc chắn muốn reset mật khẩu cho người dùng <strong>{{ userToResetPassword.name
+                                    }}</strong>?
+                            </p>
+                            <div class="user-info">
+                                <div class="info-item">
+                                    <span class="label">Tên đăng nhập:</span>
+                                    <span class="value">{{ userToResetPassword.username }}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="label">Email:</span>
+                                    <span class="value">{{ userToResetPassword.email }}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="label">Quyền:</span>
+                                    <span class="value">{{ getRoleDisplayName(userToResetPassword.role_name) }}</span>
+                                </div>
+                            </div>
+                            <p class="warning-text">Hệ thống sẽ tự động tạo mật khẩu mới và hiển thị cho bạn!</p>
+                        </div>
+
+                        <!-- Result Step -->
+                        <div v-else class="reset-result">
+                            <i class="fas fa-check-circle success-icon"></i>
+                            <p class="success-text">Reset mật khẩu thành công!</p>
+                            <div class="password-result">
+                                <h4>Thông tin đăng nhập mới:</h4>
+                                <div class="credential-item">
+                                    <span class="credential-label">Tên đăng nhập:</span>
+                                    <div class="credential-value">
+                                        <input type="text" :value="resetPasswordResult.user.username" readonly
+                                            class="credential-input">
+                                        <button @click="copyToClipboard(resetPasswordResult.user.username)"
+                                            class="btn-copy" title="Copy">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="credential-item">
+                                    <span class="credential-label">Mật khẩu mới:</span>
+                                    <div class="credential-value">
+                                        <input type="text" :value="resetPasswordResult.newPassword" readonly
+                                            class="credential-input password-field">
+                                        <button @click="copyToClipboard(resetPasswordResult.newPassword)"
+                                            class="btn-copy" title="Copy">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="important-note">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <p><strong>Quan trọng:</strong> Hãy copy và gửi thông tin này cho người dùng ngay. Sau
+                                    khi đóng
+                                    modal này, bạn sẽ không thể xem lại mật khẩu!</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button v-if="!resetPasswordResult" @click="handleCloseAllModals" type="button"
+                            class="btn btn-secondary">Hủy</button>
+                        <button v-if="!resetPasswordResult" @click="handleResetPassword" type="button"
+                            class="btn btn-warning" :disabled="loading">
+                            <i v-if="loading" class="fas fa-spinner fa-spin"></i>
+                            {{ loading ? 'Đang reset...' : 'Reset mật khẩu' }}
+                        </button>
+                        <button v-else @click="handleCloseAllModals" type="button" class="btn btn-primary">Đóng</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Toast Notification -->
+            <Toast />
+
+            <!-- Detail User Modal -->
+            <div v-if="showDetailModal && detailUser" class="modal-overlay">
+                <div class="modal modal-medium" @click.stop>
+                    <div class="modal-header">
+                        <h3>Chi tiết người dùng</h3>
+                        <button @click="handleCloseAllModals" class="btn-close">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="user-detail-fields">
+                            <div><strong>ID:</strong> {{ detailUser.id }}</div>
+                            <div><strong>Họ tên:</strong> {{ detailUser.name }}</div>
+                            <div><strong>Tên đăng nhập:</strong> {{ detailUser.username }}</div>
+                            <div><strong>Email:</strong> {{ detailUser.email }}</div>
+                            <div><strong>Số điện thoại:</strong> {{ detailUser.phone || '-' }}</div>
+                            <div><strong>Quyền:</strong> {{ getRoleDisplayName(detailUser.role_name) }}</div>
+                            <div><strong>Trạng thái:</strong> {{ detailUser.is_active ? 'Hoạt động' : 'Tạm khóa' }}</div>
+                            <div><strong>Ngày tạo:</strong> {{ formatDate(detailUser.created_at) }}</div>
+                            <div><strong>Ngày cập nhật:</strong> {{ formatDate(detailUser.updated_at) }}</div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button @click="handleCloseAllModals" type="button" class="btn btn-secondary">Đóng</button>
+                    </div>
+                </div>
             </div>
         </div>
+    </div>
 </template>
 
 <script setup>
@@ -689,15 +732,15 @@ import * as XLSX from 'xlsx'
 // ===========================================
 
 // Get current user with permissions
-const { 
-    currentUser, 
-    loadingUser, 
-    hasRole, 
-    hasAnyRole, 
-    isSuperadmin, 
-    isAdmin, 
+const {
+    currentUser,
+    loadingUser,
+    hasRole,
+    hasAnyRole,
+    isSuperadmin,
+    isAdmin,
     isManager,
-    fetchCurrentUser 
+    fetchCurrentUser
 } = useCurrentUser()
 
 // Check if user has permission for users management
@@ -726,7 +769,9 @@ const {
     error,
     stats,
     editingUser,
+    detailUser,
     showCreateForm,
+    showDetailModal,
     showEditForm,
     showDeleteConfirm,
     showResetPasswordForm,
@@ -739,11 +784,11 @@ const {
     searchQuery,
     selectedRoleFilter,
     selectedStatusFilter,
-    
+
     // Sort
     sortColumn,
     sortDirection,
-    
+
     // Pagination
     currentPage,
     itemsPerPage,
@@ -761,6 +806,7 @@ const {
     resetCreateForm,
     resetEditForm,
     openCreateForm,
+    openDetailModal,
     openEditForm,
     openDeleteConfirm,
     openResetPasswordConfirm,
@@ -816,6 +862,13 @@ const {
     parseBackendValidationError
 } = useValidation()
 
+// detail
+
+// State cho modal xem chi tiết và user đang xem
+// const showDetailModal = ref(false)
+// const detailUser = ref(null)
+
+
 // Password strength checking
 const passwordStrength = createPasswordStrength()
 
@@ -853,7 +906,7 @@ const editValidationErrors = reactive({
 const checkEmailValidation = () => {
     const emailValidation = validateEmail(createForm.email)
     isEmailValid.value = emailValidation.isValid
-    
+
     // Clear email error if valid
     if (isEmailValid.value) {
         validationErrors.email = ''
@@ -864,7 +917,7 @@ const checkEmailValidation = () => {
 const checkEditEmailValidation = () => {
     const emailValidation = validateEmail(editForm.email)
     isEditEmailValid.value = emailValidation.isValid
-    
+
     // Clear email error if valid
     if (isEditEmailValid.value) {
         editValidationErrors.email = ''
@@ -874,11 +927,11 @@ const checkEditEmailValidation = () => {
 // Phone validation function
 const checkPhoneValidation = async () => {
     phoneCheckingDuplicate.value = true
-    
+
     try {
         const phoneValidation = await validatePhone(createForm.phone, users.value)
         isPhoneValid.value = phoneValidation.isValid
-        
+
         if (!phoneValidation.isValid) {
             validationErrors.phone = phoneValidation.message
         } else {
@@ -896,11 +949,11 @@ const checkPhoneValidation = async () => {
 // Edit phone validation function
 const checkEditPhoneValidation = async () => {
     editPhoneCheckingDuplicate.value = true
-    
+
     try {
         const phoneValidation = await validatePhone(editForm.phone, users.value, editingUser.value?.id)
         isEditPhoneValid.value = phoneValidation.isValid
-        
+
         if (!phoneValidation.isValid) {
             editValidationErrors.phone = phoneValidation.message
         } else {
@@ -918,12 +971,12 @@ const checkEditPhoneValidation = async () => {
 // Set backend validation errors to form fields
 const setBackendValidationErrors = (errors, isEditForm = false) => {
     const errorObj = isEditForm ? editValidationErrors : validationErrors
-    
+
     // Clear existing errors first
     Object.keys(errorObj).forEach(key => {
         errorObj[key] = ''
     })
-    
+
     // Set new errors (already translated by parseBackendValidationError)
     Object.keys(errors).forEach(field => {
         if (field === '_general') {
@@ -931,7 +984,7 @@ const setBackendValidationErrors = (errors, isEditForm = false) => {
             showError(errors[field])
         } else if (errorObj.hasOwnProperty(field)) {
             errorObj[field] = errors[field] // No translation needed, already done by composable
-            
+
             // Reset validation states when backend returns field errors
             if (!isEditForm) {
                 if (field === 'email') {
@@ -958,20 +1011,20 @@ const setBackendValidationErrors = (errors, isEditForm = false) => {
 // Validate individual field
 const validateField = async (fieldName) => {
     const value = createForm[fieldName]
-    
+
     // Clear previous error (including backend errors)
     validationErrors[fieldName] = ''
-    
+
     // Field labels for required validation
     const fieldLabels = {
         name: 'Họ và tên',
-        username: 'Tên đăng nhập', 
+        username: 'Tên đăng nhập',
         email: 'Email',
         password: 'Mật khẩu',
         confirmPassword: 'Xác nhận mật khẩu',
         role_id: 'Quyền'
     }
-    
+
     // Specific validations using composable
     switch (fieldName) {
         case 'name':
@@ -981,7 +1034,7 @@ const validateField = async (fieldName) => {
                 return false
             }
             break
-            
+
         case 'username':
             const usernameValidation = validateUsername(value)
             if (!usernameValidation.isValid) {
@@ -989,7 +1042,7 @@ const validateField = async (fieldName) => {
                 return false
             }
             break
-            
+
         case 'email':
             const emailValidation = validateEmail(value)
             if (!emailValidation.isValid) {
@@ -997,14 +1050,14 @@ const validateField = async (fieldName) => {
                 return false
             }
             break
-            
+
         case 'phone':
             if (value && value.trim()) {
                 await checkPhoneValidation()
                 return isPhoneValid.value
             }
             break
-            
+
         case 'password':
             const passwordValidation = validatePasswordStrength(value, passwordStrength)
             if (!passwordValidation.isValid) {
@@ -1012,7 +1065,7 @@ const validateField = async (fieldName) => {
                 return false
             }
             break
-            
+
         case 'confirmPassword':
             const confirmValidation = validatePasswordConfirmation(createForm.password, value)
             if (!confirmValidation.isValid) {
@@ -1020,7 +1073,7 @@ const validateField = async (fieldName) => {
                 return false
             }
             break
-            
+
         case 'role_id':
             const roleValidation = validateRequired(value, fieldLabels[fieldName])
             if (!roleValidation.isValid) {
@@ -1029,45 +1082,45 @@ const validateField = async (fieldName) => {
             }
             break
     }
-    
+
     return true
 }
 
 // Validate edit form field
 const validateEditField = async (fieldName) => {
     const value = editForm[fieldName]
-    
+
     // Clear previous error (including backend errors)
     editValidationErrors[fieldName] = ''
-    
+
     // Required field check (phone is optional)
     if (fieldName !== 'phone' && (!value || (typeof value === 'string' && !value.trim()))) {
         const fieldLabels = {
             name: 'Họ và tên',
             username: 'Tên đăng nhập',
-            email: 'Email', 
+            email: 'Email',
             role_id: 'Quyền'
         }
         editValidationErrors[fieldName] = `${fieldLabels[fieldName]} là bắt buộc`
         return false
     }
-    
+
     // Specific validations
     if (fieldName === 'email' && !isEditEmailValid.value) {
         editValidationErrors.email = 'Địa chỉ email không hợp lệ'
         return false
     }
-    
+
     if (fieldName === 'phone' && value && value.trim()) {
         await checkEditPhoneValidation()
         return isEditPhoneValid.value
     }
-    
+
     if (fieldName === 'username' && value.length < 3) {
         editValidationErrors.username = 'Tên đăng nhập phải ít nhất 3 ký tự'
         return false
     }
-    
+
     return true
 }
 
@@ -1075,14 +1128,14 @@ const validateEditField = async (fieldName) => {
 const validateCreateForm = async () => {
     const fields = ['name', 'username', 'email', 'phone', 'password', 'confirmPassword', 'role_id']
     let isValid = true
-    
+
     for (const field of fields) {
         const fieldValid = await validateField(field)
         if (!fieldValid) {
             isValid = false
         }
     }
-    
+
     return isValid
 }
 
@@ -1090,14 +1143,14 @@ const validateCreateForm = async () => {
 const validateEditForm = async () => {
     const fields = ['name', 'username', 'email', 'phone', 'role_id']
     let isValid = true
-    
+
     for (const field of fields) {
         const fieldValid = await validateEditField(field)
         if (!fieldValid) {
             isValid = false
         }
     }
-    
+
     return isValid
 }
 
@@ -1109,67 +1162,67 @@ const passwordsMatch = computed(() => {
 // Check if create form is valid
 const isCreateFormValid = computed(() => {
     // Check if all required fields are filled (phone is optional)
-    const hasAllFields = createForm.name && 
-                        createForm.username && 
-                        createForm.email && 
-                        createForm.password && 
-                        createForm.confirmPassword &&
-                        createForm.role_id
-    
+    const hasAllFields = createForm.name &&
+        createForm.username &&
+        createForm.email &&
+        createForm.password &&
+        createForm.confirmPassword &&
+        createForm.role_id
+
     // Check if no validation errors
     const hasNoErrors = !validationErrors.name &&
-                       !validationErrors.username &&
-                       !validationErrors.email &&
-                       !validationErrors.phone &&
-                       !validationErrors.password &&
-                       !validationErrors.confirmPassword &&
-                       !validationErrors.role_id
-    
+        !validationErrors.username &&
+        !validationErrors.email &&
+        !validationErrors.phone &&
+        !validationErrors.password &&
+        !validationErrors.confirmPassword &&
+        !validationErrors.role_id
+
     // Check specific validations
     const validationsPassed = isEmailValid.value &&
-                             passwordsMatch.value &&
-                             passwordStrength.hasMinLength &&
-                             passwordStrength.hasLettersAndNumbers &&
-                             passwordStrength.hasMixedCase &&
-                             (createForm.phone ? isPhoneValid.value : true) // Phone is optional
-    
+        passwordsMatch.value &&
+        passwordStrength.hasMinLength &&
+        passwordStrength.hasLettersAndNumbers &&
+        passwordStrength.hasMixedCase &&
+        (createForm.phone ? isPhoneValid.value : true) // Phone is optional
+
     return hasAllFields && hasNoErrors && validationsPassed
 })
 
 // Check if edit form is valid
 const isEditFormValid = computed(() => {
     // Check if all required fields are filled (phone is optional)
-    const hasAllFields = editForm.name && 
-                        editForm.username && 
-                        editForm.email && 
-                        editForm.role_id
-    
+    const hasAllFields = editForm.name &&
+        editForm.username &&
+        editForm.email &&
+        editForm.role_id
+
     // Check if no validation errors
     const hasNoErrors = !editValidationErrors.name &&
-                       !editValidationErrors.username &&
-                       !editValidationErrors.email &&
-                       !editValidationErrors.phone &&
-                       !editValidationErrors.role_id
-    
+        !editValidationErrors.username &&
+        !editValidationErrors.email &&
+        !editValidationErrors.phone &&
+        !editValidationErrors.role_id
+
     // Check email validation and phone validation (if provided)
     const emailValid = isEditEmailValid.value
     const phoneValid = editForm.phone ? isEditPhoneValid.value : true // Phone is optional
-    
+
     return hasAllFields && hasNoErrors && emailValid && phoneValid
 })
 
 // Password strength checker function
 const checkPasswordStrength = () => {
     const password = createForm.password
-    
+
     // Use validation composable to check password strength
     const passwordValidation = validatePasswordStrength(password, passwordStrength)
-    
+
     // Clear password error if strength requirements are met
     if (passwordValidation.isValid) {
         validationErrors.password = ''
     }
-    
+
     // Also validate confirm password if it exists
     if (createForm.confirmPassword) {
         validateField('confirmPassword')
@@ -1187,7 +1240,7 @@ const handleCreateUser = async () => {
         showError('Vui lòng sửa các lỗi trong form')
         return
     }
-    
+
     const result = await createUser()
 
     if (result.success) {
@@ -1200,10 +1253,10 @@ const handleCreateUser = async () => {
         // Parse and set backend validation errors
         try {
             const backendErrors = parseBackendValidationError(result.error || result.message)
-            
+
             // If there are field-specific errors, set them
             const hasFieldErrors = Object.keys(backendErrors).some(key => key !== '_general')
-            
+
             if (hasFieldErrors) {
                 setBackendValidationErrors(backendErrors, false)
                 showError('Tạo tài khoản thất bại, xin hãy kiểm tra lại thông tin')
@@ -1225,7 +1278,7 @@ const handleUpdateUser = async () => {
         showError('Vui lòng sửa các lỗi trong form')
         return
     }
-    
+
     const result = await updateUser()
 
     if (result.success) {
@@ -1238,10 +1291,10 @@ const handleUpdateUser = async () => {
         // Parse and set backend validation errors
         try {
             const backendErrors = parseBackendValidationError(result.error || result.message)
-            
+
             // If there are field-specific errors, set them
             const hasFieldErrors = Object.keys(backendErrors).some(key => key !== '_general')
-            
+
             if (hasFieldErrors) {
                 setBackendValidationErrors(backendErrors, true)
                 showError('Cập nhật tài khoản thất bại, xin hãy kiểm tra lại thông tin')
@@ -1306,22 +1359,22 @@ const handleToggleStatus = async (user) => {
 // Override closeAllModals to reset password strength
 const handleCloseAllModals = () => {
     closeAllModals()
-    
+
     // Reset password strength
     passwordStrength.hasMinLength = false
     passwordStrength.hasLettersAndNumbers = false
     passwordStrength.hasMixedCase = false
-    
+
     // Reset email validation
     isEmailValid.value = false
     isEditEmailValid.value = false
-    
+
     // Reset phone validation
     isPhoneValid.value = false
     isEditPhoneValid.value = false
     phoneCheckingDuplicate.value = false
     editPhoneCheckingDuplicate.value = false
-    
+
     // Clear validation errors
     Object.keys(validationErrors).forEach(key => {
         validationErrors[key] = ''
@@ -1334,12 +1387,12 @@ const handleCloseAllModals = () => {
 // Override openCreateForm to clear validation errors  
 const handleOpenCreateForm = () => {
     openCreateForm()
-    
+
     // Clear validation errors
     Object.keys(validationErrors).forEach(key => {
         validationErrors[key] = ''
     })
-    
+
     // Reset validation states
     isEmailValid.value = false
     isPhoneValid.value = false
@@ -1348,15 +1401,20 @@ const handleOpenCreateForm = () => {
     passwordStrength.hasMixedCase = false
 }
 
+// Hàm xử lý khi click nút xem chi tiết
+const handleOpenViewDetail = (user) => {
+    openDetailModal(user)
+}
+
 // Override openEditForm to set email validation
 const handleOpenEditForm = (user) => {
     openEditForm(user)
-    
+
     // Clear validation errors
     Object.keys(editValidationErrors).forEach(key => {
         editValidationErrors[key] = ''
     })
-    
+
     // Set email and phone validation for existing data
     nextTick(() => {
         checkEditEmailValidation()
@@ -1419,7 +1477,7 @@ const exportToExcel = async () => {
     }
 
     exportingExcel.value = true
-    
+
     try {
         // Prepare data for export
         const exportData = filteredUsers.value.map((user, index) => ({
@@ -1465,7 +1523,7 @@ const exportToExcel = async () => {
 
         // Export file
         XLSX.writeFile(wb, filename)
-        
+
         showSuccess(`Đã xuất ${filteredUsers.value.length} người dùng ra file Excel thành công!`)
     } catch (error) {
         console.error('Export error:', error)
@@ -2839,13 +2897,15 @@ span.required {
 }
 
 .sortable.sort-asc i::before {
-    content: '\f0de'; /* fa-sort-up */
+    content: '\f0de';
+    /* fa-sort-up */
     opacity: 1;
     color: #1976d2;
 }
 
 .sortable.sort-desc i::before {
-    content: '\f0dd'; /* fa-sort-down */
+    content: '\f0dd';
+    /* fa-sort-down */
     opacity: 1;
     color: #1976d2;
 }

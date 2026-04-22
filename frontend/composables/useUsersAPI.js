@@ -125,7 +125,9 @@ export const useUsersAPI = () => {
 
     // Form state
     const editingUser = ref(null)
+    const detailUser = ref(null)
     const showCreateForm = ref(false)
+    const showDetailModal = ref(false)
     const showEditForm = ref(false)
     const showDeleteConfirm = ref(false)
     const showResetPasswordForm = ref(false)
@@ -459,6 +461,11 @@ export const useUsersAPI = () => {
         showCreateForm.value = true
     }
 
+    const openDetailModal = (user) => {
+        detailUser.value = user
+        showDetailModal.value = true
+    }
+
     const openEditForm = (user) => {
         editingUser.value = user
         Object.assign(editForm, {
@@ -487,9 +494,11 @@ export const useUsersAPI = () => {
     const closeAllModals = () => {
         showCreateForm.value = false
         showEditForm.value = false
+        showDetailModal.value = false
         showDeleteConfirm.value = false
         showResetPasswordForm.value = false
         editingUser.value = null
+        detailUser.value = null
         userToDelete.value = null
         userToResetPassword.value = null
         resetPasswordResult.value = null
@@ -585,8 +594,11 @@ export const useUsersAPI = () => {
         totalPages,
         
         // Form state
+        
         editingUser,
+        detailUser,
         showCreateForm,
+        showDetailModal,
         showEditForm,
         showDeleteConfirm,
         showResetPasswordForm,
@@ -608,6 +620,7 @@ export const useUsersAPI = () => {
         resetCreateForm,
         resetEditForm,
         openCreateForm,
+        openDetailModal,
         openEditForm,
         openDeleteConfirm,
         openResetPasswordConfirm,
