@@ -29,6 +29,11 @@ git checkout develop
 ## danh sách branch
 
 ```
+# thay đổi cách quản lý và phân quyền.
+# dùng roles.code thay vì roles.name, tương tự với permissions
+# dùng roles.code để kiểm tra quyền, thay vì roles.id như trước đó
+feature/rbac-code-refactor
+
 # backend
 feature/init-backend
 feature/auth

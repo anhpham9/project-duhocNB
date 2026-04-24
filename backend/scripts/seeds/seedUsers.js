@@ -3,31 +3,68 @@ import db from "../../src/config/db.js";
 
 const run = async () => {
     try {
-        const roles = await db.query(`SELECT id, name FROM roles`);
-        const roleMap = Object.fromEntries(roles.rows.map(r => [r.name, r.id]));
+        // Lấy role_code thay vì id
+        const roles = await db.query(`SELECT code FROM roles`);
+        const roleMap = Object.fromEntries(roles.rows.map(r => [r.code, r.code]));
 
         const hash = await bcrypt.hash("123456", 10);
+        const users = [];
 
-        await db.query(
-            `
-            INSERT INTO users (name, username, email, password, role_id)
-            VALUES
-                ('Super Admin', 'superadmin', 'superadmin@example.com', $1, $2),
-                ('Admin User', 'admin', 'admin@example.com', $1, $3),
-                ('Manager User', 'manager', 'manager@example.com', $1, $4),
-                ('Consultant User', 'consultant', 'consultant@example.com', $1, $5),
-                ('Editor User', 'editor', 'editor@example.com', $1, $6)
-            ON CONFLICT (username) DO NOTHING
-            `,
-            [
+        // 1 superadmin
+        users.push(["Super Admin", "superadmin", "superadmin@example.com", hash, roleMap.superadmin]);
+
+        // 3 admin
+        for (let i = 1; i <= 3; i++) {
+            users.push([
+                `Admin User ${i}`,
+                `admin${i}`,
+                `admin${i}@example.com`,
                 hash,
-                roleMap.superadmin,
-                roleMap.admin,
-                roleMap.manager,
-                roleMap.consultant,
+                roleMap.admin
+            ]);
+        }
+
+        // 5 manager
+        for (let i = 1; i <= 5; i++) {
+            users.push([
+                `Manager User ${i}`,
+                `manager${i}`,
+                `manager${i}@example.com`,
+                hash,
+                roleMap.manager
+            ]);
+        }
+
+        // 10 editor
+        for (let i = 1; i <= 10; i++) {
+            users.push([
+                `Editor User ${i}`,
+                `editor${i}`,
+                `editor${i}@example.com`,
+                hash,
                 roleMap.editor
-            ]
-        );
+            ]);
+        }
+
+        // 10 consultant
+        for (let i = 1; i <= 10; i++) {
+            users.push([
+                `Consultant User ${i}`,
+                `consultant${i}`,
+                `consultant${i}@example.com`,
+                hash,
+                roleMap.consultant
+            ]);
+        }
+
+        for (const [name, username, email, password, role_code] of users) {
+            await db.query(
+                `INSERT INTO users (name, username, email, password, role_code)
+                 VALUES ($1, $2, $3, $4, $5)
+                 ON CONFLICT (username) DO NOTHING`,
+                [name, username, email, password, role_code]
+            );
+        }
 
         console.log("✅ Users seeded");
     } catch (err) {

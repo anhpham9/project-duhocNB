@@ -5,10 +5,11 @@ const run = async () => {
         await db.query(`
             INSERT INTO categories (name, slug) VALUES 
             ('Du học Nhật Bản', 'du-hoc-nhat-ban'),
-            ('Học bổng', 'hoc-bong'),
+            ('Nhật Bản', 'nhat-ban'),
             ('Tin tức giáo dục', 'tin-tuc-giao-duc'),
             ('Kinh nghiệm du học', 'kinh-nghiem-du-hoc'),
-            ('Tư vấn du học', 'tu-van-du-hoc')
+            ('Tư vấn du học', 'tu-van-du-hoc'),
+            ('Blog', 'blog')
             ON CONFLICT (slug) DO NOTHING
         `);
 
