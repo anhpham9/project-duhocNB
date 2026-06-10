@@ -3,7 +3,7 @@ import db from "../../src/config/db.js";
 const run = async () => {
     try {
         // Lấy user id để assign
-        const users = await db.query(`SELECT id FROM users WHERE role_code IN ('admin','manager','consultant')`);
+        const users = await db.query(`SELECT u.id FROM users u JOIN roles r ON u.role_id = r.id WHERE r.name IN ('admin','manager','consultant')`);
         const userIds = users.rows.map(u => u.id);
         if (userIds.length === 0) {
             console.log("❌ Cần seed users trước!");

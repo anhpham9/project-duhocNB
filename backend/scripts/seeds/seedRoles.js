@@ -3,14 +3,14 @@ import db from "../../src/config/db.js";
 const run = async () => {
     try {
         await db.query(`
-        INSERT INTO roles (code, description)
+        INSERT INTO roles (name, description)
         VALUES
             ('superadmin', 'Full system access'),
             ('admin', 'Manage system content'),
             ('manager', 'Manage users and content'),
             ('editor', 'Manage news'),
             ('consultant', 'Handle contacts')
-        ON CONFLICT (code) DO NOTHING
+        ON CONFLICT (name) DO NOTHING
         `);
 
         console.log("✅ Roles seeded");

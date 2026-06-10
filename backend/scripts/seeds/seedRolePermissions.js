@@ -2,12 +2,12 @@ import db from "../../src/config/db.js";
 
 const run = async () => {
     try {
-        // Lấy roles và permissions theo code
-        const roles = await db.query(`SELECT code FROM roles`);
-        const permissions = await db.query(`SELECT code FROM permissions`);
+        // Lấy roles và permissions theo id + name
+        const roles = await db.query(`SELECT id, name FROM roles`);
+        const permissions = await db.query(`SELECT id, name FROM permissions`);
 
-        const roleMap = Object.fromEntries(roles.rows.map(r => [r.code, r.code]));
-        const permMap = Object.fromEntries(permissions.rows.map(p => [p.code, p.code]));
+        const roleMap = Object.fromEntries(roles.rows.map(r => [r.name, r.id]));
+        const permMap = Object.fromEntries(permissions.rows.map(p => [p.name, p.id]));
 
         const data = [
             // Superadmin: full quyền (nên seed riêng nếu muốn)
@@ -97,13 +97,13 @@ const run = async () => {
             [roleMap.consultant, permMap["notifications.view"]]
         ];
 
-        for (const [role_code, permission_code] of data) {
-            if (role_code && permission_code) {
+        for (const [role_id, permission_id] of data) {
+            if (role_id && permission_id) {
                 await db.query(
-                    `INSERT INTO role_permissions (role_code, permission_code)
+                    `INSERT INTO role_permissions (role_id, permission_id)
                     VALUES ($1, $2)
                     ON CONFLICT DO NOTHING`,
-                    [role_code, permission_code]
+                    [role_id, permission_id]
                 );
             }
         }

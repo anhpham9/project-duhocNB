@@ -3,7 +3,7 @@ import db from "../../src/config/db.js";
 const run = async () => {
     try {
         await db.query(`
-            INSERT INTO permissions (code, description)
+            INSERT INTO permissions (name, description)
             VALUES
                 -- News
                 ('news.manage', 'Manage news'),
@@ -60,7 +60,7 @@ const run = async () => {
 
                 -- Audit Logs
                 ('audit_logs.view', 'View audit logs')
-            ON CONFLICT (code) DO NOTHING
+            ON CONFLICT (name) DO NOTHING
         `);
 
         console.log("✅ Permissions seeded");

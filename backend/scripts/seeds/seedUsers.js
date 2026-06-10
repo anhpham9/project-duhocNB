@@ -3,9 +3,9 @@ import db from "../../src/config/db.js";
 
 const run = async () => {
     try {
-        // Lấy role_code thay vì id
-        const roles = await db.query(`SELECT code FROM roles`);
-        const roleMap = Object.fromEntries(roles.rows.map(r => [r.code, r.code]));
+        // Lấy role id theo name
+        const roles = await db.query(`SELECT id, name FROM roles`);
+        const roleMap = Object.fromEntries(roles.rows.map(r => [r.name, r.id]));
 
         const hash = await bcrypt.hash("123456", 10);
         const users = [];
@@ -57,12 +57,12 @@ const run = async () => {
             ]);
         }
 
-        for (const [name, username, email, password, role_code] of users) {
+        for (const [name, username, email, password, role_id] of users) {
             await db.query(
-                `INSERT INTO users (name, username, email, password, role_code)
+                `INSERT INTO users (name, username, email, password, role_id)
                  VALUES ($1, $2, $3, $4, $5)
                  ON CONFLICT (username) DO NOTHING`,
-                [name, username, email, password, role_code]
+                [name, username, email, password, role_id]
             );
         }
 

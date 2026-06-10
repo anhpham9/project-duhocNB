@@ -4,7 +4,7 @@ const run = async () => {
     try {
         // Lấy 5 category và 10 author mẫu (nếu có)
         const categories = await db.query(`SELECT id FROM categories LIMIT 5`);
-        const users = await db.query(`SELECT id FROM users WHERE role_code IN ('superadmin','admin','manager','editor') LIMIT 10`);
+        const users = await db.query(`SELECT u.id FROM users u JOIN roles r ON u.role_id = r.id WHERE r.name IN ('superadmin','admin','manager','editor') LIMIT 10`);
         const categoryIds = categories.rows.map(c => c.id);
         const authorIds = users.rows.map(u => u.id);
 

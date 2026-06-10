@@ -4,7 +4,7 @@ const run = async () => {
     try {
         // Lấy contact_id và user_id
         const contacts = await db.query(`SELECT id FROM contacts LIMIT 50`);
-        const users = await db.query(`SELECT id FROM users WHERE role_code IN ('admin','manager','consultant','editor')`);
+        const users = await db.query(`SELECT u.id FROM users u JOIN roles r ON u.role_id = r.id WHERE r.name IN ('admin','manager','consultant','editor')`);
         const contactIds = contacts.rows.map(c => c.id);
         const userIds = users.rows.map(u => u.id);
         if (contactIds.length === 0 || userIds.length === 0) {

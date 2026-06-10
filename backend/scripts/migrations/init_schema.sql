@@ -10,22 +10,22 @@
 -- ======================== ROLES ========================
 CREATE TABLE IF NOT EXISTS roles (
     id SERIAL PRIMARY KEY,
-    code VARCHAR(50) UNIQUE NOT NULL,
+    name VARCHAR(50) UNIQUE NOT NULL,
     description TEXT
 );
 
 -- ======================== PERMISSIONS ========================
 CREATE TABLE IF NOT EXISTS permissions (
     id SERIAL PRIMARY KEY,
-    code VARCHAR(100) UNIQUE NOT NULL,
+    name VARCHAR(100) UNIQUE NOT NULL,
     description TEXT
 );
 
 -- ======================== ROLE_PERMISSIONS ========================
 CREATE TABLE IF NOT EXISTS role_permissions (
-    role_code VARCHAR(50) REFERENCES roles(code) ON DELETE CASCADE,
-    permission_code VARCHAR(100) REFERENCES permissions(code) ON DELETE CASCADE,
-    PRIMARY KEY (role_code, permission_code)
+    role_id INTEGER REFERENCES roles(id) ON DELETE CASCADE,
+    permission_id INTEGER REFERENCES permissions(id) ON DELETE CASCADE,
+    PRIMARY KEY (role_id, permission_id)
 );
 
 -- ======================== USERS ========================
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(150) UNIQUE NOT NULL,
     phone VARCHAR(20) UNIQUE,
     password TEXT NOT NULL,
-    role_code VARCHAR(50) NOT NULL REFERENCES roles(code),
+    role_id INTEGER NOT NULL REFERENCES roles(id),
     is_active BOOLEAN DEFAULT TRUE,
     last_login TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -215,7 +215,7 @@ CREATE TABLE IF NOT EXISTS settings (
 CREATE TABLE IF NOT EXISTS notifications (
     id SERIAL PRIMARY KEY,
     user_id BIGINT REFERENCES users(id),
-    role_code VARCHAR(50),
+    role_id INTEGER REFERENCES roles(id),
     type VARCHAR(50) NOT NULL,
     title VARCHAR(255) NOT NULL,
     message TEXT,
@@ -224,7 +224,7 @@ CREATE TABLE IF NOT EXISTS notifications (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 CREATE INDEX IF NOT EXISTS idx_notifications_user ON notifications(user_id);
-CREATE INDEX IF NOT EXISTS idx_notifications_role ON notifications(role_code);
+CREATE INDEX IF NOT EXISTS idx_notifications_role ON notifications(role_id);
 CREATE INDEX IF NOT EXISTS idx_notifications_type ON notifications(type);
 CREATE INDEX IF NOT EXISTS idx_notifications_is_read ON notifications(is_read);
 
@@ -232,13 +232,13 @@ CREATE INDEX IF NOT EXISTS idx_notifications_is_read ON notifications(is_read);
 CREATE TABLE IF NOT EXISTS notification_settings (
     id SERIAL PRIMARY KEY,
     user_id BIGINT REFERENCES users(id),
-    role_code VARCHAR(50),
+    role_id INTEGER REFERENCES roles(id),
     type VARCHAR(50) NOT NULL,
     enabled BOOLEAN DEFAULT TRUE,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 CREATE INDEX IF NOT EXISTS idx_notification_settings_user ON notification_settings(user_id);
-CREATE INDEX IF NOT EXISTS idx_notification_settings_role ON notification_settings(role_code);
+CREATE INDEX IF NOT EXISTS idx_notification_settings_role ON notification_settings(role_id);
 CREATE INDEX IF NOT EXISTS idx_notification_settings_type ON notification_settings(type);
 
 -- ======================== AUDIT_LOGS ========================
