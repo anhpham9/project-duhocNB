@@ -617,9 +617,9 @@ export class InputSanitizer {
         }
 
         if (schoolData.status) {
-            const validStatuses = ['active', 'inactive'];
+            const validStatuses = ['partner', 'active', 'paused', 'pending'];
             const status = this.sanitizeText(schoolData.status, { maxLength: 20 });
-            sanitized.status = validStatuses.includes(status) ? status : 'active';
+            sanitized.status = validStatuses.includes(status) ? status : 'pending';
         }
 
         if (schoolData.logo_url) {

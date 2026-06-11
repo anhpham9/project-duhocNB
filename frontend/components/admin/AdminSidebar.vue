@@ -41,11 +41,17 @@
                             <span>Liên hệ</span>
                         </NuxtLink>
                     </li>
-                    <li v-if="canAccessSchools" class="nav-item" :class="{ active: isActivePage('/admin/schools') }">
-                        <NuxtLink to="/admin/schools" class="nav-link" @click="handleNavLinkClick">
+                    <li v-if="canAccessSchools" class="nav-item has-submenu" :class="{ active: openSubmenus.includes('schools') }">
+                        <a href="#" class="nav-link" @click="toggleSubmenu('schools')">
                             <i class="fas fa-university"></i>
                             <span>Trường học</span>
-                        </NuxtLink>
+                            <i class="fas fa-chevron-down submenu-arrow" :class="{ 'rotated': openSubmenus.includes('schools') }"></i>
+                        </a>
+                        <ul class="submenu" :class="{ 'open': openSubmenus.includes('schools') }">
+                            <li><NuxtLink to="/admin/schools" @click="handleSubmenuLinkClick" :class="{ active: isSubmenuItemActive('/admin/schools') }">Danh sách trường</NuxtLink></li>
+                            <li><NuxtLink to="/admin/schools/regions" @click="handleSubmenuLinkClick" :class="{ active: isSubmenuItemActive('/admin/schools/regions') }">Khu vực</NuxtLink></li>
+                            <li><NuxtLink to="/admin/schools/types" @click="handleSubmenuLinkClick" :class="{ active: isSubmenuItemActive('/admin/schools/types') }">Loại trường</NuxtLink></li>
+                        </ul>
                     </li>
                     <li v-if="canAccessNews" class="nav-item has-submenu" :class="{ active: openSubmenus.includes('news') }">
                         <a href="#" class="nav-link" @click="toggleSubmenu('news')">
@@ -186,6 +192,7 @@ const closeAllSubmenus = () => {
 
 // Check if current route belongs to any submenu
 const getCurrentSubmenu = (path) => {
+    if (path.startsWith('/admin/schools')) return 'schools'
     if (path.startsWith('/admin/news')) return 'news'
     if (path.startsWith('/admin/content')) return 'content'
     if (path.startsWith('/admin/settings')) return 'settings'
