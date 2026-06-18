@@ -2,6 +2,7 @@ import db from "../config/db.js";
 import { logError, logInfo, auditLog } from "../utils/logger.js";
 import { InputSanitizer } from "../utils/sanitizer.js";
 import { SecurityLogger } from "../utils/securityLogger.js";
+import { getStaticPageDataBySlug } from "../services/staticPages.service.js";
 
 const MANAGE_STATIC_PAGES_ROLES = [1, 2, 3];
 const ALLOWED_STATUSES = ["draft", "published"];
@@ -79,30 +80,9 @@ export const getStaticPageBySlug = async (req, res) => {
             });
         }
 
-        const result = await db.query(
-            `SELECT
-                sp.id,
-                sp.title,
-                sp.slug,
-                sp.hero_title,
-                sp.hero_description,
-                sp.meta_title,
-                sp.meta_description,
-                sp.type,
-                sp.status,
-                sp.updated_by,
-                sp.created_at,
-                sp.updated_at,
-                COALESCE(pc.content, '') AS content,
-                pc.updated_at AS content_updated_at
-             FROM static_pages sp
-             LEFT JOIN page_contents pc ON pc.page_id = sp.id
-             WHERE sp.slug = $1
-             LIMIT 1`,
-            [slug]
-        );
+        const page = await getStaticPageDataBySlug(slug);
 
-        if (result.rows.length === 0) {
+        if (!page) {
             return res.status(404).json({
                 success: false,
                 message: "Static page not found"
@@ -111,7 +91,7 @@ export const getStaticPageBySlug = async (req, res) => {
 
         res.json({
             success: true,
-            data: result.rows[0]
+            data: page
         });
     } catch (error) {
         logError("Get static page by slug failed", error, {

@@ -61,6 +61,7 @@ feature/frontend-news-admin
 feature/frontend-schools-admin
 feature/frontend-contents-admin
 feature/frontend-settings-admin
+feature/frontend-contact-public
 feature/frontend-news-public
 feature/frontend-auth-rbac
 

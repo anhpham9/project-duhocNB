@@ -2,8 +2,11 @@
     <div>
 
         <!-- Hero Section -->
-        <PageHero title="Liên Hệ Với Chúng Tôi" subtitle="Chúng tôi luôn sẵn sàng hỗ trợ bạn trong hành trình du học"
-            breadcrumb-text="Liên Hệ" />
+        <PageHero
+            :title="heroTitle"
+            :subtitle="heroDescription"
+            :breadcrumb-text="pageTitle"
+        />
 
 
         <!-- Contact Main Section -->
@@ -13,8 +16,7 @@
                     <!-- Contact Info Left -->
                     <div class="contact-info-left">
                         <h2>Thông Tin Liên Hệ</h2>
-                        <p>Chúng tôi luôn sẵn sàng lắng nghe và hỗ trợ bạn. Hãy liên hệ với chúng tôi qua các thông tin
-                            dưới đây:</p>
+                        <p>{{ contactDescription }}</p>
 
                         <div class="contact-info-list">
                             <div class="contact-item">
@@ -23,7 +25,7 @@
                                 </div>
                                 <div class="contact-item-content">
                                     <h4>Địa Chỉ Văn Phòng</h4>
-                                    <p>123 Đường ABC, Quận 1 TP. Hồ Chí Minh, Việt Nam</p>
+                                    <p>{{ contactInfo.address || '123 Đường ABC, Quận 1 TP. Hồ Chí Minh, Việt Nam' }}</p>
                                 </div>
                             </div>
 
@@ -33,7 +35,9 @@
                                 </div>
                                 <div class="contact-item-content">
                                     <h4>Điện Thoại</h4>
-                                    <p>Hotline: +84 123 456 789<br>Zalo: +84 987 654 321</p>
+                                    <p>
+                                        Hotline: {{ contactInfo.hotline || '+84 123 456 789' }}<br>Điện thoại: {{ contactInfo.phone || '+84 987 654 321' }}
+                                    </p>
                                 </div>
                             </div>
 
@@ -43,7 +47,7 @@
                                 </div>
                                 <div class="contact-item-content">
                                     <h4>Email</h4>
-                                    <p>info@duhocnb.com<br>tuvanduhoc@duhocnb.com</p>
+                                    <p>{{ contactInfo.contactEmail || 'info@duhocnb.com' }}</p>
                                 </div>
                             </div>
 
@@ -65,7 +69,7 @@
                             <h3>Vị Trí Văn Phòng</h3>
                             <div class="map-container">
                                 <iframe
-                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.4326043693744!2d106.69385131533472!3d10.77536259230029!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f38f9ed887b%3A0x14aded5703768989!2zUXXhuq1uIDEsIFRow6BuaCBwaOG7kSBI4buTIENow60gTWluaCwgVmnhu4d0IE5hbQ!5e0!3m2!1svi!2s!4v1649832458422!5m2!1svi!2s"
+                                    :src="mapSrc"
                                     width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"
                                     referrerpolicy="no-referrer-when-downgrade">
                                 </iframe>
@@ -82,10 +86,67 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
 import { useFAQ } from '~/composables/useFAQ'
 
 const { getFAQData } = useFAQ()
 const myFaqData = getFAQData('visa') // or 'school', 'visa'
+
+const config = useRuntimeConfig()
+
+const { data: staticPageData } = await useFetch(`${config.public.apiBase}/public/static-pages/contact`, {
+    key: 'public-static-page-contact'
+})
+
+const { data } = await useFetch(`${config.public.apiBase}/public/general-settings`, {
+    key: 'public-general-settings'
+})
+
+const staticPage = computed(() => staticPageData.value?.data || {})
+const contactInfo = computed(() => data.value?.data || {})
+
+console.log('Contact Info Data:', contactInfo.value)
+
+const pageTitle = computed(() => staticPage.value.title || 'Liên Hệ')
+
+const heroTitle = computed(() => staticPage.value.hero_title || 'Liên Hệ Với Chúng Tôi')
+
+const heroDescription = computed(() => {
+    return staticPage.value.hero_description || 'Chúng tôi luôn sẵn sàng hỗ trợ bạn trong hành trình du học'
+})
+
+useHead(() => {
+    const metaTitle = staticPage.value.meta_title || pageTitle.value || 'Liên Hệ'
+    const metaDescription = staticPage.value.meta_description || heroDescription.value
+
+    return {
+        title: metaTitle,
+        meta: [
+            { name: 'description', content: metaDescription },
+            { property: 'og:title', content: metaTitle },
+            { property: 'og:description', content: metaDescription }
+        ]
+    }
+})
+
+const contactDescription = computed(() => {
+    return contactInfo.value.siteDescription || 'Chúng tôi luôn sẵn sàng lắng nghe và hỗ trợ bạn. Hãy liên hệ với chúng tôi qua các thông tin dưới đây:'
+})
+
+const mapSrc = computed(() => {
+    const value = String(contactInfo.value.googleMapIframe || '').trim()
+
+    if (!value) {
+        return 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.4326043693744!2d106.69385131533472!3d10.77536259230029!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f38f9ed887b%3A0x14aded5703768989!2zUXXhuq1uIDEsIFRow6BuaCBwaOG7kSBI4buTIENow60gTWluaCwgVmnhu4d0IE5hbQ!5e0!3m2!1svi!2s!4v1649832458422!5m2!1svi!2s'
+    }
+
+    if (value.startsWith('http://') || value.startsWith('https://')) {
+        return value
+    }
+
+    const match = value.match(/src=["']([^"']+)["']/i)
+    return match?.[1] || value
+})
 </script>
 <style scoped>
 /* ==================

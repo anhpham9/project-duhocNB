@@ -34,6 +34,7 @@ import notificationsRoutes from "./routes/notifications.routes.js";
 // import filesRoutes from "./routes/files.routes.js";
 // import auditLogsRoutes from "./routes/auditLogs.routes.js";
 // import activityLogsRoutes from "./routes/activityLogs.routes.js";
+import { getPublicStaticPageBySlug } from "./controllers/publicStaticPages.controller.js";
 
 
 // RBAC/permission middleware mẫu
@@ -104,8 +105,12 @@ app.use('/api/', rateLimiter.global);
 // Public endpoints (no auth required)
 // Import public contact function
 import { submitPublicContact } from './controllers/contacts.controller.js';
+import { getPublicGeneralSettings } from './controllers/publicSettings.controller.js';
 
 // Public contact submission endpoint
+app.get('/api/public/static-pages/:slug', getPublicStaticPageBySlug);
+app.get('/api/public/general-settings', getPublicGeneralSettings);
+
 app.post('/api/public/contact', 
     rateLimiter.publicContact, 
     sanitizeInputs, 
