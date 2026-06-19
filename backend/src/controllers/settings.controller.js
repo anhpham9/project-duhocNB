@@ -237,7 +237,8 @@ export const updateContactSettings = async (req, res) => {
             [CONTACT_SETTINGS_KEYS.phone, String(payload.phone)],
             [CONTACT_SETTINGS_KEYS.hotline, String(payload.hotline)],
             [CONTACT_SETTINGS_KEYS.address, String(payload.address)],
-            [CONTACT_SETTINGS_KEYS.googleMapEmbedUrl, String(payload.googleMapEmbedUrl)]
+            [CONTACT_SETTINGS_KEYS.googleMapEmbedUrl, String(payload.googleMapEmbedUrl)],
+            [CONTACT_SETTINGS_KEYS.workingHours, String(payload.workingHours)]
         ];
 
         const placeholders = settingsEntries

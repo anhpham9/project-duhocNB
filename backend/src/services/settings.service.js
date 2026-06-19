@@ -19,7 +19,8 @@ export const CONTACT_SETTINGS_KEYS = {
     phone: `${CONTACT_SETTINGS_PREFIX}phone`,
     hotline: `${CONTACT_SETTINGS_PREFIX}hotline`,
     address: `${CONTACT_SETTINGS_PREFIX}address`,
-    googleMapEmbedUrl: `${CONTACT_SETTINGS_PREFIX}google_map_embed_url`
+    googleMapEmbedUrl: `${CONTACT_SETTINGS_PREFIX}google_map_embed_url`,
+    workingHours: `${CONTACT_SETTINGS_PREFIX}working_hours`
 };
 
 export const GENERAL_SETTINGS_DESCRIPTIONS = {
@@ -37,7 +38,8 @@ export const CONTACT_SETTINGS_DESCRIPTIONS = {
     [CONTACT_SETTINGS_KEYS.phone]: "Contact setting: phone",
     [CONTACT_SETTINGS_KEYS.hotline]: "Contact setting: hotline",
     [CONTACT_SETTINGS_KEYS.address]: "Contact setting: office address",
-    [CONTACT_SETTINGS_KEYS.googleMapEmbedUrl]: "Contact setting: Google Map embed URL"
+    [CONTACT_SETTINGS_KEYS.googleMapEmbedUrl]: "Contact setting: Google Map embed URL",
+    [CONTACT_SETTINGS_KEYS.workingHours]: "Contact setting: working hours"
 };
 
 export const getDefaultGeneralSettings = () => ({
@@ -55,7 +57,8 @@ export const getDefaultContactSettings = () => ({
     phone: "",
     hotline: "",
     address: "",
-    googleMapEmbedUrl: ""
+    googleMapEmbedUrl: "",
+    workingHours: ""
 });
 
 export const mapRowsToGeneralSettings = (rows = []) => {
@@ -83,6 +86,7 @@ export const mapRowsToContactSettings = (rows = []) => {
         if (row.key === CONTACT_SETTINGS_KEYS.hotline) data.hotline = row.value || "";
         if (row.key === CONTACT_SETTINGS_KEYS.address) data.address = row.value || "";
         if (row.key === CONTACT_SETTINGS_KEYS.googleMapEmbedUrl) data.googleMapEmbedUrl = row.value || "";
+        if (row.key === CONTACT_SETTINGS_KEYS.workingHours) data.workingHours = row.value || "";
     }
 
     return data;
@@ -171,6 +175,7 @@ export const getPublicGeneralSettingsData = async () => {
         phone: contactData.phone,
         hotline: contactData.hotline,
         address: contactData.address,
-        googleMapEmbedUrl: contactData.googleMapEmbedUrl
+        googleMapEmbedUrl: contactData.googleMapEmbedUrl,
+        workingHours: contactData.workingHours
     };
 };

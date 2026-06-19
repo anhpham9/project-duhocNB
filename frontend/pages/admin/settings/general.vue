@@ -3,15 +3,15 @@
         <div v-if="loadingUser || !hasPermission" class="permission-check">
             <div v-if="loadingUser" class="loading-permission">
                 <i class="fas fa-spinner fa-spin"></i>
-                <p>Dang kiem tra quyen truy cap...</p>
+                <p>Đang kiểm tra quyền truy cập...</p>
             </div>
             <div v-else class="permission-denied">
                 <i class="fas fa-shield-alt"></i>
-                <h3>Khong the truy cap Cai dat</h3>
-                <p>Chi Superadmin va Admin moi co the cap nhat cai dat he thong.</p>
+                <h3>Không thể truy cập Cài đặt</h3>
+                <p>Chỉ Superadmin và Admin mới có thể cập nhật cài đặt hệ thống.</p>
                 <NuxtLink to="/admin" class="btn btn-primary">
                     <i class="fas fa-arrow-left"></i>
-                    Quay lai Dashboard
+                    Quay lại Dashboard
                 </NuxtLink>
             </div>
         </div>
@@ -21,18 +21,18 @@
                 <div class="header-content">
                     <h1>
                         <i class="fas fa-cogs"></i>
-                        Cai dat chung
+                        Cài đặt chung
                     </h1>
-                    <p>Quan ly thong tin website va lien he theo tung nhom.</p>
+                    <p>Quản lý thông tin website và liên hệ theo từng nhóm.</p>
                 </div>
                 <div class="header-actions">
                     <button class="btn btn-secondary" :disabled="isLoading || saving" @click="fetchSettings">
                         <i class="fas fa-sync-alt" :class="{ 'fa-spin': isLoading }"></i>
-                        Lam moi
+                        Làm mới
                     </button>
                     <button class="btn btn-primary" :disabled="saving || isLoading" @click="saveCurrentTab">
                         <i class="fas" :class="saving ? 'fa-spinner fa-spin' : 'fa-save'"></i>
-                        {{ saving ? 'Dang luu...' : 'Luu cai dat' }}
+                        {{ saving ? 'Đang lưu...' : 'Lưu cài đặt' }}
                     </button>
                 </div>
             </div>
@@ -43,39 +43,39 @@
                     :class="{ active: activeTab === 'general' }"
                     @click="activeTab = 'general'"
                 >
-                    Thong tin website
+                    Thông tin website
                 </button>
                 <button
                     class="tab-btn"
                     :class="{ active: activeTab === 'contact' }"
                     @click="activeTab = 'contact'"
                 >
-                    Thong tin lien he
+                    Thông tin liên hệ
                 </button>
             </div>
 
             <div v-if="isLoading" class="loading-state">
                 <i class="fas fa-spinner fa-spin"></i>
-                <p>Dang tai cai dat...</p>
+                <p>Đang tải cài đặt...</p>
             </div>
 
             <div v-else-if="error" class="error-state">
                 <i class="fas fa-exclamation-triangle"></i>
-                <p>Loi: {{ error }}</p>
-                <button @click="fetchSettings" class="btn btn-primary">Thu lai</button>
+                <p>Lỗi: {{ error }}</p>
+                <button @click="fetchSettings" class="btn btn-primary">Thử lại</button>
             </div>
 
             <div v-else class="settings-form">
                 <template v-if="activeTab === 'general'">
                     <div class="form-group">
-                        <label>Ten website <span class="required">*</span></label>
+                        <label>Tên website <span class="required">*</span></label>
                         <input
                             v-model.trim="generalSettings.siteName"
                             @input="clearGeneralError('siteName')"
                             type="text"
                             class="form-control"
                             :class="{ 'is-invalid': !!generalErrors.siteName }"
-                            placeholder="Nhap ten website"
+                            placeholder="Nhập tên website"
                         >
                         <p v-if="generalErrors.siteName" class="field-error">{{ generalErrors.siteName }}</p>
                     </div>
@@ -120,14 +120,14 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Mo ta website</label>
+                        <label>Mô tả website</label>
                         <textarea
                             v-model="generalSettings.siteDescription"
                             @input="clearGeneralError('siteDescription')"
                             class="form-control"
                             :class="{ 'is-invalid': !!generalErrors.siteDescription }"
                             rows="3"
-                            placeholder="Mo ta ngan ve website"
+                            placeholder="Mô tả ngắn về website"
                         ></textarea>
                         <p v-if="generalErrors.siteDescription" class="field-error">{{ generalErrors.siteDescription }}</p>
                     </div>
@@ -135,20 +135,20 @@
 
                 <template v-else>
                     <div class="form-group">
-                        <label>Ten cong ty day du</label>
+                        <label>Tên công ty đầy đủ</label>
                         <input
                             v-model.trim="contactSettings.companyFullName"
                             @input="clearContactError('companyFullName')"
                             type="text"
                             class="form-control"
                             :class="{ 'is-invalid': !!contactErrors.companyFullName }"
-                            placeholder="Cong ty Co phan ..."
+                            placeholder="Ông ty Cổ phần ..."
                         >
                         <p v-if="contactErrors.companyFullName" class="field-error">{{ contactErrors.companyFullName }}</p>
                     </div>
 
                     <div class="form-group">
-                        <label>Ten cong ty ngan</label>
+                        <label>Tên công ty dạng ngắn</label>
                         <input
                             v-model.trim="contactSettings.companyShortName"
                             @input="clearContactError('companyShortName')"
@@ -161,7 +161,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Email lien he</label>
+                        <label>Email liên hệ</label>
                         <input
                             v-model.trim="contactSettings.contactEmail"
                             @input="clearContactError('contactEmail')"
@@ -174,7 +174,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label>So dien thoai</label>
+                        <label>Số điện thoại</label>
                         <input
                             v-model.trim="contactSettings.phone"
                             @input="clearContactError('phone')"
@@ -200,40 +200,65 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Dia chi</label>
+                        <label>Địa chỉ</label>
                         <textarea
                             v-model="contactSettings.address"
                             @input="clearContactError('address')"
                             class="form-control"
                             :class="{ 'is-invalid': !!contactErrors.address }"
                             rows="2"
-                            placeholder="Nhap dia chi"
+                            placeholder="Nhập địa chỉ"
                         ></textarea>
                         <p v-if="contactErrors.address" class="field-error">{{ contactErrors.address }}</p>
                     </div>
 
                     <div class="form-group">
                         <label>Google Maps embed URL</label>
-                        <input
+                        <textarea
                             v-model.trim="contactSettings.googleMapEmbedUrl"
                             @input="clearContactError('googleMapEmbedUrl')"
-                            type="url"
                             class="form-control"
                             :class="{ 'is-invalid': !!contactErrors.googleMapEmbedUrl }"
+                            rows="4"
                             placeholder="https://www.google.com/maps/embed?..."
-                        >
+                        ></textarea>
                         <p v-if="contactErrors.googleMapEmbedUrl" class="field-error">{{ contactErrors.googleMapEmbedUrl }}</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Giờ làm việc</label>
+                        <textarea
+                            v-model="contactSettings.workingHours"
+                            @input="clearContactError('workingHours')"
+                            class="form-control"
+                            :class="{ 'is-invalid': !!contactErrors.workingHours }"
+                            rows="2"
+                            placeholder="Thứ 2 - Thứ 6: 8:00 - 18:00&#10;Thứ 7 - Chủ nhật: 9:00 - 17:00"
+                        ></textarea>
+                        <p v-if="contactErrors.workingHours" class="field-error">{{ contactErrors.workingHours }}</p>
+                    </div>
+
+                    <div v-if="mapPreviewUrl" class="map-preview-card">
+                        <p class="map-preview-title">Xem trước Google Maps</p>
+                        <iframe
+                            :src="mapPreviewUrl"
+                            class="map-preview-iframe"
+                            allowfullscreen
+                            loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade"
+                            title="Google Maps preview"
+                        ></iframe>
                     </div>
                 </template>
 
                 <div class="form-actions">
                     <button class="btn btn-secondary" :disabled="saving || isLoading" @click="resetCurrentTab">
                         <i class="fas fa-undo"></i>
-                        Khoi phuc
+                        Khôi phục
                     </button>
                     <button class="btn btn-primary" :disabled="saving || isLoading" @click="saveCurrentTab">
                         <i class="fas" :class="saving ? 'fa-spinner fa-spin' : 'fa-save'"></i>
-                        {{ saving ? 'Dang luu...' : 'Luu cai dat' }}
+                        {{ saving ? 'Đang lưu...' : 'Lưu cài đặt' }}
                     </button>
                 </div>
             </div>
@@ -256,7 +281,7 @@ definePageMeta({
 })
 
 useHead({
-    title: 'Cai dat chung - Admin'
+    title: 'Cài đặt chung - Admin'
 })
 
 const config = useRuntimeConfig()
@@ -288,7 +313,8 @@ const contactSettings = reactive({
     phone: '',
     hotline: '',
     address: '',
-    googleMapEmbedUrl: ''
+    googleMapEmbedUrl: '',
+    workingHours: ''
 })
 
 const generalErrors = reactive({
@@ -306,13 +332,25 @@ const contactErrors = reactive({
     phone: '',
     hotline: '',
     address: '',
-    googleMapEmbedUrl: ''
+    googleMapEmbedUrl: '',
+    workingHours: ''
 })
 
 const lastSavedGeneral = ref(null)
 const lastSavedContact = ref(null)
 
 const isLoading = computed(() => loadingGeneral.value || loadingContact.value)
+const mapPreviewUrl = computed(() => {
+    const rawValue = String(contactSettings.googleMapEmbedUrl || '').trim()
+    if (!rawValue) return ''
+
+    if (/^https?:\/\//i.test(rawValue)) {
+        return rawValue
+    }
+
+    const srcMatch = rawValue.match(/src=["']([^"']+)["']/i)
+    return srcMatch?.[1] || ''
+})
 
 const isValidUrl = (value) => {
     if (!value) return true
@@ -348,6 +386,7 @@ const setContactSettings = (data = {}) => {
     contactSettings.hotline = data.hotline || ''
     contactSettings.address = data.address || ''
     contactSettings.googleMapEmbedUrl = data.googleMapEmbedUrl || ''
+    contactSettings.workingHours = data.workingHours || ''
 }
 
 const clearGeneralErrors = () => {
@@ -366,29 +405,30 @@ const clearContactErrors = () => {
     contactErrors.hotline = ''
     contactErrors.address = ''
     contactErrors.googleMapEmbedUrl = ''
+    contactErrors.workingHours = ''
 }
 
 const validateGeneral = () => {
     clearGeneralErrors()
 
     if (!generalSettings.siteName.trim()) {
-        generalErrors.siteName = 'Ten website la bat buoc'
+        generalErrors.siteName = 'Tên website là bắt buộc'
     }
 
     if (generalSettings.siteDescription.length > 2000) {
-        generalErrors.siteDescription = 'Mo ta website toi da 2000 ky tu'
+        generalErrors.siteDescription = 'Mô tả website tối đa 2000 ký tự'
     }
 
     if (generalSettings.siteUrl && !isValidUrl(generalSettings.siteUrl)) {
-        generalErrors.siteUrl = 'Website link khong hop le (can bat dau bang http/https)'
+        generalErrors.siteUrl = 'Website link không hợp lệ (cần bắt đầu bằng http/https)'
     }
 
     if (generalSettings.siteLogoUrl && !isValidUrl(generalSettings.siteLogoUrl)) {
-        generalErrors.siteLogoUrl = 'Logo URL khong hop le (can bat dau bang http/https)'
+        generalErrors.siteLogoUrl = 'Logo URL không hợp lệ (cần bắt đầu bằng http/https)'
     }
 
     if (generalSettings.siteFaviconUrl && !isValidUrl(generalSettings.siteFaviconUrl)) {
-        generalErrors.siteFaviconUrl = 'Favicon URL khong hop le (can bat dau bang http/https)'
+        generalErrors.siteFaviconUrl = 'Favicon URL không hợp lệ (cần bắt đầu bằng http/https)'
     }
 
     return !Object.values(generalErrors).some(Boolean)
@@ -398,23 +438,27 @@ const validateContact = () => {
     clearContactErrors()
 
     if (contactSettings.contactEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactSettings.contactEmail)) {
-        contactErrors.contactEmail = 'Email khong hop le'
+        contactErrors.contactEmail = 'Email không hợp lệ'
     }
 
     if (contactSettings.phone && !/^[0-9+()\-\s]{8,20}$/.test(contactSettings.phone)) {
-        contactErrors.phone = 'So dien thoai khong hop le'
+        contactErrors.phone = 'Số điện thoại không hợp lệ'
     }
 
     if (contactSettings.hotline && !/^[0-9+()\-\s]{8,20}$/.test(contactSettings.hotline)) {
-        contactErrors.hotline = 'Hotline khong hop le'
+        contactErrors.hotline = 'Hotline không hợp lệ'
     }
 
     if (contactSettings.address.length > 1000) {
-        contactErrors.address = 'Dia chi toi da 1000 ky tu'
+        contactErrors.address = 'Địa chỉ tối đa 1000 ký tự'
     }
 
     if (contactSettings.googleMapEmbedUrl && !isValidUrl(contactSettings.googleMapEmbedUrl)) {
-        contactErrors.googleMapEmbedUrl = 'Google Maps URL khong hop le (can bat dau bang http/https)'
+        contactErrors.googleMapEmbedUrl = 'Google Maps URL không hợp lệ (cần bắt đầu bằng http/https)'
+    }
+
+    if (contactSettings.workingHours.length > 2000) {
+        contactErrors.workingHours = 'Giờ làm việc tối đa 2000 ký tự'
     }
 
     return !Object.values(contactErrors).some(Boolean)
@@ -467,13 +511,13 @@ const fetchSettings = async () => {
     try {
         await Promise.all([fetchGeneralSettings(), fetchContactSettings()])
     } catch (err) {
-        error.value = err.message || 'Khong the tai cai dat'
+        error.value = err.message || 'Không thể tải cài đặt'
     }
 }
 
 const saveGeneralSettings = async () => {
     if (!validateGeneral()) {
-        showError('Vui long kiem tra lai thong tin tab website')
+        showError('Vui lòng kiểm tra lại thông tin tab website')
         return
     }
 
@@ -501,18 +545,18 @@ const saveGeneralSettings = async () => {
             generalErrors.siteFaviconUrl = data.errors.siteFaviconUrl || ''
             generalErrors.siteDescription = data.errors.siteDescription || ''
         }
-        throw new Error(data?.message || 'Khong the luu cai dat website')
+        throw new Error(data?.message || 'Không thể lưu cài đặt website')
     }
 
     const savedData = data?.data || payload
     setGeneralSettings(savedData)
     lastSavedGeneral.value = { ...savedData }
-    showSuccess(data?.message || 'Da luu cai dat website thanh cong')
+    showSuccess(data?.message || 'Đã lưu cài đặt website thành công')
 }
 
 const saveContactSettings = async () => {
     if (!validateContact()) {
-        showError('Vui long kiem tra lai thong tin tab lien he')
+        showError('Vui lòng kiểm tra lại thông tin tab liên hệ')
         return
     }
 
@@ -523,7 +567,8 @@ const saveContactSettings = async () => {
         phone: contactSettings.phone.trim(),
         hotline: contactSettings.hotline.trim(),
         address: contactSettings.address || '',
-        googleMapEmbedUrl: contactSettings.googleMapEmbedUrl.trim()
+        googleMapEmbedUrl: contactSettings.googleMapEmbedUrl.trim(),
+        workingHours: contactSettings.workingHours || ''
     }
 
     const response = await fetch(`${API_BASE}/settings/contact`, {
@@ -543,14 +588,15 @@ const saveContactSettings = async () => {
             contactErrors.hotline = data.errors.hotline || ''
             contactErrors.address = data.errors.address || ''
             contactErrors.googleMapEmbedUrl = data.errors.googleMapEmbedUrl || ''
+            contactErrors.workingHours = data.errors.workingHours || ''
         }
-        throw new Error(data?.message || 'Khong the luu cai dat lien he')
+        throw new Error(data?.message || 'Không thể lưu cài đặt liên hệ')
     }
 
     const savedData = data?.data || payload
     setContactSettings(savedData)
     lastSavedContact.value = { ...savedData }
-    showSuccess(data?.message || 'Da luu cai dat lien he thanh cong')
+    showSuccess(data?.message || 'Đã lưu cài đặt liên hệ thành công')
 }
 
 const saveCurrentTab = async () => {
@@ -562,7 +608,7 @@ const saveCurrentTab = async () => {
             await saveContactSettings()
         }
     } catch (err) {
-        showError(err.message || 'Khong the luu cai dat')
+        showError(err.message || 'Không thể lưu cài đặt')
     } finally {
         saving.value = false
     }
@@ -573,7 +619,7 @@ const resetCurrentTab = () => {
         if (lastSavedGeneral.value) {
             setGeneralSettings(lastSavedGeneral.value)
             clearGeneralErrors()
-            showInfo('Da khoi phuc du lieu tab website')
+            showInfo('Đã khôi phục dữ liệu tab website')
             return
         }
 
@@ -585,14 +631,14 @@ const resetCurrentTab = () => {
             siteDescription: ''
         })
         clearGeneralErrors()
-        showInfo('Da dat lai tab website')
+        showInfo('Đã đặt lại tab website')
         return
     }
 
     if (lastSavedContact.value) {
         setContactSettings(lastSavedContact.value)
         clearContactErrors()
-        showInfo('Da khoi phuc du lieu tab lien he')
+        showInfo('Đã khôi phục dữ liệu tab liên hệ')
         return
     }
 
@@ -603,10 +649,11 @@ const resetCurrentTab = () => {
         phone: '',
         hotline: '',
         address: '',
-        googleMapEmbedUrl: ''
+        googleMapEmbedUrl: '',
+        workingHours: ''
     })
     clearContactErrors()
-    showInfo('Da dat lai tab lien he')
+    showInfo('Đã đặt lại tab liên hệ')
 }
 
 onMounted(async () => {
@@ -765,6 +812,28 @@ onMounted(async () => {
     font-size: 0.85rem;
 }
 
+.map-preview-card {
+    margin-top: 0.75rem;
+    border: 1px solid #dbe6f5;
+    border-radius: 10px;
+    background: #f8fbff;
+    padding: 0.85rem;
+}
+
+.map-preview-title {
+    margin: 0 0 0.6rem;
+    color: #18477d;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.map-preview-iframe {
+    width: 100%;
+    height: 320px;
+    border: 0;
+    border-radius: 8px;
+}
+
 .required {
     color: #dc3545;
 }
@@ -849,6 +918,10 @@ onMounted(async () => {
 
     .settings-form {
         padding: 1rem;
+    }
+
+    .map-preview-iframe {
+        height: 260px;
     }
 
     .tabs {

@@ -851,6 +851,11 @@ export class InputSanitizer {
 
         sanitized.googleMapEmbedUrl = this.sanitizeUrl(mapUrl || '');
 
+        sanitized.workingHours = this.sanitizeText(payload.workingHours || '', {
+            maxLength: 2000,
+            escapeHtml: false
+        });
+
         logger.debug('Contact settings data sanitized', {
             originalFields: Object.keys(payload),
             sanitizedFields: Object.keys(sanitized)

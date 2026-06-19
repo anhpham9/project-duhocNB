@@ -77,6 +77,12 @@ const settings = [
     group_name: "contact"
   },
   {
+    key: "contact.working_hours",
+    value: "Thứ 2 - Thứ 6: 8:00 - 18:00\nThứ 7 - Chủ nhật: 9:00 - 17:00",
+    description: "Contact setting: working hours",
+    group_name: "contact"
+  },
+  {
     key: "seo.default_title",
     value: "Du hoc Nhat Ban - DuhocNB",
     description: "SEO setting: default page title",

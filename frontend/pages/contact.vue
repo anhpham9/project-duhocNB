@@ -57,7 +57,7 @@
                                 </div>
                                 <div class="contact-item-content">
                                     <h4>Giờ Làm Việc</h4>
-                                    <p>Thứ 2 - Thứ 6: 8:00 - 18:00<br>Thứ 7 - Chủ nhật: 9:00 - 17:00</p>
+                                    <p style="white-space: pre-line">{{ workingHoursText }}</p>
                                 </div>
                             </div>
                         </div>
@@ -131,6 +131,10 @@ useHead(() => {
 
 const contactDescription = computed(() => {
     return contactInfo.value.siteDescription || 'Chúng tôi luôn sẵn sàng lắng nghe và hỗ trợ bạn. Hãy liên hệ với chúng tôi qua các thông tin dưới đây:'
+})
+
+const workingHoursText = computed(() => {
+    return String(contactInfo.value.workingHours || '').trim() || 'Thứ 2 - Thứ 6: 8:00 - 18:00\nThứ 7 - Chủ nhật: 9:00 - 17:00'
 })
 
 const mapSrc = computed(() => {

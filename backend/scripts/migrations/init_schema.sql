@@ -147,6 +147,8 @@ CREATE TABLE IF NOT EXISTS faqs (
     id SERIAL PRIMARY KEY,
     question TEXT NOT NULL,
     answer TEXT NOT NULL,
+    sort_order INT DEFAULT 0,
+    is_active BOOLEAN DEFAULT true,
     type VARCHAR(20) CHECK (type IN ('school', 'general')) NOT NULL,
     school_id INTEGER REFERENCES schools(id) ON DELETE CASCADE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
