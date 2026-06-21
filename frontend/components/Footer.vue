@@ -3,41 +3,123 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h3>Du Học NB</h3>
-                    <p>Đồng hành cùng bạn trên hành trình chinh phục ước mơ du học.</p>
+                    <h3>{{ footerBrandName }}</h3>
+                    <p>{{ footerDescription }}</p>
                     <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-tiktok"></i></a>
-                        <a href="#"><i class="fab fa-youtube"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a
+                            v-for="item in socialLinks"
+                            :key="item.id"
+                            :href="item.url"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            :title="item.description || item.name"
+                            :aria-label="item.name"
+                        >
+                            <i :class="item.icon || 'fas fa-link'"></i>
+                        </a>
                     </div>
                 </div>
                 <div class="footer-section">
                     <h4>Dịch vụ</h4>
                     <ul>
-                        <li><a href="#">Tư vấn chọn trường</a></li>
-                        <li><a href="#">Hỗ trợ hồ sơ</a></li>
-                        <li><a href="#">Visa & Thủ tục</a></li>
-                        <li><a href="#">Hỗ trợ lưu trú</a></li>
+                        <li v-for="item in serviceLinks" :key="item.to">
+                            <NuxtLink :to="item.to">{{ item.label }}</NuxtLink>
+                        </li>
                     </ul>
                 </div>
                 <div class="footer-section">
                     <h4>Liên hệ</h4>
                     <ul>
-                        <li><i class="fas fa-phone"></i> +84 123 456 789</li>
-                        <li><i class="fas fa-envelope"></i> info@duhocnb.com</li>
-                        <li><i class="fas fa-map-marker-alt"></i> 123 Đường ABC, Q1, HCM</li>
+                        <li v-if="displayHotline"><i class="fas fa-phone-volume"></i> {{ displayHotline }}</li>
+                        <li v-if="displayPhone"><i class="fas fa-phone"></i> {{ displayPhone }}</li>
+                        <li v-if="displayEmail"><i class="fas fa-envelope"></i> {{ displayEmail }}</li>
+                        <li v-if="displayAddress"><i class="fas fa-map-marker-alt"></i> {{ displayAddress }}</li>
                     </ul>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 Du Học NB. All rights reserved.</p>
+                <p>{{ footerCopyright }}</p>
             </div>
         </div>
     </footer>
 </template>
 
 <script setup>
+const config = useRuntimeConfig()
+
+const FALLBACK_FOOTER = {
+    siteName: 'Du Học NB',
+    siteDescription: 'Đồng hành cùng bạn trên hành trình chinh phục ước mơ du học.',
+    siteCopyright: '',
+    companyShortName: 'Du Học NB',
+    contactEmail: '',
+    phone: '',
+    hotline: '',
+    address: '123 Đường ABC, Q1, HCM',
+    socialLinks: [
+        { id: 'fallback-facebook', name: 'Facebook', icon: 'fab fa-facebook', url: '#' },
+        { id: 'fallback-tiktok', name: 'TikTok', icon: 'fab fa-tiktok', url: '#' },
+        { id: 'fallback-youtube', name: 'YouTube', icon: 'fab fa-youtube', url: '#' },
+        { id: 'fallback-instagram', name: 'Instagram', icon: 'fab fa-instagram', url: '#' }
+    ]
+}
+
+const serviceLinks = [
+    { to: '/schools', label: 'Tư vấn chọn trường' },
+    { to: '/conditions', label: 'Hỗ trợ hồ sơ' },
+    { to: '/faq-demo', label: 'Visa & Thủ tục' },
+    { to: '/contact', label: 'Hỗ trợ lưu trú' }
+]
+
+const { data } = await useFetch(`${config.public.apiBase}/public/footer`, {
+    key: 'public-footer-data'
+})
+
+const footer = computed(() => {
+    const apiData = data.value?.data || {}
+    return {
+        ...FALLBACK_FOOTER,
+        ...apiData
+    }
+})
+
+const socialLinks = computed(() => {
+    const list = Array.isArray(footer.value.socialLinks) ? footer.value.socialLinks : []
+    const valid = list.filter((item) => String(item?.url || '').trim())
+    return valid.length > 0 ? valid : FALLBACK_FOOTER.socialLinks
+})
+
+const footerBrandName = computed(() => {
+    return footer.value.siteName || footer.value.companyShortName || FALLBACK_FOOTER.siteName
+})
+
+const footerDescription = computed(() => {
+    return footer.value.siteDescription || FALLBACK_FOOTER.siteDescription
+})
+
+const displayHotline = computed(() => {
+    return footer.value.hotline || FALLBACK_FOOTER.hotline
+})
+
+const displayPhone = computed(() => {
+    return footer.value.phone || FALLBACK_FOOTER.phone
+})
+
+const displayEmail = computed(() => {
+    return footer.value.contactEmail || FALLBACK_FOOTER.contactEmail
+})
+
+const displayAddress = computed(() => {
+    return footer.value.address || FALLBACK_FOOTER.address
+})
+
+const footerCopyright = computed(() => {
+    const custom = String(footer.value.siteCopyright || '').trim()
+    if (custom) return custom
+
+    const year = new Date().getFullYear()
+    return `© ${year} ${footerBrandName.value}. All rights reserved.`
+})
 
 </script>
 
@@ -108,6 +190,17 @@
     justify-content: center;
     color: white;
     transition: all 0.3s ease;
+}
+
+.social-links a .fa-zalo {
+    display: inline-block !important;
+    width: 1.15em;
+    height: 1.15em;
+    background-color: white;
+    background-image: url(/assets/icons/zalo.svg);
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 .social-links a:hover {

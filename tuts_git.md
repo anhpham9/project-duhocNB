@@ -56,6 +56,7 @@ feature/frontend-auth
 feature/frontend-rbac
 feature/frontend-layouts
 fix/frontend-rbac
+feature/frontend-auth-rbac
 feature/frontend-users-admin
 fix/frontend-users-admin
 feature/frontend-contacts-admin
@@ -65,7 +66,7 @@ feature/frontend-contents-admin
 feature/frontend-settings-admin
 feature/frontend-contact-public
 feature/frontend-news-public
-feature/frontend-auth-rbac
+feature/frontend-settings-public
 
 
 

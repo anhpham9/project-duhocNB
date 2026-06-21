@@ -177,7 +177,10 @@ export const getPublicGeneralSettingsData = async () => {
             GENERAL_SETTINGS_KEYS.siteName,
             GENERAL_SETTINGS_KEYS.siteUrl,
             GENERAL_SETTINGS_KEYS.siteDescription,
-            GENERAL_SETTINGS_KEYS.siteCopyright
+            GENERAL_SETTINGS_KEYS.siteCopyright,
+            GENERAL_SETTINGS_KEYS.siteLanguage,
+            GENERAL_SETTINGS_KEYS.siteTimezone,
+            GENERAL_SETTINGS_KEYS.dateFormat
         ]),
         getContactSettingsData()
     ]);
@@ -198,5 +201,52 @@ export const getPublicGeneralSettingsData = async () => {
         address: contactData.address,
         googleMapEmbedUrl: contactData.googleMapEmbedUrl,
         workingHours: contactData.workingHours
+    };
+};
+
+export const getPublicFooterData = async () => {
+    const [generalData, contactData, socialLinksResult] = await Promise.all([
+        getGeneralSettingsData([
+            GENERAL_SETTINGS_KEYS.siteName,
+            GENERAL_SETTINGS_KEYS.siteUrl,
+            GENERAL_SETTINGS_KEYS.siteDescription,
+            GENERAL_SETTINGS_KEYS.siteCopyright
+        ]),
+        getContactSettingsData([
+            CONTACT_SETTINGS_KEYS.companyFullName,
+            CONTACT_SETTINGS_KEYS.companyShortName,
+            CONTACT_SETTINGS_KEYS.contactEmail,
+            CONTACT_SETTINGS_KEYS.phone,
+            CONTACT_SETTINGS_KEYS.hotline,
+            CONTACT_SETTINGS_KEYS.address
+        ]),
+        db.query(
+            `SELECT id, name, icon, url, description, display_order
+             FROM social_links
+             WHERE is_active = TRUE
+             ORDER BY display_order ASC, id ASC`
+        )
+    ]);
+
+    const socialLinks = (socialLinksResult.rows || []).map((item) => ({
+        id: item.id,
+        name: item.name || '',
+        icon: item.icon || '',
+        url: item.url || '',
+        description: item.description || ''
+    }));
+
+    return {
+        siteName: generalData.siteName,
+        siteUrl: generalData.siteUrl,
+        siteDescription: generalData.siteDescription,
+        siteCopyright: generalData.siteCopyright,
+        companyFullName: contactData.companyFullName,
+        companyShortName: contactData.companyShortName,
+        contactEmail: contactData.contactEmail,
+        phone: contactData.phone,
+        hotline: contactData.hotline,
+        address: contactData.address,
+        socialLinks
     };
 };

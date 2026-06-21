@@ -109,11 +109,12 @@ app.use('/api/', rateLimiter.global);
 // Public endpoints (no auth required)
 // Import public contact function
 import { submitPublicContact } from './controllers/contacts.controller.js';
-import { getPublicGeneralSettings } from './controllers/publicSettings.controller.js';
+import { getPublicFooter, getPublicGeneralSettings } from './controllers/publicSettings.controller.js';
 
 // Public contact submission endpoint
 app.get('/api/public/static-pages/:slug', getPublicStaticPageBySlug);
 app.get('/api/public/general-settings', getPublicGeneralSettings);
+app.get('/api/public/footer', getPublicFooter);
 app.get('/api/public/news', getPublicNewsList);
 app.get('/api/public/news/:slug', getPublicNewsBySlug);
 app.post('/api/public/news/:id/view', rateLimiter.publicView, trackNewsView);
