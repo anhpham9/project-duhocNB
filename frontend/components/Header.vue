@@ -4,7 +4,7 @@
             <div class="container">
                 <div class="nav-brand">
                     <NuxtLink to="/">
-                        <img :src="logoSrc" alt="Du Học NB" class="logo" @error="handleImageError"
+                        <img :src="logoSrc" :alt="logoAlt" class="logo" @error="handleImageError"
                             @load="handleImageLoad">
                     </NuxtLink>
                 </div>
@@ -50,6 +50,7 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRoute } from 'vue-router'
 
+const config = useRuntimeConfig()
 const route = useRoute()
 const header = ref(null)
 const navMenu = ref(null)
@@ -68,10 +69,24 @@ const isNewsActive = computed(() => {
     return route.path === '/news' || route.path.startsWith('/news/')
 })
 
+const { data: footerData } = await useFetch(`${config.public.apiBase}/public/footer`, {
+    key: 'public-footer-data'
+})
+
+const footer = computed(() => footerData.value?.data || {})
+
+const logoAlt = computed(() => {
+    return String(footer.value.siteName || '').trim() || 'Du Học NB'
+})
+
 // Computed logo path
 const logoSrc = computed(() => {
-    // Try different paths
-    return '/logo01.png'
+    const logoUrl = String(footer.value.siteLogoUrl || '').trim()
+    if (currentLogoIndex.value === 0 && logoUrl) {
+        return logoUrl
+    }
+
+    return logoSources[currentLogoIndex.value] || '/logo01.png'
 })
 
 // Alternative logo sources
@@ -83,9 +98,8 @@ const handleImageError = (event) => {
     console.error('Header Logo failed to load:', event.target.src)
     // Try next logo source
     currentLogoIndex.value++
-    if (currentLogoIndex.value < logoSources.length) {
-        event.target.src = logoSources[currentLogoIndex.value]
-        console.log('Trying alternative logo:', logoSources[currentLogoIndex.value])
+    if (currentLogoIndex.value <= logoSources.length) {
+        console.log('Trying alternative logo:', logoSrc.value)
     }
 }
 

@@ -176,6 +176,8 @@ export const getPublicGeneralSettingsData = async () => {
         getGeneralSettingsData([
             GENERAL_SETTINGS_KEYS.siteName,
             GENERAL_SETTINGS_KEYS.siteUrl,
+            GENERAL_SETTINGS_KEYS.siteLogoUrl,
+            GENERAL_SETTINGS_KEYS.siteFaviconUrl,
             GENERAL_SETTINGS_KEYS.siteDescription,
             GENERAL_SETTINGS_KEYS.siteCopyright,
             GENERAL_SETTINGS_KEYS.siteLanguage,
@@ -188,6 +190,8 @@ export const getPublicGeneralSettingsData = async () => {
     return {
         siteName: generalData.siteName,
         siteUrl: generalData.siteUrl,
+        siteLogoUrl: generalData.siteLogoUrl,
+        siteFaviconUrl: generalData.siteFaviconUrl,
         siteDescription: generalData.siteDescription,
         siteCopyright: generalData.siteCopyright,
         siteLanguage: generalData.siteLanguage,
@@ -208,6 +212,7 @@ export const getPublicFooterData = async () => {
     const [generalData, contactData, socialLinksResult] = await Promise.all([
         getGeneralSettingsData([
             GENERAL_SETTINGS_KEYS.siteName,
+            GENERAL_SETTINGS_KEYS.siteLogoUrl,
             GENERAL_SETTINGS_KEYS.siteUrl,
             GENERAL_SETTINGS_KEYS.siteDescription,
             GENERAL_SETTINGS_KEYS.siteCopyright
@@ -239,6 +244,7 @@ export const getPublicFooterData = async () => {
 
     return {
         siteName: generalData.siteName,
+        siteLogoUrl: generalData.siteLogoUrl,
         siteUrl: generalData.siteUrl,
         siteDescription: generalData.siteDescription,
         siteCopyright: generalData.siteCopyright,
