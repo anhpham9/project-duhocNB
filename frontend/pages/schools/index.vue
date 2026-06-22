@@ -14,7 +14,10 @@
                 <!-- Filter và Search -->
                 <div class="schools-filter">
                     <div class="filter-select-wrap">
-                        <label for="region-filter" class="filter-label">Khu vực</label>
+                        <div class="filter-head">
+                            <label for="region-filter" class="filter-label">Khu vực</label>
+                            <span class="record-count">{{ recordCountText }}</span>
+                        </div>
                         <select id="region-filter" v-model="activeRegion" class="filter-select">
                             <option v-for="tab in regionTabs" :key="tab.value" :value="tab.value">
                                 {{ tab.label }}
@@ -36,7 +39,7 @@
                 <div v-else-if="!filteredSchools.length" class="schools-loading">Không tìm thấy trường phù hợp với bộ
                     lọc hiện tại.</div>
                 <div v-else class="schools-grid">
-                    <div class="school-card" v-for="school in filteredSchools" :key="school.id">
+                    <div class="school-card" v-for="school in paginatedSchools" :key="school.id">
                         <div class="school-image">
                             <img :src="school.image" :alt="school.name">
                             <div class="school-badge" :class="school.badgeType">{{ school.badge }}</div>
@@ -86,6 +89,24 @@
                     </div>
                 </div>
 
+                <div v-if="showPagination" class="pagination-wrap">
+                    <button class="pagination-btn" :disabled="currentPage === 1" @click="currentPage -= 1">
+                        Trước
+                    </button>
+                    <button
+                        v-for="page in totalPages"
+                        :key="`page-${page}`"
+                        class="pagination-btn"
+                        :class="{ active: currentPage === page }"
+                        @click="currentPage = page"
+                    >
+                        {{ page }}
+                    </button>
+                    <button class="pagination-btn" :disabled="currentPage === totalPages" @click="currentPage += 1">
+                        Sau
+                    </button>
+                </div>
+
                 <!-- Comparison Section -->
                 <div class="comparison-section">
                     <h3>So Sánh Nhanh</h3>
@@ -121,7 +142,7 @@
 
 <script setup>
 
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 const config = useRuntimeConfig()
 const { data: staticPageData } = await useFetch(`${config.public.apiBase}/public/static-pages/schools`, {
@@ -140,6 +161,8 @@ const schoolsRaw = computed(() => schoolsResponse.value?.data || [])
 
 const activeRegion = ref('all')
 const searchTerm = ref('')
+const currentPage = ref(1)
+const PAGE_SIZE = 6
 
 const pageTitle = computed(() => staticPage.value.title || 'Trường Nhật Ngữ')
 
@@ -223,6 +246,7 @@ const schools = computed(() => {
             id: school.id,
             slug: school.slug,
             name: school.name,
+            nameEn: school.name_en || '',
             location: (school.region_slug || school.location || '').toLowerCase(),
             fullLocation: school.location || normalizeRegionLabel(school),
             region: normalizeRegionLabel(school),
@@ -264,10 +288,43 @@ const filteredSchools = computed(() => {
         const passRegion = activeRegion.value === 'all' || school.location === activeRegion.value
         const passSearch = !searchLower
             || school.name.toLowerCase().includes(searchLower)
+            || school.nameEn.toLowerCase().includes(searchLower)
             || school.fullLocation.toLowerCase().includes(searchLower)
             || school.features.some((feature) => feature.toLowerCase().includes(searchLower))
         return passRegion && passSearch
     })
+})
+
+const totalPages = computed(() => {
+    return Math.max(1, Math.ceil(filteredSchools.value.length / PAGE_SIZE))
+})
+
+const paginatedSchools = computed(() => {
+    const start = (currentPage.value - 1) * PAGE_SIZE
+    return filteredSchools.value.slice(start, start + PAGE_SIZE)
+})
+
+const showPagination = computed(() => filteredSchools.value.length > PAGE_SIZE)
+
+const recordCountText = computed(() => {
+    const total = filteredSchools.value.length
+    if (total <= PAGE_SIZE) {
+        return `${total} bản ghi`
+    }
+
+    const start = (currentPage.value - 1) * PAGE_SIZE + 1
+    const end = Math.min(currentPage.value * PAGE_SIZE, total)
+    return `${start}~${end}/${total} bản ghi`
+})
+
+watch([activeRegion, searchTerm], () => {
+    currentPage.value = 1
+})
+
+watch(totalPages, (newTotalPages) => {
+    if (currentPage.value > newTotalPages) {
+        currentPage.value = newTotalPages
+    }
 })
 
 const comparisonSchools = computed(() => {
@@ -311,6 +368,19 @@ const comparisonSchools = computed(() => {
     font-size: 0.85rem;
     font-weight: 600;
     color: #666;
+}
+
+.filter-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.record-count {
+    font-size: 0.8rem;
+    color: #999;
+    white-space: nowrap;
 }
 
 .filter-select {
@@ -377,6 +447,44 @@ const comparisonSchools = computed(() => {
     border-radius: 12px;
     color: #666;
     margin-bottom: 30px;
+}
+
+.pagination-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    margin-bottom: 35px;
+    flex-wrap: wrap;
+}
+
+.pagination-btn {
+    min-width: 42px;
+    height: 38px;
+    padding: 0 12px;
+    border: 1px solid #e4e4e4;
+    background: #fff;
+    color: #555;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    border-color: #d32f2f;
+    color: #d32f2f;
+}
+
+.pagination-btn.active {
+    background: #d32f2f;
+    border-color: #d32f2f;
+    color: #fff;
+}
+
+.pagination-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
 }
 
 /* School Card */
@@ -664,6 +772,10 @@ const comparisonSchools = computed(() => {
 
     .filter-select-wrap {
         min-width: 100%;
+    }
+
+    .filter-head {
+        width: 100%;
     }
 
     .schools-grid {
