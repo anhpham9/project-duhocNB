@@ -12,7 +12,7 @@
 
                     <div class="school-hero-main">
                         <div class="school-info-header">
-                            <div class="school-badge featured">Nổi Bật</div>
+                            <div class="school-badge" :class="heroBadge.type">{{ heroBadge.text }}</div>
                             <div class="school-rating">
                                 <div class="rating-stars">
                                     <div class="rating-stars-fill" :style="{ width: `${ratingValue(schoolData?.rating)}%` }"></div>
@@ -236,74 +236,27 @@
             <div class="container">
                 <div class="section-header">
                     <h2 class="editable-h2">Cảm Nhận Của Sinh Viên</h2>
-                    <p>Những trải nghiệm thực tế từ sinh viên đã và đang học tập tại ISI Language School</p>
+                    <p>Những trải nghiệm thực tế từ sinh viên đã và đang học tập tại {{ schoolData.name }}</p>
                 </div>
 
-                <div class="content-grid">
-                    <div class="testimonial-card">
+                <div v-if="topSchoolReviews.length" class="content-grid">
+                    <div v-for="review in topSchoolReviews" :key="review.id" class="testimonial-card">
                         <div class="testimonial-content">
-                            <div class="stars">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
+                            <div class="rating-stars">
+                                <div class="rating-stars-fill" :style="{ width: `${ratingValue(review.rating)}%` }"></div>
                             </div>
-                            <p>"ISI thực sự là lựa chọn tuyệt vời! Giáo viên rất tận tâm, lớp học nhỏ nên được chú ý
-                                nhiều.
-                                Cơ sở vật chất hiện đại, thư viện đầy đủ tài liệu."</p>
+                            <p>"{{ review.content || 'Nội dung đánh giá đang được cập nhật.' }}"</p>
                         </div>
                         <div class="student-info">
-                            <img src="" alt="Nguyễn Minh Anh">
+                            <img :src="review.avatar_url || fallbackImage" :alt="review.student_name || 'Học viên'">
                             <div class="student-details">
-                                <h4>Nguyễn Minh Anh</h4>
-                                <span>Việt Nam | Khóa 2022</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="testimonial-card">
-                        <div class="testimonial-content">
-                            <div class="stars">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                            </div>
-                            <p>"Môi trường học tập rất tốt, bạn bè đến từ nhiều quốc gia khác nhau.
-                                Nhờ ISI mà em có thể đậu vào trường đại học mơ ước."</p>
-                        </div>
-                        <div class="student-info">
-                            <img src="" alt="Trần Văn Đức">
-                            <div class="student-details">
-                                <h4>Trần Văn Đức</h4>
-                                <span>Việt Nam | Khóa 2021</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="testimonial-card">
-                        <div class="testimonial-content">
-                            <div class="stars">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star-half-alt"></i>
-                            </div>
-                            <p>"Chương trình học rất bài bản, từ cơ bản đến nâng cao.
-                                Đặc biệt là khóa luyện thi JLPT rất hiệu quả, em đã đậu N2."</p>
-                        </div>
-                        <div class="student-info">
-                            <img src="" alt="Lê Thị Hoa">
-                            <div class="student-details">
-                                <h4>Lê Thị Hoa</h4>
-                                <span>Việt Nam | Khóa 2023</span>
+                                <h4>{{ review.student_name || 'Học viên ẩn danh' }}</h4>
+                                <span>{{ reviewMetaText(review) }}</span>
                             </div>
                         </div>
                     </div>
                 </div>
+                <div v-else class="empty-block">Thông tin cảm nhận sinh viên đang được cập nhật.</div>
             </div>
         </section>
 
@@ -347,6 +300,14 @@ const {
 const { data: schoolsListResponse } = await useFetch(`${config.public.apiBase}/public/schools`, {
     key: "public-school-related-list"
 });
+
+const { data: schoolReviewsResponse } = await useFetch(
+    () => `${config.public.apiBase}/public/schools/${encodeURIComponent(slug.value)}/reviews`,
+    {
+        key: () => `public-school-reviews-${slug.value}`,
+        watch: [slug]
+    }
+);
 
 const schoolData = computed(() => schoolResponse.value?.data || null);
 const isLoading = computed(() => pendingSchool.value || pendingDetail.value);
@@ -419,6 +380,14 @@ const ratingText  = (value) => {
     return num > 0 ? num.toFixed(1) : "N/A";
 };
 
+const getBadgeFromRating = (rating) => {
+    const value = Number(rating) || 0;
+    if (value >= 4.7) return { text: "Nổi Bật", type: "featured" };
+    if (value >= 4.3) return { text: "Phổ Biến", type: "popular" };
+    if (value >= 4.0) return { text: "Đề Xuất", type: "international" };
+    return { text: "Tiềm Năng", type: "cultural" };
+};
+
 const reviewCountText = computed(() => Number(schoolData.value?.review_count) || 0);
 
 const tuitionText = computed(() => formatCurrencyYen(schoolData.value?.tuition_per_year));
@@ -433,6 +402,24 @@ const detailIntro = computed(() => detailContent.value.intro || {});
 const detailProgram = computed(() => detailContent.value.program || { cards: [] });
 const detailAdmission = computed(() => detailContent.value.admission || { cards: [] });
 const detailFacility = computed(() => detailContent.value.facility || { cards: [] });
+const schoolReviews = computed(() => schoolReviewsResponse.value?.data || []);
+const topSchoolReviews = computed(() => {
+    const reviews = Array.isArray(schoolReviews.value) ? [...schoolReviews.value] : [];
+
+    return reviews
+        .sort((a, b) => {
+            const ratingA = Number(a?.rating) || 0;
+            const ratingB = Number(b?.rating) || 0;
+            if (ratingB !== ratingA) return ratingB - ratingA;
+
+            const timeA = new Date(a?.created_at || 0).getTime() || 0;
+            const timeB = new Date(b?.created_at || 0).getTime() || 0;
+            if (timeB !== timeA) return timeB - timeA;
+
+            return (Number(b?.id) || 0) - (Number(a?.id) || 0);
+        })
+        .slice(0, 3);
+});
 
 const programCards = computed(() => (detailProgram.value.cards || []).filter((card) => card.isActive !== false));
 const admissionCards = computed(() => (detailAdmission.value.cards || []).filter((card) => card.isActive !== false));
@@ -441,11 +428,7 @@ const facilityCards = computed(() => (detailFacility.value.cards || []).filter((
 const heroImage = computed(() => schoolData.value?.thumbnail_url || schoolData.value?.logo_url || fallbackImage);
 
 const heroBadge = computed(() => {
-    const rating = Number(schoolData.value?.rating) || 0;
-    if (rating >= 4.7) return "Featured";
-    if (rating >= 4.3) return "Popular";
-    if (rating >= 4.0) return "Recommended";
-    return "Potential";
+    return getBadgeFromRating(schoolData.value?.rating);
 });
 
 const defaultIntroText = computed(() => {
@@ -460,6 +443,13 @@ const relatedSchools = computed(() => {
     const currentId = schoolData.value?.id;
     return data.filter((item) => item.id !== currentId).slice(0, 3);
 });
+
+const reviewMetaText = (review) => {
+    const nationality = String(review?.nationality || "").trim();
+    const coursePeriod = String(review?.course_period || "").trim();
+    const parts = [nationality, coursePeriod].filter(Boolean);
+    return parts.length ? parts.join(" | ") : "Thông tin khóa học đang cập nhật";
+};
 
 useHead(() => {
     const title = schoolData.value

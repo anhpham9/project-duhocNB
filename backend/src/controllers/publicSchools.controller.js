@@ -284,3 +284,52 @@ export const getPublicSchoolDetailContentBySlug = async (req, res) => {
         res.status(500).json({ success: false, message: "Internal server error" });
     }
 };
+
+export const getPublicSchoolReviewsBySlug = async (req, res) => {
+    try {
+        const slug = String(req.params.slug || "").trim();
+        if (!slug) {
+            return res.status(400).json({ success: false, message: "Invalid school slug" });
+        }
+
+        const schoolResult = await db.query(
+            `SELECT id
+             FROM schools
+             WHERE slug = $1 AND status = ANY($2::text[])
+             LIMIT 1`,
+            [slug, PUBLIC_VISIBLE_STATUSES]
+        );
+
+        if (!schoolResult.rows.length) {
+            return res.status(404).json({ success: false, message: "School not found" });
+        }
+
+        const schoolId = schoolResult.rows[0].id;
+
+        const reviewsResult = await db.query(
+            `SELECT
+                id,
+                school_id,
+                student_name,
+                avatar_url,
+                nationality,
+                course_period,
+                rating,
+                content,
+                created_at
+             FROM school_reviews
+             WHERE school_id = $1
+             ORDER BY created_at DESC, id DESC`,
+            [schoolId]
+        );
+
+        res.json({
+            success: true,
+            data: reviewsResult.rows,
+            total: reviewsResult.rows.length
+        });
+    } catch (error) {
+        logError("Get public school reviews by slug failed", error, { slug: req.params.slug });
+        res.status(500).json({ success: false, message: "Internal server error" });
+    }
+};

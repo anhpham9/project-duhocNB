@@ -39,7 +39,8 @@ import { getPublicNewsBySlug, getPublicNewsList } from "./controllers/publicNews
 import {
     getPublicSchools,
     getPublicSchoolBySlug,
-    getPublicSchoolDetailContentBySlug
+    getPublicSchoolDetailContentBySlug,
+    getPublicSchoolReviewsBySlug
 } from "./controllers/publicSchools.controller.js";
 import { trackNewsView } from "./controllers/news.controller.js";
 import { ensureSettingsKeysExist } from "./services/settings.service.js";
@@ -125,6 +126,7 @@ app.get('/api/public/news/:slug', getPublicNewsBySlug);
 app.get('/api/public/schools', getPublicSchools);
 app.get('/api/public/schools/:slug', getPublicSchoolBySlug);
 app.get('/api/public/schools/:slug/detail-content', getPublicSchoolDetailContentBySlug);
+app.get('/api/public/schools/:slug/reviews', getPublicSchoolReviewsBySlug);
 app.post('/api/public/news/:id/view', rateLimiter.publicView, trackNewsView);
 
 app.post('/api/public/contact', 
