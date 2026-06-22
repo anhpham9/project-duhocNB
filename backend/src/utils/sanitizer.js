@@ -828,9 +828,10 @@ export class InputSanitizer {
     // Comprehensive school reviews data sanitization
     static sanitizeSchoolReviewData(reviewData) {
         const sanitized = {};
+        const hasField = (fieldName) => Object.prototype.hasOwnProperty.call(reviewData || {}, fieldName);
 
         // Sanitize each field
-        if (reviewData.school_id) {
+        if (hasField('school_id')) {
             sanitized.school_id = this.sanitizeNumber(reviewData.school_id, {
                 min: 1,
                 max: 999999,
@@ -838,29 +839,29 @@ export class InputSanitizer {
             });
         }
 
-        if (reviewData.student_name) {
+        if (hasField('student_name')) {
             sanitized.student_name = this.sanitizeName(reviewData.student_name);
         }
 
-        if (reviewData.avatar_url) {
+        if (hasField('avatar_url')) {
             sanitized.avatar_url = this.sanitizeUrl(reviewData.avatar_url);
         }
 
-        if (reviewData.nationality) {
+        if (hasField('nationality')) {
             sanitized.nationality = this.sanitizeText(reviewData.nationality, {
                 maxLength: 100,
                 escapeHtml: false
             });
         }
 
-        if (reviewData.course_period) {
+        if (hasField('course_period')) {
             sanitized.course_period = this.sanitizeText(reviewData.course_period, {
                 maxLength: 100,
                 escapeHtml: false
             });
         }
 
-        if (reviewData.rating) {
+        if (hasField('rating')) {
             sanitized.rating = this.sanitizeNumber(reviewData.rating, {
                 min: 1,
                 max: 5,
@@ -868,7 +869,7 @@ export class InputSanitizer {
             });
         }
 
-        if (reviewData.content) {
+        if (hasField('content')) {
             sanitized.content = this.sanitizeText(reviewData.content, {
                 maxLength: 2000,
                 escapeHtml: false

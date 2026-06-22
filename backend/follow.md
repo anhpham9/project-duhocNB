@@ -1601,3 +1601,13 @@ node src/app.js
 ```
 
 **✨ News module hoàn thành với chất lượng production, sẵn sàng tích hợp frontend! 🚀**
+
+# Xử lý ảnh vói Cloudinary 
+
+```
+schoolReviews.controller.js
+schoolReviews.routes.js
+mediaAsset.service.js
+sanitizer.js
+reviews.vue
+```

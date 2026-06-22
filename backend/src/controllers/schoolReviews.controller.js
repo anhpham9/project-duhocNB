@@ -2,9 +2,157 @@ import db from "../config/db.js";
 import { logError, logInfo, auditLog } from "../utils/logger.js";
 import { InputSanitizer } from "../utils/sanitizer.js";
 import { SecurityLogger } from "../utils/securityLogger.js";
+import {
+    MEDIA_OWNER_TYPES,
+    MEDIA_FIELD_NAMES,
+    getSchoolReviewOwnerKey,
+    syncMediaAssetOwnership,
+    getMediaAssetRefsByOwner,
+    deleteMediaAssetRef
+} from "../services/mediaAsset.service.js";
+import {
+    DEFAULT_IMAGE_MIME_TYPES,
+    validateImageUploadFile,
+    uploadImageToCloudinary,
+    deleteCloudinaryAssetByPublicId,
+    deleteCloudinaryAssetsSafely,
+    ensureCloudinaryReady,
+    CMS_DEFAULT_MAX_FILE_SIZE
+} from "../services/cmsAsset.service.js";
 
 // Roles that can manage school reviews: superadmin, admin, manager
 const MANAGE_REVIEWS_ROLES = [1, 2, 3];
+const ALLOWED_REVIEW_IMAGE_TYPES = new Set(["avatar"]);
+const ALLOWED_IMAGE_MIME_TYPES = DEFAULT_IMAGE_MIME_TYPES;
+const DEFAULT_REVIEW_IMAGE_MAX_FILE_SIZE = CMS_DEFAULT_MAX_FILE_SIZE;
+const configuredReviewImageMaxFileSize = Number(process.env.CLOUDINARY_MAX_FILE_SIZE || CMS_DEFAULT_MAX_FILE_SIZE);
+const REVIEW_IMAGE_MAX_FILE_SIZE = Number.isFinite(configuredReviewImageMaxFileSize) && configuredReviewImageMaxFileSize > 0
+    ? configuredReviewImageMaxFileSize
+    : DEFAULT_REVIEW_IMAGE_MAX_FILE_SIZE;
+
+export const uploadSchoolReviewAvatar = async (req, res) => {
+    const currentUserRole = req.user?.role_id;
+    const currentUserId = req.user?.id;
+
+    try {
+        if (!MANAGE_REVIEWS_ROLES.includes(currentUserRole)) {
+            SecurityLogger.logPermissionViolation(
+                currentUserId,
+                req.ip,
+                "/api/school-reviews/upload-avatar",
+                "POST",
+                "school_reviews.upload"
+            );
+
+            return res.status(403).json({
+                success: false,
+                message: "Access denied. You cannot upload school review avatars."
+            });
+        }
+
+        ensureCloudinaryReady();
+
+        if (!req.file) {
+            return res.status(400).json({
+                success: false,
+                message: "Please select an image file"
+            });
+        }
+
+        const imageTypeRaw = String(req.body?.type || "avatar").trim().toLowerCase();
+        const imageType = ALLOWED_REVIEW_IMAGE_TYPES.has(imageTypeRaw) ? imageTypeRaw : "avatar";
+
+        validateImageUploadFile({
+            file: req.file,
+            allowedMimeTypes: ALLOWED_IMAGE_MIME_TYPES,
+            maxFileSize: REVIEW_IMAGE_MAX_FILE_SIZE,
+            imageLabel: imageType
+        });
+
+        const folderRoot = String(process.env.CLOUDINARY_FOLDER || "duhocNB").trim() || "duhocNB";
+
+        const uploadResult = await uploadImageToCloudinary({
+            file: req.file,
+            folder: `${folderRoot}/school-reviews/${imageType}`,
+            transformation: [{ quality: "auto", fetch_format: "auto" }]
+        });
+
+        return res.json({
+            success: true,
+            message: "Upload image success",
+            data: {
+                imageType,
+                url: uploadResult.url,
+                publicId: uploadResult.publicId,
+                width: uploadResult.width,
+                height: uploadResult.height,
+                bytes: uploadResult.bytes,
+                format: uploadResult.format
+            }
+        });
+    } catch (error) {
+        const isValidationError = String(error?.message || "").toLowerCase().includes("invalid")
+            || String(error?.message || "").toLowerCase().includes("exceeds")
+            || String(error?.message || "").toLowerCase().includes("please select");
+
+        logError("Upload school review avatar failed", error, {
+            requesterId: currentUserId,
+            imageType: req.body?.type
+        });
+
+        return res.status(isValidationError ? 400 : 500).json({
+            success: false,
+            message: error?.message || "Upload image failed"
+        });
+    }
+};
+
+export const deleteSchoolReviewAvatar = async (req, res) => {
+    const currentUserRole = req.user?.role_id;
+    const currentUserId = req.user?.id;
+
+    try {
+        if (!MANAGE_REVIEWS_ROLES.includes(currentUserRole)) {
+            SecurityLogger.logPermissionViolation(
+                currentUserId,
+                req.ip,
+                "/api/school-reviews/upload-avatar",
+                "DELETE",
+                "school_reviews.upload.delete"
+            );
+
+            return res.status(403).json({
+                success: false,
+                message: "Access denied. You cannot delete uploaded review avatars."
+            });
+        }
+
+        const publicId = String(req.body?.publicId || "").trim();
+        if (!publicId) {
+            return res.status(400).json({
+                success: false,
+                message: "publicId is required"
+            });
+        }
+
+        ensureCloudinaryReady();
+        await deleteCloudinaryAssetByPublicId(publicId);
+
+        return res.json({
+            success: true,
+            message: "Deleted uploaded image"
+        });
+    } catch (error) {
+        logError("Delete school review avatar failed", error, {
+            requesterId: currentUserId
+        });
+
+        return res.status(500).json({
+            success: false,
+            message: error?.message || "Delete image failed"
+        });
+    }
+};
 
 // Get all school reviews
 export const getSchoolReviews = async (req, res) => {
@@ -158,6 +306,9 @@ export const createSchoolReview = async (req, res) => {
             rating,
             content
         } = sanitizedData;
+        const incomingAssetPublicIds = {
+            [MEDIA_FIELD_NAMES.schoolReviewAvatarUrl]: String(req.body?.avatarAssetPublicId || "").trim()
+        };
         
         const currentUserRole = req.user.role_id;
         const currentUserId = req.user.id;
@@ -233,6 +384,27 @@ export const createSchoolReview = async (req, res) => {
 
         const newReview = result.rows[0];
 
+        const reviewOwnerKey = getSchoolReviewOwnerKey(newReview.id);
+        const ownershipSyncResult = await syncMediaAssetOwnership({
+            ownerType: MEDIA_OWNER_TYPES.schoolReviews,
+            ownerKey: reviewOwnerKey,
+            fieldMappings: [
+                {
+                    fieldName: MEDIA_FIELD_NAMES.schoolReviewAvatarUrl,
+                    payloadKey: "avatar_url"
+                }
+            ],
+            payload: newReview,
+            incomingAssetPublicIds,
+            userId: currentUserId,
+            client: db
+        });
+
+        await deleteCloudinaryAssetsSafely(ownershipSyncResult.publicIdsToDelete, logError, {
+            requesterId: currentUserId,
+            reviewId: newReview.id
+        });
+
         // Update school rating and review count
         await updateSchoolRating(school_id);
 
@@ -283,6 +455,9 @@ export const updateSchoolReview = async (req, res) => {
             rating,
             content
         } = sanitizedData;
+        const incomingAssetPublicIds = {
+            [MEDIA_FIELD_NAMES.schoolReviewAvatarUrl]: String(req.body?.avatarAssetPublicId || "").trim()
+        };
         
         const currentUserRole = req.user.role_id;
         const currentUserId = req.user.id;
@@ -393,6 +568,27 @@ export const updateSchoolReview = async (req, res) => {
         const result = await db.query(updateQuery, values);
         const updatedReview = result.rows[0];
 
+        const reviewOwnerKey = getSchoolReviewOwnerKey(updatedReview.id);
+        const ownershipSyncResult = await syncMediaAssetOwnership({
+            ownerType: MEDIA_OWNER_TYPES.schoolReviews,
+            ownerKey: reviewOwnerKey,
+            fieldMappings: [
+                {
+                    fieldName: MEDIA_FIELD_NAMES.schoolReviewAvatarUrl,
+                    payloadKey: "avatar_url"
+                }
+            ],
+            payload: updatedReview,
+            incomingAssetPublicIds,
+            userId: currentUserId,
+            client: db
+        });
+
+        await deleteCloudinaryAssetsSafely(ownershipSyncResult.publicIdsToDelete, logError, {
+            requesterId: currentUserId,
+            reviewId: updatedReview.id
+        });
+
         // Update school rating if rating changed
         if (rating !== undefined && rating !== existingReview.rating) {
             await updateSchoolRating(existingReview.school_id);
@@ -468,12 +664,37 @@ export const deleteSchoolReview = async (req, res) => {
         }
 
         const targetReview = reviewResult.rows[0];
+        const reviewOwnerKey = getSchoolReviewOwnerKey(targetReview.id);
+        const existingAssetRefs = await getMediaAssetRefsByOwner({
+            ownerType: MEDIA_OWNER_TYPES.schoolReviews,
+            ownerKey: reviewOwnerKey,
+            client: db
+        });
 
         // Delete review
         await db.query('DELETE FROM school_reviews WHERE id = $1', [id]);
 
+        const publicIdsToDelete = [];
+        for (const assetRef of existingAssetRefs) {
+            const deletedAssetRef = await deleteMediaAssetRef({
+                ownerType: MEDIA_OWNER_TYPES.schoolReviews,
+                ownerKey: reviewOwnerKey,
+                fieldName: assetRef.field_name,
+                client: db
+            });
+
+            if (deletedAssetRef?.public_id) {
+                publicIdsToDelete.push(deletedAssetRef.public_id);
+            }
+        }
+
         // Update school rating after deletion
         await updateSchoolRating(targetReview.school_id);
+
+        await deleteCloudinaryAssetsSafely(publicIdsToDelete, logError, {
+            requesterId: currentUserId,
+            reviewId: targetReview.id
+        });
 
         // Audit log successful review deletion
         auditLog('DELETE_SCHOOL_REVIEW', currentUserId, {

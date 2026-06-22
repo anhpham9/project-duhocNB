@@ -2,7 +2,8 @@ import db from "../config/db.js";
 
 export const MEDIA_OWNER_TYPES = {
     settings: "settings",
-    schools: "schools"
+    schools: "schools",
+    schoolReviews: "school_reviews"
 };
 
 export const MEDIA_OWNER_KEYS = {
@@ -13,10 +14,12 @@ export const MEDIA_FIELD_NAMES = {
     siteLogoUrl: "siteLogoUrl",
     siteFaviconUrl: "siteFaviconUrl",
     schoolLogoUrl: "schoolLogoUrl",
-    schoolThumbnailUrl: "schoolThumbnailUrl"
+    schoolThumbnailUrl: "schoolThumbnailUrl",
+    schoolReviewAvatarUrl: "schoolReviewAvatarUrl"
 };
 
 export const getSchoolOwnerKey = (schoolId) => `school:${schoolId}`;
+export const getSchoolReviewOwnerKey = (reviewId) => `school_review:${reviewId}`;
 
 export const ensureMediaAssetTableExists = async () => {
     await db.query(`

@@ -243,7 +243,83 @@
 
                         <div class="form-group">
                             <label>Avatar URL</label>
-                            <input v-model.trim="reviewForm.avatar_url" type="text" class="form-control" placeholder="https://...">
+                            <div class="input-mode-switch" role="group" aria-label="Avatar input mode">
+                                <button
+                                    type="button"
+                                    class="mode-btn"
+                                    :class="{ active: avatarInputMode === 'url' }"
+                                    @click="setAvatarInputMode('url')"
+                                >
+                                    Nhập link ảnh
+                                </button>
+                                <button
+                                    type="button"
+                                    class="mode-btn"
+                                    :class="{ active: avatarInputMode === 'upload' }"
+                                    @click="setAvatarInputMode('upload')"
+                                >
+                                    Upload lên Cloudinary
+                                </button>
+                            </div>
+
+                            <div class="avatar-action-row">
+                                <button
+                                    type="button"
+                                    class="btn btn-outline-danger btn-clear-avatar"
+                                    :disabled="saving || avatarUploading || !hasAvatarValue"
+                                    @click="clearAvatarInForm"
+                                >
+                                    <i class="fas fa-trash-alt"></i>
+                                    Xóa avatar
+                                </button>
+                            </div>
+
+                            <input
+                                v-if="avatarInputMode === 'url'"
+                                v-model.trim="reviewForm.avatar_url"
+                                type="url"
+                                class="form-control"
+                                placeholder="https://..."
+                            >
+
+                            <div v-else class="upload-inline-actions">
+                                <input
+                                    ref="avatarFileInput"
+                                    type="file"
+                                    accept="image/png,image/jpeg,image/webp,image/gif"
+                                    class="hidden-file-input"
+                                    @change="onAvatarFileChange"
+                                >
+                                <button
+                                    class="btn btn-secondary btn-upload-inline"
+                                    type="button"
+                                    :disabled="avatarUploading || saving"
+                                    @click="triggerAvatarPicker"
+                                >
+                                    <i class="fas" :class="avatarUploading ? 'fa-spinner fa-spin' : 'fa-cloud-upload-alt'"></i>
+                                    {{ avatarUploading ? 'Đang upload avatar...' : 'Upload avatar' }}
+                                </button>
+                                <span v-if="pendingAvatarFile" class="upload-inline-selected">
+                                    Đã chọn: {{ pendingAvatarFile.name }}
+                                </span>
+                                <div v-if="avatarUploading" class="upload-progress-wrap" role="status" aria-live="polite">
+                                    <div class="upload-progress-bar">
+                                        <span class="upload-progress-fill" :style="{ width: `${avatarUploadProgress}%` }"></span>
+                                    </div>
+                                    <span class="upload-progress-text">Đang upload: {{ avatarUploadProgress }}%</span>
+                                </div>
+                                <span class="upload-inline-hint">PNG/JPG/WEBP/GIF, tối đa 1MB. Ảnh chỉ upload khi bấm Lưu.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group full-width-preview">
+                        <div class="image-preview-card">
+                            <p class="image-preview-title">Xem trước avatar</p>
+                            <div class="image-preview-surface avatar-preview-surface">
+                                <img v-if="avatarPreviewSrc" :src="avatarPreviewSrc" alt="Avatar preview" class="image-preview avatar-image-preview">
+                                <p v-else class="image-preview-empty">Chưa có ảnh avatar để xem trước</p>
+                            </div>
                         </div>
                     </div>
 
@@ -292,7 +368,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, reactive, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
 import Toast from '~/components/Toast.vue'
 import { useCurrentUser } from '~/composables/useCurrentUser'
 import { useNotifications } from '~/composables/useNotifications'
@@ -313,7 +389,7 @@ const config = useRuntimeConfig()
 const API_BASE = config.public.apiBase
 
 const { loadingUser, hasAnyRole, fetchCurrentUser } = useCurrentUser()
-const { showSuccess, showError } = useNotifications()
+const { showSuccess, showError, showInfo } = useNotifications()
 
 const hasPermission = computed(() => !loadingUser.value && hasAnyRole([1, 2, 3]))
 const canDelete = computed(() => hasAnyRole([1, 2, 3]))
@@ -335,6 +411,12 @@ const { itemsPerPage: perPage, itemsPerPageOptions, setItemsPerPage } = usePagin
 
 const showModal = ref(false)
 const editingReview = ref(null)
+const avatarInputMode = ref('url')
+const avatarUploading = ref(false)
+const avatarUploadProgress = ref(0)
+const pendingAvatarFile = ref(null)
+const avatarPreviewTempUrl = ref('')
+const avatarFileInput = ref(null)
 
 const showDeleteModal = ref(false)
 const reviewToDelete = ref(null)
@@ -361,6 +443,28 @@ const clearFormErrors = () => {
     formErrors.rating = ''
 }
 
+const resetPreviewObjectUrl = (previewRef) => {
+    if (previewRef.value) {
+        URL.revokeObjectURL(previewRef.value)
+        previewRef.value = ''
+    }
+}
+
+const clearPendingAvatarSelection = () => {
+    pendingAvatarFile.value = null
+    avatarUploadProgress.value = 0
+    resetPreviewObjectUrl(avatarPreviewTempUrl)
+}
+
+const avatarPreviewSrc = computed(() => {
+    if (avatarPreviewTempUrl.value) return avatarPreviewTempUrl.value
+    return String(reviewForm.avatar_url || '').trim()
+})
+
+const hasAvatarValue = computed(() => {
+    return !!pendingAvatarFile.value || !!String(reviewForm.avatar_url || '').trim()
+})
+
 const resetForm = () => {
     reviewForm.school_id = ''
     reviewForm.student_name = ''
@@ -369,7 +473,130 @@ const resetForm = () => {
     reviewForm.course_period = ''
     reviewForm.rating = ''
     reviewForm.content = ''
+    avatarInputMode.value = 'url'
+    clearPendingAvatarSelection()
     clearFormErrors()
+}
+
+const setAvatarInputMode = (mode) => {
+    if (!['url', 'upload'].includes(mode)) return
+    avatarInputMode.value = mode
+
+    if (mode === 'url') {
+        clearPendingAvatarSelection()
+    }
+}
+
+const triggerAvatarPicker = () => {
+    avatarFileInput.value?.click()
+}
+
+const clearAvatarInForm = () => {
+    reviewForm.avatar_url = ''
+    clearPendingAvatarSelection()
+    showInfo('Đã xóa avatar khỏi biểu mẫu. Ảnh sẽ được cập nhật khi bạn bấm Lưu.')
+}
+
+const uploadReviewAvatarFile = async (file, onProgress) => {
+    const fileType = String(file?.type || '').toLowerCase()
+    const allowedTypes = ['image/png', 'image/jpeg', 'image/webp', 'image/gif']
+
+    if (!allowedTypes.includes(fileType)) {
+        throw new Error('Định dạng file avatar không hợp lệ (chỉ nhận PNG/JPG/WEBP/GIF)')
+    }
+
+    if (file.size > 1 * 1024 * 1024) {
+        throw new Error('File avatar vượt quá 1MB')
+    }
+
+    const formData = new FormData()
+    formData.append('image', file)
+    formData.append('type', 'avatar')
+
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest()
+        xhr.open('POST', `${API_BASE}/school-reviews/upload-avatar`, true)
+        xhr.withCredentials = true
+
+        xhr.upload.onprogress = (event) => {
+            if (!event.lengthComputable) return
+            const percent = Math.max(0, Math.min(100, Math.round((event.loaded / event.total) * 100)))
+            if (typeof onProgress === 'function') {
+                onProgress(percent)
+            }
+        }
+
+        xhr.onerror = () => {
+            reject(new Error('Upload avatar thất bại do lỗi mạng'))
+        }
+
+        xhr.onabort = () => {
+            reject(new Error('Upload avatar đã bị hủy'))
+        }
+
+        xhr.onload = () => {
+            let data = null
+            try {
+                data = xhr.responseText ? JSON.parse(xhr.responseText) : null
+            } catch {
+                reject(new Error('Phản hồi upload avatar không hợp lệ'))
+                return
+            }
+
+            if (xhr.status < 200 || xhr.status >= 300) {
+                reject(new Error(data?.message || 'Upload avatar thất bại'))
+                return
+            }
+
+            const uploadedUrl = String(data?.data?.url || '').trim()
+            if (!uploadedUrl) {
+                reject(new Error('Không nhận được URL avatar từ server'))
+                return
+            }
+
+            resolve({
+                uploadedUrl,
+                uploadedPublicId: String(data?.data?.publicId || '').trim()
+            })
+        }
+
+        xhr.send(formData)
+    })
+}
+
+const rollbackUploadedReviewImages = async (publicIds = []) => {
+    const validPublicIds = publicIds.filter(Boolean)
+    await Promise.all(validPublicIds.map((publicId) => fetch(`${API_BASE}/school-reviews/upload-avatar`, {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ publicId })
+    }).catch(() => null)))
+}
+
+const onAvatarFileChange = async (event) => {
+    const file = event?.target?.files?.[0]
+    event.target.value = ''
+
+    if (!file) return
+
+    const fileType = String(file?.type || '').toLowerCase()
+    const allowedTypes = ['image/png', 'image/jpeg', 'image/webp', 'image/gif']
+
+    if (!allowedTypes.includes(fileType)) {
+        showError('Định dạng file avatar không hợp lệ (chỉ nhận PNG/JPG/WEBP/GIF)')
+        return
+    }
+
+    if (file.size > 1 * 1024 * 1024) {
+        showError('File avatar vượt quá 1MB')
+        return
+    }
+
+    resetPreviewObjectUrl(avatarPreviewTempUrl)
+    avatarPreviewTempUrl.value = URL.createObjectURL(file)
+    pendingAvatarFile.value = file
+    showInfo('Avatar đã được chọn. Ảnh sẽ chỉ upload khi bạn bấm Lưu.')
 }
 
 const formatDateTime = (value) => {
@@ -502,6 +729,8 @@ const openEditModal = (review) => {
     reviewForm.course_period = review.course_period || ''
     reviewForm.rating = String(review.rating || '')
     reviewForm.content = review.content || ''
+    avatarInputMode.value = review.avatar_url ? 'url' : 'upload'
+    clearPendingAvatarSelection()
     clearFormErrors()
     showModal.value = true
 }
@@ -518,6 +747,8 @@ const saveReview = async () => {
         return
     }
 
+    const uploadedPublicIds = []
+
     saving.value = true
     try {
         const payload = {
@@ -528,6 +759,24 @@ const saveReview = async () => {
             course_period: reviewForm.course_period?.trim() || '',
             rating: Number(reviewForm.rating),
             content: reviewForm.content?.trim() || ''
+        }
+
+        if (avatarInputMode.value === 'upload') {
+            payload.avatar_url = pendingAvatarFile.value
+                ? payload.avatar_url
+                : String(reviewForm.avatar_url || '').trim()
+        }
+
+        if (pendingAvatarFile.value) {
+            avatarUploading.value = true
+            avatarUploadProgress.value = 0
+            const { uploadedUrl, uploadedPublicId } = await uploadReviewAvatarFile(pendingAvatarFile.value, (percent) => {
+                avatarUploadProgress.value = percent
+            })
+            payload.avatar_url = uploadedUrl
+            payload.avatarAssetPublicId = uploadedPublicId || ''
+            if (uploadedPublicId) uploadedPublicIds.push(uploadedPublicId)
+            avatarUploadProgress.value = 100
         }
 
         const isEditing = !!editingReview.value
@@ -551,8 +800,11 @@ const saveReview = async () => {
         closeModal()
         await fetchReviews()
     } catch (err) {
+        await rollbackUploadedReviewImages(uploadedPublicIds)
         showError(err.message || 'Không thể lưu school review')
     } finally {
+        avatarUploading.value = false
+        avatarUploadProgress.value = 0
         saving.value = false
     }
 }
@@ -608,6 +860,10 @@ onMounted(async () => {
     if (hasPermission.value) {
         await fetchData()
     }
+})
+
+onBeforeUnmount(() => {
+    clearPendingAvatarSelection()
 })
 </script>
 
@@ -899,6 +1155,138 @@ onMounted(async () => {
     flex-direction: column;
     gap: 6px;
     margin-bottom: 10px;
+}
+
+.input-mode-switch {
+    display: inline-flex;
+    border: 1px solid #d9d9d9;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.mode-btn {
+    border: 0;
+    background: #f5f5f5;
+    color: #666;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.mode-btn.active {
+    background: #d32f2f;
+    color: #fff;
+}
+
+.hidden-file-input {
+    display: none;
+}
+
+.upload-inline-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.avatar-action-row {
+    margin-bottom: 10px;
+}
+
+.btn-clear-avatar {
+    width: fit-content;
+}
+
+.upload-inline-selected {
+    font-size: 0.82rem;
+    color: #555;
+}
+
+.upload-progress-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.upload-progress-bar {
+    width: 100%;
+    height: 8px;
+    border-radius: 999px;
+    overflow: hidden;
+    background: #f0f0f0;
+}
+
+.upload-progress-fill {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, #d32f2f 0%, #ef5350 100%);
+    width: 0;
+    transition: width 0.18s ease;
+}
+
+.upload-progress-text {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.upload-inline-hint {
+    font-size: 0.8rem;
+    color: #888;
+}
+
+.image-preview-card {
+    border: 1px solid #ececec;
+    border-radius: 10px;
+    padding: 12px;
+    background: #fafafa;
+}
+
+.image-preview-title {
+    font-size: 0.85rem;
+    color: #666;
+    margin: 0 0 8px;
+    font-weight: 600;
+}
+
+.image-preview-surface {
+    min-height: 110px;
+    border: 1px dashed #d9d9d9;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fff;
+    overflow: hidden;
+}
+
+.avatar-preview-surface {
+    min-height: 120px;
+}
+
+.image-preview {
+    max-width: 100%;
+    max-height: 120px;
+    object-fit: contain;
+}
+
+.avatar-image-preview {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.image-preview-empty {
+    margin: 0;
+    color: #999;
+    font-size: 0.85rem;
+    text-align: center;
+    padding: 0 12px;
+}
+
+.full-width-preview {
+    margin-top: -2px;
 }
 
 .form-control {
