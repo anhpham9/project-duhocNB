@@ -1,11 +1,7 @@
 <template>
     <div class="schools-container">
         <!-- Page Hero with advanced breadcrumb -->
-        <PageHero
-            :title="heroTitle"
-            :subtitle="heroDescription"
-            :breadcrumb-text="pageTitle"
-        />
+        <PageHero :title="heroTitle" :subtitle="heroDescription" :breadcrumb-text="pageTitle" />
 
         <!-- Schools List Section -->
         <section class="schools-section">
@@ -17,31 +13,38 @@
 
                 <!-- Filter và Search -->
                 <div class="schools-filter">
-                    <div class="filter-tabs">
-                        <button class="filter-btn active" data-location="all">Tất cả</button>
-                        <button class="filter-btn" data-location="tokyo">Tokyo</button>
-                        <button class="filter-btn" data-location="osaka">Osaka</button>
-                        <button class="filter-btn" data-location="kyoto">Kyoto</button>
+                    <div class="filter-select-wrap">
+                        <label for="region-filter" class="filter-label">Khu vực</label>
+                        <select id="region-filter" v-model="activeRegion" class="filter-select">
+                            <option v-for="tab in regionTabs" :key="tab.value" :value="tab.value">
+                                {{ tab.label }}
+                            </option>
+                        </select>
                     </div>
                     <div class="search-box">
-                        <input type="text" placeholder="Tìm kiếm trường..." class="search-input">
+                        <input v-model.trim="searchTerm" type="text" placeholder="Tìm kiếm trường..."
+                            class="search-input">
                         <i class="fas fa-search"></i>
                     </div>
                 </div>
 
+
                 <!-- Schools Grid -->
-                <div class="schools-grid">
-                    <div class="school-card" v-for="school in schools" :key="school.id"
-                        :data-location="school.location">
+                <div v-if="pendingSchools" class="schools-loading">Đang tải danh sách trường...</div>
+                <div v-else-if="schoolsError" class="schools-loading">Không thể tải danh sách trường. Vui lòng thử lại
+                    sau.</div>
+                <div v-else-if="!filteredSchools.length" class="schools-loading">Không tìm thấy trường phù hợp với bộ
+                    lọc hiện tại.</div>
+                <div v-else class="schools-grid">
+                    <div class="school-card" v-for="school in filteredSchools" :key="school.id">
                         <div class="school-image">
                             <img :src="school.image" :alt="school.name">
                             <div class="school-badge" :class="school.badgeType">{{ school.badge }}</div>
                             <div class="school-rating">
-                                <div class="stars">
-                                    <i v-for="i in 5" :key="i"
-                                        :class="i <= school.rating ? 'fas fa-star' : 'far fa-star'"></i>
+                                <div class="rating-stars">
+                                    <div class="rating-stars-fill" :style="{ width: `${getRatingPercent(school.ratingValue)}%` }"></div>
                                 </div>
-                                <span>{{ school.rating }}</span>
+                                <span>{{ school.ratingText }}</span>
                             </div>
                         </div>
                         <div class="school-content">
@@ -99,45 +102,13 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>ISI Language School</td>
-                                    <td>Tokyo</td>
-                                    <td>780,000¥</td>
-                                    <td>15-20</td>
-                                    <td>95%</td>
-                                    <td>Tỷ lệ cao, chất lượng tốt</td>
-                                </tr>
-                                <tr>
-                                    <td>Human Academy</td>
-                                    <td>Osaka</td>
-                                    <td>720,000¥</td>
-                                    <td>18-22</td>
-                                    <td>92%</td>
-                                    <td>JLPT, văn hóa</td>
-                                </tr>
-                                <tr>
-                                    <td>Kyoto Institute</td>
-                                    <td>Kyoto</td>
-                                    <td>650,000¥</td>
-                                    <td>12-18</td>
-                                    <td>88%</td>
-                                    <td>Văn hóa truyền thống</td>
-                                </tr>
-                                <tr>
-                                    <td>Intercultural Institute</td>
-                                    <td>Tokyo</td>
-                                    <td>850,000¥</td>
-                                    <td>10-15</td>
-                                    <td>94%</td>
-                                    <td>Quốc tế, linh hoạt</td>
-                                </tr>
-                                <tr>
-                                    <td>Osaka YMCA</td>
-                                    <td>Osaka</td>
-                                    <td>580,000¥</td>
-                                    <td>20-25</td>
-                                    <td>85%</td>
-                                    <td>Học phí hợp lý</td>
+                                <tr v-for="school in comparisonSchools" :key="`comparison-${school.id}`">
+                                    <td>{{ school.name }}</td>
+                                    <td>{{ school.region }}</td>
+                                    <td>{{ school.tuition }}</td>
+                                    <td>{{ school.classSize }}</td>
+                                    <td>{{ school.visaSuccessRate }}</td>
+                                    <td>{{ school.featureSummary }}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -150,14 +121,25 @@
 
 <script setup>
 
-import { computed, onMounted, ref } from 'vue'
-import { formatDate as formatSystemDate } from '~/utils/date'
+import { computed, ref } from 'vue'
 
 const config = useRuntimeConfig()
 const { data: staticPageData } = await useFetch(`${config.public.apiBase}/public/static-pages/schools`, {
     key: 'public-static-page-schools'
 })
+const {
+    data: schoolsResponse,
+    pending: pendingSchools,
+    error: schoolsError
+} = await useFetch(`${config.public.apiBase}/public/schools`, {
+    key: 'public-schools-list'
+})
+
 const staticPage = computed(() => staticPageData.value?.data || {})
+const schoolsRaw = computed(() => schoolsResponse.value?.data || [])
+
+const activeRegion = ref('all')
+const searchTerm = ref('')
 
 const pageTitle = computed(() => staticPage.value.title || 'Trường Nhật Ngữ')
 
@@ -183,84 +165,122 @@ useHead(() => {
 })
 
 // Schools data
-const schools = ref([
-    {
-        id: 1,
-        slug: 'isi-language-school-tokyo',
-        name: 'ISI Language School Tokyo',
-        location: 'tokyo',
-        fullLocation: 'Tokyo, Nhật Bản',
-        description: 'Trường nhật ngữ hàng đầu tại Tokyo với chất lượng giảng dạy xuất sắc và tỷ lệ đỗ đại học cao.',
-        image: '/assets/images/school-1.jpg',
-        badge: 'Nổi Bật',
-        badgeType: 'featured',
-        rating: 5.0,
-        tuition: '780,000 Yên',
-        highlights: [
-            { icon: 'fas fa-users', label: 'Sĩ số lớp', value: '15-20 học sinh' },
-            { icon: 'fas fa-graduation-cap', label: 'Tỷ lệ đỗ đại học', value: '95%' },
-            { icon: 'fas fa-calendar-alt', label: 'Thời gian học', value: '6 tháng - 2 năm' }
-        ],
-        features: ['JLPT N1-N5', 'EJU Support', 'Hỗ trợ visa', 'Ký túc xá']
-    },
-    {
-        id: 2,
-        slug: 'human-academy-japanese-language',
-        name: 'Human Academy Japanese Language School',
-        location: 'osaka',
-        fullLocation: 'Osaka, Nhật Bản',
-        description: 'Trường nhật ngữ với hệ thống giảng dạy hiện đại, đặc biệt mạnh về chuẩn bị thi JLPT và EJU.',
-        image: '/assets/images/school-2.jpg',
-        badge: 'Phổ Biến',
-        badgeType: 'popular',
-        rating: 4.5,
-        tuition: '720,000 Yên',
-        highlights: [
-            { icon: 'fas fa-users', label: 'Sĩ số lớp', value: '18-22 học sinh' },
-            { icon: 'fas fa-graduation-cap', label: 'Tỷ lệ đỗ JLPT', value: '92%' },
-            { icon: 'fas fa-calendar-alt', label: 'Thời gian học', value: '3 tháng - 2 năm' }
-        ],
-        features: ['JLPT Focused', 'Văn hóa Nhật', 'Part-time job', 'Homestay']
-    },
-    {
-        id: 3,
-        slug: 'kyoto-institute-culture-language',
-        name: 'Kyoto Institute of Culture and Language',
-        location: 'kyoto',
-        fullLocation: 'Kyoto, Nhật Bản',
-        description: 'Trường nhật ngữ tại cố đô Kyoto, chuyên về giáo dục văn hóa và ngôn ngữ.',
-        image: '/assets/images/school-3.jpg',
-        badge: 'Văn Hóa',
-        badgeType: 'cultural',
-        rating: 4.2,
-        tuition: '650,000 Yên',
-        highlights: [
-            { icon: 'fas fa-users', label: 'Sĩ số lớp', value: '12-18 học sinh' },
-            { icon: 'fas fa-graduation-cap', label: 'Tỷ lệ hoàn thành', value: '88%' },
-            { icon: 'fas fa-calendar-alt', label: 'Thời gian học', value: '6 tháng - 1.5 năm' }
-        ],
-        features: ['Văn hóa truyền thống', 'Tea ceremony', 'Calligraphy', 'Temple visits']
-    },
-    {
-        id: 4,
-        slug: 'kyoto-institute-culture-language-2',
-        name: 'Kyoto Institute of Culture and Language',
-        location: 'kyoto',
-        fullLocation: 'Kyoto, Nhật Bản',
-        description: 'Trường nhật ngữ tại cố đô Kyoto, chuyên về giáo dục văn hóa và ngôn ngữ.',
-        image: '/assets/images/school-4.jpg',
-        badge: 'Quốc Tế',
-        badgeType: 'international',
-        rating: 4.2,
-        tuition: '650,000 Yên',
-        highlights: [
-            { icon: 'fas fa-users', label: 'Sĩ số lớp', value: '12-18 học sinh' },
-            { icon: 'fas fa-graduation-cap', label: 'Tỷ lệ hoàn thành', value: '88%' },
-            { icon: 'fas fa-calendar-alt', label: 'Thời gian học', value: '6 tháng - 1.5 năm' }
-        ],
-        features: ['Văn hóa truyền thống', 'Tea ceremony', 'Calligraphy', 'Temple visits']
+const toArray = (value) => {
+    if (Array.isArray(value)) return value.filter(Boolean)
+    if (!value) return []
+    if (typeof value === 'string') {
+        return value.split(',').map((item) => item.trim()).filter(Boolean)
     }
-])
+    return []
+}
+
+const formatCurrencyYen = (value) => {
+    const num = Number(value)
+    if (!Number.isFinite(num) || num <= 0) return 'Liên hệ'
+    return `${num.toLocaleString('vi-VN')}¥`
+}
+
+const formatPercent = (value) => {
+    const num = Number(value)
+    if (!Number.isFinite(num) || num <= 0) return 'Đang cập nhật'
+    return `${num}%`
+}
+
+const formatClassSize = (value) => {
+    if (value === null || value === undefined || value === '') return 'Đang cập nhật'
+    const num = Number(value)
+    if (!Number.isFinite(num)) return String(value)
+    return `${num} học sinh`
+}
+
+const getRatingPercent = (ratingValue) => {
+    const rating = Number(ratingValue)
+    if (!Number.isFinite(rating) || rating <= 0) return 0
+
+    return Math.max(0, Math.min(100, (rating / 5) * 100))
+}
+
+const normalizeRegionLabel = (school) => {
+    return school.region_name || school.location || 'Nhật Bản'
+}
+
+const getBadgeFromRating = (rating) => {
+    const value = Number(rating) || 0
+    if (value >= 4.7) return { text: 'Nổi Bật', type: 'featured' }
+    if (value >= 4.3) return { text: 'Phổ Biến', type: 'popular' }
+    if (value >= 4.0) return { text: 'Đề Xuất', type: 'international' }
+    return { text: 'Tiềm Năng', type: 'cultural' }
+}
+
+const schools = computed(() => {
+    return schoolsRaw.value.map((school) => {
+        const badge = getBadgeFromRating(school.rating)
+        const features = toArray(school.features)
+        const intakeMonths = toArray(school.intake_months)
+        const ratingValue = Number(school.rating) || 0
+
+        return {
+            id: school.id,
+            slug: school.slug,
+            name: school.name,
+            location: (school.region_slug || school.location || '').toLowerCase(),
+            fullLocation: school.location || normalizeRegionLabel(school),
+            region: normalizeRegionLabel(school),
+            description: school.name_en
+                ? `${school.name_en} - ${normalizeRegionLabel(school)}`
+                : `Trường Nhật ngữ tại ${normalizeRegionLabel(school)} với chương trình đào tạo thực tiễn.`,
+            image: school.thumbnail_url || school.logo_url || '/assets/images/school-1.jpg',
+            badge: badge.text,
+            badgeType: badge.type,
+            ratingText: ratingValue > 0 ? ratingValue.toFixed(1) : 'N/A',
+            ratingValue,
+            tuition: formatCurrencyYen(school.tuition_per_year),
+            classSize: formatClassSize(school.class_size),
+            visaSuccessRate: formatPercent(school.visa_success_rate),
+            reviewCount: Number(school.review_count) || 0,
+            highlights: [
+                { icon: 'fas fa-users', label: 'Sĩ số lớp', value: formatClassSize(school.class_size) },
+                { icon: 'fas fa-graduation-cap', label: 'Tỷ lệ visa', value: formatPercent(school.visa_success_rate) },
+                { icon: 'fas fa-calendar-alt', label: 'Kỳ nhập học', value: intakeMonths.length ? intakeMonths.join(', ') : 'Đang cập nhật' }
+            ],
+            features: features.length ? features.slice(0, 5) : ['Tư vấn hồ sơ', 'Hỗ trợ visa']
+        }
+    })
+})
+
+const regionTabs = computed(() => {
+    const dynamicTabs = schools.value
+        .map((item) => ({ value: item.location, label: item.region }))
+        .filter((tab) => tab.value)
+        .filter((tab, index, list) => list.findIndex((item) => item.value === tab.value) === index)
+
+    return [{ value: 'all', label: 'Tất cả' }, ...dynamicTabs]
+})
+
+const filteredSchools = computed(() => {
+    const searchLower = searchTerm.value.toLowerCase()
+
+    return schools.value.filter((school) => {
+        const passRegion = activeRegion.value === 'all' || school.location === activeRegion.value
+        const passSearch = !searchLower
+            || school.name.toLowerCase().includes(searchLower)
+            || school.fullLocation.toLowerCase().includes(searchLower)
+            || school.features.some((feature) => feature.toLowerCase().includes(searchLower))
+        return passRegion && passSearch
+    })
+})
+
+const comparisonSchools = computed(() => {
+    return filteredSchools.value.slice(0, 6).map((school) => ({
+        id: school.id,
+        name: school.name,
+        region: school.region,
+        tuition: school.tuition,
+        classSize: school.classSize,
+        visaSuccessRate: school.visaSuccessRate,
+        featureSummary: school.features.slice(0, 2).join(', ')
+    }))
+})
 </script>
 <style scoped>
 /* ========== JAPANESE SCHOOLS PAGE ========== */
@@ -280,28 +300,40 @@ const schools = ref([
     gap: 20px;
 }
 
-.filter-tabs {
+.filter-select-wrap {
     display: flex;
-    gap: 10px;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 240px;
 }
 
-.filter-btn {
-    padding: 10px 20px;
+.filter-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #666;
+}
+
+.filter-select {
+    padding: 10px 40px 10px 14px;
     background: white;
     border: 2px solid #e9ecef;
-    border-radius: 25px;
+    border-radius: 12px;
     color: #666;
+    appearance: none;
     cursor: pointer;
     transition: all 0.3s ease;
     font-size: 0.9rem;
     font-weight: 500;
+    background-image: linear-gradient(45deg, transparent 50%, #666 50%), linear-gradient(135deg, #666 50%, transparent 50%);
+    background-position: calc(100% - 16px) calc(50% - 3px), calc(100% - 10px) calc(50% - 3px);
+    background-size: 6px 6px, 6px 6px;
+    background-repeat: no-repeat;
 }
 
-.filter-btn:hover,
-.filter-btn.active {
-    background: #d32f2f;
+.filter-select:hover,
+.filter-select:focus {
     border-color: #d32f2f;
-    color: white;
+    outline: none;
 }
 
 .search-box {
@@ -336,6 +368,15 @@ const schools = ref([
     grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
     gap: 30px;
     margin-bottom: 60px;
+}
+
+.schools-loading {
+    padding: 30px;
+    text-align: center;
+    border: 1px dashed #ddd;
+    border-radius: 12px;
+    color: #666;
+    margin-bottom: 30px;
 }
 
 /* School Card */
@@ -613,14 +654,16 @@ const schools = ref([
 }
 
 @media (max-width: 1024px) {
+
     /* Japanese Schools - Tablet */
     .schools-filter {
         flex-direction: column;
         gap: 15px;
+        align-items: stretch;
     }
 
-    .filter-tabs {
-        justify-content: center;
+    .filter-select-wrap {
+        min-width: 100%;
     }
 
     .schools-grid {
@@ -659,6 +702,7 @@ const schools = ref([
 }
 
 @media (max-width: 768px) {
+
     /* Japanese Schools - Mobile */
     .schools-filter {
         flex-direction: column;
@@ -666,14 +710,8 @@ const schools = ref([
         gap: 20px;
     }
 
-    .filter-tabs {
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-
-    .filter-btn {
-        padding: 8px 16px;
-        font-size: 0.85rem;
+    .filter-select {
+        width: 100%;
     }
 
     .search-box {
@@ -741,7 +779,35 @@ const schools = ref([
     }
 }
 
-@media (max-width: 480px) {
-    
+@media (max-width: 480px) {}
+
+.rating-stars {
+    position: relative;
+
+    display: inline-block;
+
+    font-size: 20px;
+    line-height: 1;
+
+    color: #ddd;
+}
+
+.rating-stars::before {
+    content: "★★★★★";
+}
+
+.rating-stars-fill {
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    overflow: hidden;
+
+    color: #ffd700;
+}
+
+.rating-stars-fill::before {
+    content: "★★★★★";
 }
 </style>

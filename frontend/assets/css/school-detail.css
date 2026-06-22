@@ -65,6 +65,9 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    position: absolute;
+    top: 15px;
+    left: 15px;
 }
 
 .school-badge.featured {
@@ -80,9 +83,12 @@
     padding: 8px 15px;
     border-radius: 25px;
     backdrop-filter: blur(10px);
+    position: absolute;
+    top: 15px;
+    right: 15px;
 }
 
-.school-rating .stars {
+/* .school-rating .stars {
     display: flex;
     gap: 2px;
 }
@@ -100,7 +106,7 @@
 .school-rating small {
     opacity: 0.8;
     margin-left: 5px;
-}
+} */
 
 /* School Title and Info */
 .school-hero-main h1 {
@@ -385,15 +391,19 @@
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
 }
 
-.requirement-card:nth-child(2) {
+.requirement-card:nth-child(4n + 1) {
+    border-top-color: #e53e3e;
+}
+
+.requirement-card:nth-child(4n + 2) {
     border-top-color: #38a169;
 }
 
-.requirement-card:nth-child(3) {
+.requirement-card:nth-child(4n + 3) {
     border-top-color: #ed8936;
 }
 
-.requirement-card:nth-child(4) {
+.requirement-card:nth-child(4n + 4) {
     border-top-color: #805ad5;
 }
 
@@ -401,7 +411,7 @@
     width: 70px;
     height: 70px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #ff6b6b 0%, #e53e3e 100%);
+    /* background: linear-gradient(135deg, #ff6b6b 0%, #e53e3e 100%); */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -410,15 +420,19 @@
     font-size: 28px;
 }
 
-.requirement-card:nth-child(2) .req-icon {
+.requirement-card:nth-child(4n + 1) .req-icon {
+    background: linear-gradient(135deg, #ff6b6b 0%, #e53e3e 100%);
+}
+
+.requirement-card:nth-child(4n + 2) .req-icon {
     background: linear-gradient(135deg, #68d391 0%, #38a169 100%);
 }
 
-.requirement-card:nth-child(3) .req-icon {
+.requirement-card:nth-child(4n + 3) .req-icon {
     background: linear-gradient(135deg, #fbb6ce 0%, #ed8936 100%);
 }
 
-.requirement-card:nth-child(4) .req-icon {
+.requirement-card:nth-child(4n + 4) .req-icon {
     background: linear-gradient(135deg, #b794f6 0%, #805ad5 100%);
 }
 

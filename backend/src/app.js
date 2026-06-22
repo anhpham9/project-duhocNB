@@ -36,6 +36,11 @@ import notificationsRoutes from "./routes/notifications.routes.js";
 // import activityLogsRoutes from "./routes/activityLogs.routes.js";
 import { getPublicStaticPageBySlug } from "./controllers/publicStaticPages.controller.js";
 import { getPublicNewsBySlug, getPublicNewsList } from "./controllers/publicNews.controller.js";
+import {
+    getPublicSchools,
+    getPublicSchoolBySlug,
+    getPublicSchoolDetailContentBySlug
+} from "./controllers/publicSchools.controller.js";
 import { trackNewsView } from "./controllers/news.controller.js";
 import { ensureSettingsKeysExist } from "./services/settings.service.js";
 import { ensureMediaAssetTableExists } from "./services/mediaAsset.service.js";
@@ -117,6 +122,9 @@ app.get('/api/public/general-settings', getPublicGeneralSettings);
 app.get('/api/public/footer', getPublicFooter);
 app.get('/api/public/news', getPublicNewsList);
 app.get('/api/public/news/:slug', getPublicNewsBySlug);
+app.get('/api/public/schools', getPublicSchools);
+app.get('/api/public/schools/:slug', getPublicSchoolBySlug);
+app.get('/api/public/schools/:slug/detail-content', getPublicSchoolDetailContentBySlug);
 app.post('/api/public/news/:id/view', rateLimiter.publicView, trackNewsView);
 
 app.post('/api/public/contact', 
