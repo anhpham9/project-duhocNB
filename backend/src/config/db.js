@@ -4,17 +4,6 @@ dotenv.config();
 import pkg from "pg";
 const { Pool } = pkg;
 
-console.log("=== DB CONFIG ===");
-console.log({
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    database: process.env.DB_NAME,
-    user: process.env.DB_USER,
-    passwordLength: process.env.DB_PASSWORD?.length,
-    passwordLastChar: process.env.DB_PASSWORD?.charCodeAt(process.env.DB_PASSWORD.length - 1)
-});
-console.log("=================");
-
 const pool = new Pool({
     host: process.env.DB_HOST,
     port: Number(process.env.DB_PORT),
@@ -26,6 +15,21 @@ const pool = new Pool({
     idleTimeoutMillis: 30000,
     connectionTimeoutMillis: 5000,
 });
+
+const client = await pool.connect();
+
+const result = await client.query(`
+    SELECT
+        current_user,
+        current_schema(),
+        current_setting('search_path')
+`);
+
+console.log(result.rows);
+
+client.release();
+
+console.log("=================");
 
 pool.on("connect", () => {
     console.log("Đã kết nối với PostgreSQL");
