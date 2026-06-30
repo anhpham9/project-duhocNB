@@ -2483,7 +2483,7 @@ Series Deploy TTG:
 
 ⏳ Bài 6: Deploy Frontend
 
-```
+```Bash
 Ubuntu
 
 ↓
@@ -2977,6 +2977,7 @@ Nếu chưa có
 No such file
 ```
 thì bình thường.
+
 ---
 
 ### Bước 3
@@ -3428,7 +3429,7 @@ Không phải HTTPS.
 
 ---
 
-Bước 4. Kiểm tra Branch
+### Bước 4. Kiểm tra Branch
 
 ```Bash
 git branch
@@ -3612,7 +3613,7 @@ PM2 + Nginx
 
 ---
 
-### Bài 6: Cài PostgreSQL 16, tạo user duhoctgg_app, tạo database duhoctgg_prod, phân quyền và cấu hình kết nối.
+## Bài 6: Cài PostgreSQL 16, tạo user duhoctgg_app, tạo database duhoctgg_prod, phân quyền và cấu hình kết nối.
 
 **Mình sẽ không hướng dẫn theo các tutorial trên mạng (thường dùng user postgres cho ứng dụng), mà sẽ cấu hình theo nguyên tắc:**
 
@@ -3971,6 +3972,8 @@ CLOUDINARY_ALLOWED_MIME=image/jpeg,image/png,image/webp,image/gif,image/x-icon,i
 ALLOWED_ORIGINS=https://duhoctgg.edu.vn
 ```
 
+Ghi chú, nếu password có ký  tự đặc biệt là # thì phải để trong dấu '' để tránh bị hiểu nhầm phần sau dấu # là comment
+
 ---
 
 **Kiến trúc Database sau này**
@@ -4037,6 +4040,8 @@ Lợi ích:
 Nếu dự án của bạn còn đang ở giai đoạn đầu và chưa có nhiều dữ liệu, mình khuyến nghị áp dụng ngay từ bây giờ vì sẽ tránh phải thay đổi sau này.
 
 ---
+
+## Bài 7
 
 ### Bài 7.1
 
@@ -4213,7 +4218,7 @@ export default {
 
 SĐây là bước rất nhiều người bỏ qua.
 
-Bước 1
+#### Bước 1
 
 Vào backend
 ```Bash
@@ -4221,7 +4226,7 @@ cd ~/apps/duhoctgg/repo/backend
 ```
 ---
 
-Bước 2
+#### Bước 2
 
 Cài package
 ```Bash
@@ -4235,7 +4240,7 @@ npm ci
 
 ---
 
-Bước 3
+#### Bước 3
 
 Kiểm tra Node
 ```Bash
@@ -4254,7 +4259,7 @@ và gửi mình kết quả trước khi npm install.
 
 ---
 
-Bước 4
+#### Bước 4
 
 Kiểm tra .env
 ```Bash
@@ -4273,7 +4278,7 @@ ln -s ../../shared/backend/.env .env
 
 ---
 
-Bước 5
+#### Bước 5
 
 Chạy backend
 ```Bash
@@ -4289,7 +4294,7 @@ Tùy script của bạn.
 
 ---
 
-Bước 6
+#### Bước 6
 
 Kiểm tra backend
 
@@ -4323,7 +4328,7 @@ thì backend chưa chạy.
 
 Chỉ thực hiện sau khi backend chạy ổn bằng node.
 
-Bước 1
+#### Bước 1
 
 Cài Node LTS (nếu chưa có)
 
@@ -4331,7 +4336,7 @@ Mình sẽ hướng dẫn riêng nếu VPS chưa có Node 22.
 
 ---
 
-Bước 2
+#### Bước 2
 
 Cài PM2
 ```Bash
@@ -4345,7 +4350,7 @@ pm2 -v
 
 ---
 
-Bước 3
+#### Bước 3
 
 Khởi động backend
 ```Bash
@@ -4369,7 +4374,7 @@ Kết quả mong muốn:
 
 ---
 
-Bước 4
+#### Bước 4
 
 Xem log
 ```Bash
@@ -4385,7 +4390,7 @@ là rất tốt.
 
 ---
 
-Bước 5
+#### Bước 5
 
 Lưu cấu hình
 ```Bash
@@ -4394,7 +4399,7 @@ pm2 save
 
 ---
 
-Bước 6
+#### Bước 6
 
 Cho PM2 tự khởi động
 ```Bash
@@ -4525,19 +4530,1696 @@ PM2 sẽ chạy từ thư mục deploy/backend, còn repo/backend chỉ dùng đ
 
 ---
 
-### 
+### 7.7 - Nâng cao
 
+Kiểm tra đăng nhập PostgreSQL bằng chính thông tin trong .env
 
+Chạy:
+```Bash
+psql \
+-h 127.0.0.1 \
+-U duhoctgg_app \
+-d duhoctgg_prod
+```
+
+Nó sẽ hỏi password.
+
+👉 Nhập đúng password đang ghi trong `.env`.
+
+Đăng nhập được
+```Bash
+duhoctgg_prod=>
+```
+
+=> Password đúng.
+
+---
+
+**Đổi password của PostgreSQL**
+
+Đăng nhập postgres:
+
+tại `deploy@tgg-prod-01:~/apps/duhoctgg/repo/backend$` hoặc `deploy@tgg-prod-01:~/apps/duhoctgg/repo$` nhập 
+
+```Bash
+sudo -u postgres psql
+```
+
+Sau đó:
+```Bash
+ALTER USER duhoctgg_app
+WITH PASSWORD 'MatKhauMoi';
+```
+
+Ví dụ:
+```Bash
+ALTER USER duhoctgg_app
+WITH PASSWORD 'Abc@123456';
+```
+
+Thoát:
+```Bash
+\q
+```
+
+---
+
+Cách pull code từ github sau khi có chỉnh sửa được push lên branch `master` của github
+
+```Bash
+cd ~/apps/duhoctgg/repo
+git clone git@github.com:USERNAME/project-duhocNB.git .
+```
+
+thì thư mục `repo` chính là `working tree` của **Git**.
+
+Trước tiên nên kiểm tra đang ở branch nào
+
+```Bash
+cd ~/apps/duhoctgg/repo
+
+git branch
+```
+
+Kết quả ví dụ:
+```
+* master
+  develop
+```
+
+Dấu `*` là branch hiện tại.
 
 
 ```Bash
-
+git pull origin <branch>
 ```
 
+Ví dụ nếu branch chính là master:
 
 ```Bash
+git pull origin master
 
 ```
+
+---
+
+**Mình khuyên**
+
+Trước khi git pull, luôn chạy:
+```Bash
+git status
+```
+
+Nếu kết quả là:
+```Bash
+nothing to commit, working tree clean
+```
+
+thì có thể yên tâm:
+```Bash
+git pull
+```
+
+---
+
+### 7.8 - - Khởi tạo Database bằng init_schema.sql
+
+#### Bước 1. Kiểm tra file đã có trên VPS
+
+Đứng trong thư mục backend:
+```Bash
+cd ~/apps/duhoctgg/repo/backend
+```
+
+Kiểm tra:
+```Bash
+ls -lh scripts/migrations
+```
+
+Kỳ vọng:
+```Bash
+-rw-r--r-- 1 deploy deploy 45K init_schema.sql
+```
+
+Nếu chưa có thì push GitHub rồi:
+```Bash
+git pull origin main
+```
+
+#### Bước 2. Xóa database cũ (vì đang là môi trường mới)
+
+Lưu ý: Chỉ làm trên VPS mới. Không dùng trên production đang có dữ liệu.
+
+Thoát khỏi psql nếu còn đang ở trong đó:
+```Bash
+\q
+```
+
+Đăng nhập postgres:
+```Bash
+sudo -u postgres psql
+```
+
+Xóa database:
+```Bash
+DROP DATABASE duhoctgg_prod;
+```
+
+Nếu báo:
+```Bash
+database is being accessed by other users
+```
+
+thì chạy:
+```Bash
+SELECT pg_terminate_backend(pid)
+FROM pg_stat_activity
+WHERE datname = 'duhoctgg_prod';
+```
+
+Sau đó:
+```Bash
+DROP DATABASE duhoctgg_prod;
+```
+
+---
+
+#### Bước 3. Tạo lại database
+
+Vẫn trong psql:
+```Bash
+CREATE DATABASE duhoctgg_prod
+OWNER duhoctgg_app
+ENCODING 'UTF8'
+LC_COLLATE 'en_US.UTF-8'
+LC_CTYPE 'en_US.UTF-8'
+TEMPLATE template0;
+```
+
+Thoát:
+```Bash
+\q
+```
+
+---
+
+#### Bước 4. Import schema
+
+Đứng trong backend:
+```Bash
+cd ~/apps/duhoctgg/repo/backend
+```
+
+Chạy:
+```Bash
+psql \
+-h 127.0.0.1 \
+-U duhoctgg_app \
+-d duhoctgg_prod \
+-f scripts/migrations/init_schema.sql
+```
+
+Nó sẽ hỏi password.
+
+Nhập password của:
+```Bash
+duhoctgg_app
+```
+
+Nếu thành công sẽ hiện rất nhiều dòng:
+```Bash
+CREATE TABLE
+CREATE INDEX
+ALTER TABLE
+INSERT 0 1
+...
+```
+
+Không được có:
+```Bash
+ERROR:
+```
+
+---
+
+#### Bước 5. Kiểm tra
+
+Đăng nhập:
+```Bash
+psql \
+-h 127.0.0.1 \
+-U duhoctgg_app \
+-d duhoctgg_prod
+```
+
+Sau đó:
+```Bash
+\dt
+```
+
+Ví dụ:
+```Bash
+users
+news
+schools
+settings
+media_asset_refs
+...
+```
+
+Tiếp theo:
+```Bash
+SELECT COUNT(*)
+FROM users;
+```
+
+Nếu bảng tồn tại thì sẽ không báo lỗi.
+
+Thoát:
+```Bash
+\q
+```
+
+---
+
+#### Bước 6. Tạm thời bỏ các ensure
+
+Trong app.js hiện tại có:
+```Bash
+await ensureMediaAssetTableExists();
+await ensureSettingsKeysExist();
+await ensureAboutMissionsTableExists();
+await ensureAboutContentTableExists();
+await ensureHomepageSectionsTableExists();
+await ensurePopupCampaignsTableExists();
+```
+
+Tạm thời comment lại:
+```Bash
+// await ensureMediaAssetTableExists();
+// await ensureSettingsKeysExist();
+// await ensureAboutMissionsTableExists();
+// await ensureAboutContentTableExists();
+// await ensureHomepageSectionsTableExists();
+// await ensurePopupCampaignsTableExists();
+```
+
+Sau khi hệ thống chạy ổn, chúng ta sẽ xem xét giữ lại những hàm nào thực sự cần thiết (ví dụ để chèn dữ liệu mặc định), còn các hàm tạo bảng sẽ không cần nữa.
+
+Bước 7. Chạy thử
+```Bash
+npm run dev
+```
+
+Nếu schema đã import đúng thì backend sẽ chạy mà không còn lỗi:
+```Bash
+Server started successfully
+```
+
+---
+
+## Bài 8: Deploy Frontend Nuxt 4
+
+Chúng ta sẽ làm theo đúng chuẩn production:
+```Bash
+repo/frontend
+        │
+        │ npm install
+        │
+        ▼
+npm run build
+        │
+        ▼
+.output/
+        │
+        ▼
+PM2
+        │
+        ▼
+Port 3000
+        │
+        ▼
+Nginx
+        │
+        ▼
+https://duhoctgg.edu.vn
+
+```
+
+Trong bài này mình sẽ hướng dẫn:
+
+- Cài Node cho frontend (nếu cần)
+- npm install
+- Tạo .env.production
+- Build Nuxt 4
+- Chạy bằng PM2
+- Kiểm tra hoạt động trên cổng 3000
+
+Đây là roadmap tiếp theo của series:
+```Bash
+Bài 8.1  Cài PM2
+Bài 8.2  Deploy Backend bằng PM2
+Bài 8.3  Deploy Frontend Nuxt4
+Bài 8.4  Reverse Proxy bằng Nginx
+Bài 8.5  HTTPS (Let's Encrypt)
+Bài 8.6  Auto Deploy từ Github
+```
+
+---
+
+### Bài 8.1 - Cài PM2
+
+Hiện tại backend của bạn đang chạy bằng
+```Bash
+npm run dev
+```
+
+Đây là chế độ development.
+
+Production phải chạy kiểu này:
+```Bash
+PM2
+    ↓
+Node
+    ↓
+Express
+```
+
+PM2 sẽ có các chức năng:
+
+- tự restart nếu app crash
+- tự khởi động khi VPS reboot
+- xem log
+- restart/update dễ dàng
+
+---
+
+#### Bước 1. Dừng nodemon
+
+Ở cửa sổ đang chạy backend
+```Bash
+Ctrl + C
+```
+
+Kiểm tra
+```Bash
+sudo ss -ltnp | grep 3001
+```
+
+Nếu không còn gì trả về là đúng.
+
+#### Bước 2. Cài PM2
+
+```Bash
+sudo npm install -g pm2
+```
+
+Kiểm tra
+```Bash
+pm2 -v
+```
+
+Ví dụ
+```Bash
+6.x.x
+```
+
+---
+
+#### Bước 3. Kiểm tra Node
+
+```Bash
+which node
+```
+
+Ví dụ
+```Bash
+/usr/bin/node
+```
+
+và
+```Bash
+which npm
+```
+
+Ví dụ
+```Bash
+/usr/bin/npm
+```
+
+---
+
+### Bài 8.2 - Chuẩn bị Backend Production
+
+Hiện tại project của bạn
+
+```Bash
+~/apps/duhoctgg/repo/backend
+```
+
+đã chạy ổn.
+
+Ta sẽ chưa dùng thư mục deploy/.
+
+Ta chạy trực tiếp từ repo trước.
+
+Sau khi Auto Deploy xong mới chuyển sang deploy/.
+
+---
+
+#### Bước 4. Tạo ecosystem.config.cjs
+
+Trong
+```Bash
+~/apps/duhoctgg/repo/backend
+```
+
+tạo file
+```Bash
+ecosystem.config.cjs
+```
+
+Nội dung
+
+```Bash
+module.exports = {
+  apps: [
+    {
+      name: "duhoctgg-backend",
+
+      script: "./src/app.js",
+
+      cwd: "/home/deploy/apps/duhoctgg/repo/backend",
+
+      interpreter: "node",
+
+      instances: 1,
+
+      exec_mode: "fork",
+
+      autorestart: true,
+
+      watch: false,
+
+      max_memory_restart: "500M",
+
+      env: {
+        NODE_ENV: "production"
+      }
+    }
+  ]
+};
+```
+
+Sau này có website thứ hai chỉ cần thêm app.
+
+---
+
+#### Bước 5. Khởi động bằng PM2
+
+```Bash
+cd ~/apps/duhoctgg/repo/backend
+pm2 start ecosystem.config.cjs
+```
+
+---
+
+#### Bước 6. Kiểm tra
+
+```Bash
+pm2 status
+```
+
+Kỳ vọng
+```Bash
+┌────┬─────────────────────┬────────┬────────┐
+│ id │ name                │ status │ cpu    │
+├────┼─────────────────────┼────────┼────────┤
+│ 0  │ duhoctgg-backend    │ online │ 0%     │
+└────┴─────────────────────┴────────┴────────┘
+```
+
+---
+
+#### Bước 7. Xem log
+
+```Bash
+pm2 logs duhoctgg-backend
+```
+
+Nếu thành công sẽ thấy
+```Bash
+Đã kết nối với PostgreSQL
+```
+
+hoặc
+```Bash
+Server started successfully
+```
+
+---
+
+#### Bước 8. Kiểm tra API
+
+Mở terminal khác
+```Bash
+curl http://127.0.0.1:3001
+```
+
+phải trả về
+```Bash
+API is running...
+```
+
+---
+
+#### Bước 9. PM2 tự khởi động sau reboot
+
+Đây là bước nhiều người quên.
+
+Chạy
+```Bash
+pm2 startup
+```
+
+Nó sẽ hiện đại loại như
+```Bash
+sudo env PATH=$PATH:/usr/bin pm2 startup systemd -u deploy --hp /home/deploy
+```
+
+Không tự gõ lại.
+
+👉 Copy đúng dòng mà PM2 in ra và chạy.
+
+Sau đó
+```Bash
+pm2 save
+```
+
+Kiểm tra
+```Bash
+pm2 list
+
+```
+
+Lúc này VPS của bạn sẽ có:
+```Bash
+Internet
+      │
+      ▼
+PM2
+      │
+      ▼
+Backend (Express)
+      │
+Port 3001
+```
+
+---
+
+#### Bước 10 - Dọn db.js
+
+Xóa toàn bộ đoạn debug này:
+```Bash
+const client = await pool.connect();
+
+const result = await client.query(`
+SELECT
+    current_user,
+    current_schema(),
+    current_setting('search_path')
+`);
+
+console.log(result.rows);
+
+client.release();
+
+console.log("=================");
+```
+
+Chỉ giữ:
+```Bash
+import dotenv from "dotenv";
+dotenv.config();
+
+import pkg from "pg";
+
+const { Pool } = pkg;
+
+const pool = new Pool({
+    host: process.env.DB_HOST,
+    port: Number(process.env.DB_PORT),
+    database: process.env.DB_NAME,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+
+    max: 20,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 5000,
+});
+
+let logged = false;
+
+pool.on("connect", () => {
+    if (!logged) {
+        console.log("PostgreSQL connected.");
+        logged = true;
+    }
+});
+
+pool.on("error", (err) => {
+    console.error("Unexpected PostgreSQL error:", err);
+});
+
+export default {
+    query: (text, params) => pool.query(text, params),
+    getClient: () => pool.connect(),
+    pool
+};
+
+```
+
+Như vậy log sẽ chỉ hiện 1 lần.
+
+---
+
+#### Bước 11 - Restart PM2
+
+```Bash
+pm2 restart duhoctgg-backend
+```
+
+Kiểm tra
+```Bash
+pm2 logs duhoctgg-backend --lines 20
+```
+
+Lúc này log đẹp sẽ kiểu:
+```Bash
+PostgreSQL connected.
+```
+
+Không còn mấy dòng debug nữa.
+
+---
+
+#### Bước 12 - PM2 tự khởi động khi reboot
+
+Đây là bước cực kỳ quan trọng.
+
+Chạy
+```Bash
+pm2 startup
+```
+
+PM2 sẽ in ra một dòng lệnh rất dài.
+
+Ví dụ
+```Bash
+sudo env PATH=$PATH:/usr/bin pm2 startup systemd -u deploy --hp /home/deploy
+```
+
+Không tự gõ.
+
+👉 Copy nguyên dòng PM2 sinh ra rồi chạy.
+
+Sau đó
+```Bash
+pm2 save
+```
+
+Kiểm tra
+```Bash
+pm2 list
+```
+
+---
+
+#### Bước 13 - Sau đó thử reboot VPS
+
+Đây là bài test production.
+```Bash
+sudo reboot
+```
+
+Đợi khoảng 30–60 giây.
+
+SSH lại.
+
+Kiểm tra:
+```Bash
+pm2 list
+```
+
+Kỳ vọng
+```Bash
+duhoctgg-backend online
+```
+
+Kiểm tra tiếp
+```Bash
+curl http://127.0.0.1:3001
+```
+
+Nếu trả về
+```Bash
+API is running...
+```
+
+=> Backend production đã hoàn thiện 100%.
+
+---
+
+## Bài 9: Deploy Nuxt4 Production
+
+Roadmap hiện tại
+```Bash
+✓ Bài 1  Chuẩn bị VPS
+✓ Bài 2  Bảo mật VPS
+✓ Bài 3  Cấu trúc thư mục
+✓ Bài 4  Git
+✓ Bài 5  Shared Config
+✓ Bài 6  PostgreSQL
+✓ Bài 7  Backend chạy thành công
+✓ Bài 8  PM2 Backend
+
+↓
+
+Bài 9   Deploy Nuxt4 Production
+Bài 10  Nginx Reverse Proxy
+Bài 11  HTTPS (Let's Encrypt)
+Bài 12  Deploy Script
+Bài 13  Backup
+Bài 14  Monitoring
+```
+
+---
+
+**Mục tiêu**
+
+Đến cuối bài này sẽ có
+```Bash
+PM2
+ │
+ ├── duhoctgg-backend
+ │       Port 3001
+ │
+ └── duhoctgg-frontend
+         Port 3000
+```
+
+Nginx sẽ làm ở bài sau.
+
+---
+
+### Bước 1. Kiểm tra frontend
+
+Đi tới frontend
+```Bash
+cd ~/apps/duhoctgg/repo/frontend
+```
+
+Kiểm tra
+```Bash
+ls
+```
+
+Bạn sẽ thấy
+```Bash
+app.vue
+nuxt.config.ts
+package.json
+pages/
+components/
+...
+```
+
+---
+
+### Bước 2. Cài package
+
+```Bash
+npm install
+```
+
+Chọn No nếu được hỏi:
+```Bash
+ℹ Nuxt collects completely anonymous data about usage.                                                     7:41:59 PM
+  This will help us improve Nuxt developer experience over time.
+  Read more on https://github.com/nuxt/telemetry
+
+
+❯ Are you interested in participating?
+○ Yes / ● No
+```
+
+
+Kiểm tra
+```Bash
+npm ls
+```
+
+Không cần quan tâm warning.
+
+---
+
+### Bước 3. Kiểm tra package.json
+
+Mình muốn xác nhận script.
+
+Chạy
+```Bash
+cat package.json
+```
+
+Mình muốn thấy
+```Bash
+{
+  "scripts": {
+    "dev": "...",
+    "build": "...",
+    "preview": "..."
+  }
+}
+```
+
+---
+
+### Bước 4. Tạo shared frontend
+
+Ta không để `.env` trong `repo`.
+
+Tạo thư mục
+```Bash
+mkdir -p ~/apps/duhoctgg/shared/frontend
+```
+
+---
+
+### Bước 5. Tạo .env
+
+```
+nano ~/apps/duhoctgg/shared/frontend/.env
+```
+
+Ví dụ
+```Bash
+NODE_ENV=production
+
+NUXT_PUBLIC_SITE_URL=https://duhoctgg.edu.vn
+
+NUXT_PUBLIC_API_BASE=http://127.0.0.1:3001
+```
+
+Sau này khi có HTTPS ta sẽ đổi thành
+```Bash
+https://duhoctgg.edu.vn/api
+```
+
+Hiện tại cứ để localhost.
+
+Lưu
+```Bash
+Ctrl+O
+
+Enter
+
+Ctrl+X
+```
+
+---
+
+### Bước 6. Link .env
+
+Đi tới frontend
+```Bash
+cd ~/apps/duhoctgg/repo/frontend
+```
+
+Xóa nếu có
+```Bash
+rm -f .env
+```
+
+Tạo symlink
+```Bash
+ln -s ~/apps/duhoctgg/shared/frontend/.env .env
+```
+
+Kiểm tra
+```Bash
+ls -l
+```
+
+Kỳ vọng
+```Bash
+.env -> /home/deploy/apps/duhoctgg/shared/frontend/.env
+
+```
+
+---
+
+### Bước 7. Kiểm tra nuxt.config
+
+Đây là bước rất quan trọng.
+
+Mình muốn xem file
+```Bash
+nuxt.config.ts
+```
+
+đặc biệt phần
+```Bash
+runtimeConfig
+```
+
+Ví dụ
+```Bash
+runtimeConfig:{
+    ...
+    public:{
+        ...
+    }
+}
+```
+
+Nếu chưa có thì mình sẽ hướng dẫn sửa theo chuẩn production.
+
+---
+
+### Bước 8. Build thử
+
+```Bash
+npm run build
+```
+
+Nếu thành công sẽ sinh
+```Bash
+.output/
+```
+
+Kiểm tra
+```Bash
+ls .output
+```
+
+Kỳ vọng
+```Bash
+public
+
+server
+
+nitro.json
+```
+
+---
+
+### Bước 9. Test Production
+
+Không dùng
+```Bash
+npm run dev
+```
+
+Mà dùng
+```Bash
+node .output/server/index.mjs
+```
+
+Mở terminal khác
+```Bash
+curl http://127.0.0.1:3000
+```
+
+Nếu trả HTML là build thành công.
+
+---
+
+### Bước 10. Chạy bằng PM2
+
+Tạo file
+```Bash
+ecosystem.config.cjs
+```
+
+Mình sẽ hướng dẫn sau khi build thành công.
+
+Đến đây mình cần xem 2 file
+
+Để tránh phải sửa đi sửa lại sau này, bạn hãy gửi mình:
+
+1.
+```Bash
+frontend/package.json
+```
+
+2.
+```Bash
+frontend/nuxt.config.ts
+```
+
+Sau khi xem hai file này, mình sẽ hướng dẫn cấu hình đúng chuẩn Nuxt 4 production, tránh việc phải sửa lại khi cấu hình Nginx và website thứ hai sau này. Đây cũng là lúc mình sẽ giúp bạn thiết kế để hai website có thể dùng chung một quy trình deploy trên cùng VPS.
+
+---
+
+### Bước 11 - Trước tiên, sửa nuxt.config.ts
+
+Hiện tại bạn có:
+```Bash
+ssr: false,
+```
+nên đổi thành
+
+```Bash
+ssr: true
+```
+
+#### 1. Tắt devtools
+
+Hiện tại
+```Bash
+devtools: {
+    enabled: true
+}
+```
+
+Production nên đổi thành
+```Bash
+devtools: {
+    enabled: false
+}
+```
+
+---
+
+#### 2. Xóa vite.server.proxy
+
+Hiện tại
+```Bash
+vite: {
+  optimizeDeps: {...},
+  server:{
+      proxy:{
+          '/api':{
+              target:'http://localhost:5000'
+          }
+      }
+  }
+}
+```
+
+Đây chỉ hoạt động khi chạy
+```Bash
+npm run dev
+```
+
+Production không dùng.
+
+Xóa toàn bộ
+```Bash
+server:{
+    proxy:{...}
+}
+```
+
+chỉ giữ
+```Bash
+vite:{
+    optimizeDeps:{
+        include:[
+            "jwt-decode"
+        ]
+    }
+}
+```
+
+---
+
+#### 3. RuntimeConfig
+
+Hiện tại
+```Bash
+runtimeConfig:{
+    public:{
+        apiBase:"http://localhost:5000/api"
+    }
+}
+```
+
+Đổi thành
+```Bash
+runtimeConfig: {
+    public: {
+        apiBase: process.env.NUXT_PUBLIC_API_BASE || "/api"
+    }
+}
+```
+
+Đây là cách Nuxt khuyến nghị sử dụng biến môi trường thay vì hard-code.
+
+---
+
+#### 4. Sửa file .env
+
+Hiện tại bạn đang để:
+```Bash
+NUXT_PUBLIC_API_BASE=http://127.0.0.1:3001
+```
+
+Đổi thành
+```Bash
+NODE_ENV=production
+
+NUXT_PUBLIC_SITE_URL=https://duhoctgg.edu.vn
+
+NUXT_PUBLIC_API_BASE=/api
+```
+
+Lý do:
+
+Sau này Nginx sẽ chuyển tiếp:
+```Bash
+Browser
+
+https://duhoctgg.edu.vn/api
+
+↓
+
+Nginx
+
+↓
+
+127.0.0.1:3001
+```
+
+Frontend sẽ không cần biết backend chạy cổng nào.
+
+Đây là kiến trúc chuẩn production.
+
+#### Sau khi sửa
+
+push code len git va pull code vao VPS
+
+Chạy
+```Bash
+npm run build
+```
+
+Nếu build thành công
+
+Bạn sẽ thấy
+```Bash
+.output/
+```
+
+Kiểm tra
+```Bash
+ls .output
+```
+
+kỳ vọng
+```Bash
+nitro.json
+
+public/
+
+server/
+```
+
+---
+
+**Hiện tại mục tiêu của chúng ta là:**
+```Bash
+Internet
+      │
+      ▼
+Nginx (Bài 10)
+      │
+      ├──────────────► Nuxt4 SSR (Port 3000)
+      │
+      └──────────────► Express API (Port 3001)
+```
+
+Backend đã chạy bằng PM2.
+
+Giờ bắt đầu frontend.
+
+---
+
+### Bước 12 - Tạo ecosystem cho Frontend
+
+Trong frontend
+
+```Bash
+nano ecosystem.config.cjs
+```
+
+Nội dung
+```Bash
+module.exports = {
+  apps: [
+    {
+      name: "duhoctgg-frontend",
+
+      script: ".output/server/index.mjs",
+
+      cwd: "/home/deploy/apps/duhoctgg/repo/frontend",
+
+      interpreter: "/usr/bin/node",
+
+      instances: 1,
+
+      exec_mode: "fork",
+
+      autorestart: true,
+
+      watch: false,
+
+      max_memory_restart: "800M",
+
+      env: {
+        NODE_ENV: "production",
+        PORT: 3000
+      }
+    }
+  ]
+}
+```
+
+---
+
+### Bước 13 - Khởi động PM2
+
+```Bash
+pm2 start ecosystem.config.cjs
+```
+
+Kiểm tra
+```Bash
+pm2 list
+```
+
+Kỳ vọng
+```Bash
+┌──────────────────────┐
+duhoctgg-backend
+
+online
+──────────────────────
+
+duhoctgg-frontend
+
+online
+└──────────────────────┘
+```
+
+---
+
+### Bước 14 -  Kiểm tra log
+
+```Bash
+pm2 logs duhoctgg-frontend
+```
+
+Kỳ vọng
+```Bash
+Listening on http://0.0.0.0:3000
+```
+
+Không có Error.
+
+---
+
+### Bước 15 -  Kiểm tra Port
+
+```Bash
+sudo ss -ltnp | grep 3000
+```
+
+Kỳ vọng
+```Bash
+LISTEN
+
+*:3000
+Bước 9.8 Test
+curl http://127.0.0.1:3000
+```
+
+Nếu ra HTML là frontend production đã hoạt động.
+
+---
+
+### Bước 16 -  Test
+
+```Bash
+curl http://127.0.0.1:3000
+```
+
+Nếu ra HTML là frontend production đã hoạt động.
+
+---
+
+### Bước 17 - Lưu PM2
+
+Sau khi frontend chạy
+```Bash
+pm2 save
+```
+
+Kiểm tra
+```Bash
+pm2 list
+```
+
+Bạn sẽ có
+```Bash
+Backend
+↓
+
+PM2
+
+↓
+
+Port 3001
+
+Frontend
+↓
+
+PM2
+
+↓
+
+Port 3000
+
+```
+
+---
+
+## Bài 10 - Cài Nginx Reverse Proxy
+
+Kiến trúc cuối cùng sẽ là:
+```Bash
+Internet
+      │
+      ▼
+    Nginx :80 / :443
+      │
+      ├────────────► Nuxt4 SSR (127.0.0.1:3000)
+      │
+      └────────────► Express API (127.0.0.1:3001)
+```
+
+Từ giờ trở đi:
+```Bash
+https://duhoctgg.edu.vn/
+```
+
+không truy cập trực tiếp vào NodeJS nữa.
+
+---
+
+### Bước 10.1 Cài nginx
+
+```Bash
+sudo apt update
+
+sudo apt install nginx -y
+```
+
+Kiểm tra
+```Bash
+nginx -v
+```
+
+Ví dụ
+```Bash
+nginx version: nginx/1.24.x
+```
+
+--- 
+
+### Bước 10.2 Khởi động nginx
+
+```Bash
+sudo systemctl enable nginx
+
+sudo systemctl start nginx
+```
+
+Kiểm tra
+```Bash
+sudo systemctl status nginx
+```
+
+phải thấy
+```Bash
+active (running)
+```
+
+---
+
+### Bước 10.3 Firewall
+
+Bạn đã mở
+```Bash
+80
+
+443
+```
+
+từ trước.
+
+Kiểm tra lại
+```Bash
+sudo ufw status
+```
+
+phải có
+```Bash
+80
+443
+```
+
+---
+
+### Bước 10.4 Xóa site mặc định
+
+```Bash
+sudo rm -f /etc/nginx/sites-enabled/default
+
+sudo rm -f /etc/nginx/sites-available/default
+```
+
+---
+
+### Bước 10.5 Tạo Virtual Host
+
+```Bash
+sudo nano /etc/nginx/sites-available/duhoctgg
+```
+
+Dán toàn bộ nội dung sau:
+```Bash
+server {
+
+    listen 80;
+
+    server_name duhoctgg.edu.vn www.duhoctgg.edu.vn;
+
+    client_max_body_size 25M;
+
+    location / {
+
+        proxy_pass http://127.0.0.1:3000;
+
+        proxy_http_version 1.1;
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+
+    location /api/ {
+
+        proxy_pass http://127.0.0.1:3001/api/;
+
+        proxy_http_version 1.1;
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+    }
+
+}
+```
+
+Lưu:
+```Bash
+Ctrl+O
+
+Enter
+
+Ctrl+X
+```
+
+---
+
+### Giải thích
+
+```Bash
+Trang chủ
+
+/
+
+↓
+
+Nuxt4
+```
+
+API
+```Bash
+/api
+
+↓
+
+Express
+```
+
+Sau này frontend chỉ gọi
+```Bash
+fetch("/api/news")
+```
+
+không cần biết backend chạy cổng bao nhiêu.
+
+---
+
+### Bước 10.6 Enable site
+
+```Bash
+sudo ln -s /etc/nginx/sites-available/duhoctgg \
+/etc/nginx/sites-enabled/
+```
+
+Kiểm tra
+```Bash
+ls /etc/nginx/sites-enabled
+```
+
+kỳ vọng
+```Bash
+duhoctgg
+```
+
+---
+
+### Bước 10.7 Kiểm tra cấu hình
+
+```Bash
+sudo nginx -t
+```
+
+Nếu đúng sẽ thấy
+```Bash
+syntax is ok
+
+test is successful
+```
+
+
+---
+
+### Bước 10.8 Reload nginx
+
+```Bash
+sudo systemctl reload nginx
+```
+
+---
+
+### Bước 10.9 Kiểm tra port
+
+```Bash
+sudo ss -ltnp | grep nginx
+```
+
+kỳ vọng
+```Bash
+*:80
+```
+
+---
+
+### Bước 10.10 Test nội bộ
+
+Ngay trên VPS
+```Bash
+curl http://127.0.0.1
+```
+
+Nếu cấu hình đúng, bạn sẽ thấy HTML của Nuxt (bắt đầu bằng <!DOCTYPE html>).
+
+Tiếp theo:
+```Bash
+curl http://127.0.0.1/api
+```
+
+hoặc một API public của bạn, ví dụ:
+```Bash
+curl http://127.0.0.1/api/public/settings
+```
+
+(nếu route đó tồn tại).
+
+---
+
+### Bước 10.11 Trỏ DNS (nếu chưa)
+
+Đây là điều kiện để tên miền hoạt động.
+
+Tại nơi bạn quản lý DNS của `duhoctgg.edu.vn`, tạo:
+
+|Type	|Name	|Value|
+|--|--|
+|A	|@	|IP VPS|
+|A	|www	|IP VPS|
+
+
+Ví dụ:
+```Bash
+@ → 103.xxx.xxx.xxx
+
+www → 103.xxx.xxx.xxx
+```
+
+Không cần AAAA nếu VPS chưa có IPv6.
+
+--- 
+
+### Dừng lại ở đây
+
+Đừng cài SSL ngay.
+
+Mình muốn bạn gửi kết quả của các lệnh sau:
+```Bash
+sudo nginx -t
+sudo systemctl status nginx
+curl http://127.0.0.1
+curl http://127.0.0.1/api
+```
+
+và cho biết DNS của duhoctgg.edu.vn đã trỏ về IP VPS chưa.
+
+Mình cũng muốn chỉnh một chút cấu hình Nginx (gzip, cache header, security header...) trước khi cài HTTPS ở Bài 11 để đạt chuẩn production ngay từ đầu.
+
+
+
 
 
 ```Bash

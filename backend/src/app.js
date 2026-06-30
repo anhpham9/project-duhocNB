@@ -27,6 +27,7 @@ import staticPagesRoutes from "./routes/staticPages.routes.js";
 import settingsRoutes from "./routes/settings.routes.js";
 import socialLinksRoutes from "./routes/socialLinks.routes.js";
 import seoSettingsRoutes from "./routes/seoSettings.routes.js";
+import dashboardRoutes from "./routes/dashboard.routes.js";
 import aboutContentRoutes from "./routes/aboutContent.js";
 import homepageSectionsRoutes from "./routes/homepageSections.routes.js";
 import { backupService } from "./services/backup.service.js";
@@ -200,6 +201,9 @@ app.use("/api/settings/seo", authenticate, seoSettingsRoutes);
 
 // notifications CRUD routes
 app.use("/api/notifications", authenticate, notificationsRoutes);
+
+// dashboard overview route
+app.use("/api/dashboard", authenticate, dashboardRoutes);
 
 // about content CRUD routes
 app.use("/api/about", aboutContentRoutes);

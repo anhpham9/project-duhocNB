@@ -8,11 +8,33 @@
                     Dashboard
                 </h1>
                 <p class="page-description">Tổng quan hệ thống quản lý Du Học Nhật Bản</p>
+                <p class="page-description role-line">
+                    Vai trò hiện tại: <strong>{{ roleName }}</strong>
+                </p>
             </div>
         </div>
 
         <!-- Content Sections -->
         <div class="content-sections">
+            <div v-if="loading" class="dashboard-card" style="margin-bottom: 20px;">
+                <div class="card-content">
+                    <p>
+                        <i class="fas fa-spinner fa-spin"></i>
+                        Đang tải dữ liệu dashboard...
+                    </p>
+                </div>
+            </div>
+
+            <div v-else-if="error" class="dashboard-card" style="margin-bottom: 20px; border-color: #f5c2c7;">
+                <div class="card-content">
+                    <p style="color: #842029; margin-bottom: 12px;">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        {{ error }}
+                    </p>
+                    <button class="view-all-btn" @click="fetchDashboardData">Thử lại</button>
+                </div>
+            </div>
+
             <!-- Stats Cards -->
             <div class="stats-grid">
                 <div class="stat-card">
@@ -20,11 +42,11 @@
                         <i class="fas fa-phone"></i>
                     </div>
                     <div class="stat-content">
-                        <h3 class="stat-number">12</h3>
+                        <h3 class="stat-number">{{ formatNumber(kpiValue('contactsToday', overview.contactsToday)) }}</h3>
                         <p class="stat-label">Liên hệ hôm nay</p>
                         <span class="stat-change positive">
                             <i class="fas fa-arrow-up"></i>
-                            +3 so với hôm qua
+                            {{ kpiTrendText('contactsToday', hasPermission('contacts') ? 'Dữ liệu realtime' : 'Không có quyền xem') }}
                         </span>
                     </div>
                 </div>
@@ -34,11 +56,11 @@
                         <i class="fas fa-university"></i>
                     </div>
                     <div class="stat-content">
-                        <h3 class="stat-number">5</h3>
+                        <h3 class="stat-number">{{ formatNumber(kpiValue('schoolsTotal', overview.schoolsTotal)) }}</h3>
                         <p class="stat-label">Trường đối tác</p>
                         <span class="stat-change neutral">
                             <i class="fas fa-check"></i>
-                            Hoàn chỉnh
+                            {{ kpiTrendText('schoolsTotal', hasPermission('schools') ? 'Theo hệ thống' : 'Không có quyền xem') }}
                         </span>
                     </div>
                 </div>
@@ -48,11 +70,11 @@
                         <i class="fas fa-clock"></i>
                     </div>
                     <div class="stat-content">
-                        <h3 class="stat-number">7</h3>
+                        <h3 class="stat-number">{{ formatNumber(kpiValue('contactsPending', overview.contactsPending)) }}</h3>
                         <p class="stat-label">Chưa liên hệ</p>
                         <span class="stat-change neutral">
                             <i class="fas fa-exclamation-triangle"></i>
-                            Cần xử lý
+                            {{ kpiTrendText('contactsPending', hasPermission('contacts') ? 'Cần xử lý' : 'Không có quyền xem') }}
                         </span>
                     </div>
                 </div>
@@ -62,12 +84,62 @@
                         <i class="fas fa-newspaper"></i>
                     </div>
                     <div class="stat-content">
-                        <h3 class="stat-number">24</h3>
+                        <h3 class="stat-number">{{ formatNumber(kpiValue('newsThisWeek', overview.newsThisWeek)) }}</h3>
                         <p class="stat-label">Bài viết tuần này</p>
                         <span class="stat-change positive">
                             <i class="fas fa-arrow-up"></i>
-                            +8 so với tuần trước
+                            {{ kpiTrendText('newsThisWeek', hasPermission('news') ? 'Theo tuần hiện tại' : 'Không có quyền xem') }}
                         </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="v2-row">
+                <div class="dashboard-card v2-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Cảnh báo hệ thống</h3>
+                    </div>
+                    <div class="card-content">
+                        <div v-if="alerts.length === 0" class="v2-empty">Không có cảnh báo quan trọng.</div>
+                        <div v-else class="v2-list">
+                            <NuxtLink
+                                v-for="alert in alerts"
+                                :key="alert.id"
+                                :to="alert.actionUrl || '/admin'"
+                                class="v2-item"
+                                :class="`severity-${alert.severity}`"
+                            >
+                                <div class="v2-item-head">
+                                    <span class="v2-badge">{{ alert.severity }}</span>
+                                    <span class="v2-time">{{ timeAgo(alert.createdAt) }}</span>
+                                </div>
+                                <p class="v2-title">{{ alert.title }}</p>
+                                <p class="v2-description">{{ alert.description }}</p>
+                            </NuxtLink>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-card v2-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Việc cần làm hôm nay</h3>
+                    </div>
+                    <div class="card-content">
+                        <div v-if="todoToday.length === 0" class="v2-empty">Không có việc tồn đọng.</div>
+                        <div v-else class="v2-list">
+                            <NuxtLink
+                                v-for="todo in todoToday"
+                                :key="todo.id"
+                                :to="todo.actionUrl || '/admin'"
+                                class="v2-item"
+                            >
+                                <div class="v2-item-head">
+                                    <span class="v2-badge" :class="`priority-${todo.priority}`">{{ todo.priority }}</span>
+                                    <span class="v2-time">Hạn {{ timeAgo(todo.dueAt) }}</span>
+                                </div>
+                                <p class="v2-title">{{ todo.title }}</p>
+                            </NuxtLink>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -80,7 +152,7 @@
                         <h3 class="card-title">Thống kê liên hệ tư vấn theo tuần</h3>
                         <div class="card-actions">
                             <label for="periodSelect" hidden></label>
-                            <select id="periodSelect" class="period-select">
+                            <select id="periodSelect" v-model="period" class="period-select" @change="fetchDashboardData">
                                 <option value="week">7 ngày qua</option>
                                 <option value="month">30 ngày qua</option>
                                 <option value="quarter">3 tháng qua</option>
@@ -88,33 +160,23 @@
                         </div>
                     </div>
                     <div class="card-content">
-                        <div class="chart-placeholder">
+                        <div v-if="!hasPermission('contacts')" class="chart-placeholder">
+                            <p>Không có quyền xem biểu đồ liên hệ.</p>
+                        </div>
+                        <div v-else class="chart-placeholder">
                             <div class="chart-bars">
-                                <div class="chart-bar" style="height: 45%;" data-value="9">
-                                    <span class="bar-label">9</span>
-                                </div>
-                                <div class="chart-bar" style="height: 60%;" data-value="12">
-                                    <span class="bar-label">12</span>
-                                </div>
-                                <div class="chart-bar" style="height: 30%;" data-value="6">
-                                    <span class="bar-label">6</span>
-                                </div>
-                                <div class="chart-bar" style="height: 80%;" data-value="16">
-                                    <span class="bar-label">16</span>
-                                </div>
-                                <div class="chart-bar" style="height: 70%;" data-value="14">
-                                    <span class="bar-label">14</span>
-                                </div>
-                                <div class="chart-bar" style="height: 55%;" data-value="11">
-                                    <span class="bar-label">11</span>
-                                </div>
-                                <div class="chart-bar" style="height: 90%;" data-value="18">
-                                    <span class="bar-label">18</span>
+                                <div
+                                    v-for="item in contactsChart"
+                                    :key="item.date"
+                                    class="chart-bar"
+                                    :style="{ height: `${item.height}%` }"
+                                    :data-value="item.count"
+                                >
+                                    <span class="bar-label">{{ item.count }}</span>
                                 </div>
                             </div>
                             <div class="chart-labels">
-                                <span>T2</span><span>T3</span><span>T4</span><span>T5</span>
-                                <span>T6</span><span>T7</span><span>CN</span>
+                                <span v-for="item in contactsChart" :key="`${item.date}-label`">{{ item.label }}</span>
                             </div>
                         </div>
                         <div class="chart-legend">
@@ -134,55 +196,25 @@
                 <div class="dashboard-card">
                     <div class="card-header">
                         <h3 class="card-title">Liên hệ tư vấn gần đây</h3>
-                        <a href="contacts.html" class="view-all-btn">Xem tất cả</a>
+                        <NuxtLink to="/admin/contacts" class="view-all-btn">Xem tất cả</NuxtLink>
                     </div>
                     <div class="card-content">
-                        <div class="activity-list">
-                            <div class="activity-item">
+                        <div v-if="!hasPermission('contacts')" class="activity-list">
+                            <p>Không có quyền xem danh sách liên hệ.</p>
+                        </div>
+                        <div v-else-if="recentContacts.length === 0" class="activity-list">
+                            <p>Chưa có liên hệ nào.</p>
+                        </div>
+                        <div v-else class="activity-list">
+                            <div v-for="item in recentContacts" :key="item.id" class="activity-item">
                                 <div class="activity-content">
-                                    <p><strong>Nguyễn Văn A</strong> - 0987654321</p>
-                                    <p>example@email.com</p>
-                                    <p class="activity-details">Quan tâm du học Đại học Tokyo</p>
-                                    <span class="activity-time">2 phút trước</span>
+                                    <p><strong>{{ item.name || 'Ẩn danh' }}</strong> - {{ item.phone || 'Chưa có SĐT' }}</p>
+                                    <p>{{ item.email || 'Không có email' }}</p>
+                                    <p class="activity-details">{{ shortMessage(item.message) }}</p>
+                                    <span class="activity-time">{{ timeAgo(item.created_at) }}</span>
                                 </div>
-                                <div class="activity-status new">
-                                    <i class="fas fa-circle"></i>
-                                </div>
-                            </div>
-
-                            <div class="activity-item">
-                                <div class="activity-content">
-                                    <p><strong>Trần Thị B</strong> - 0912345678</p>
-                                    <p>example@email.com</p>
-                                    <p class="activity-details">Đã liên hệ và tư vấn</p>
-                                    <span class="activity-time">15 phút trước</span>
-                                </div>
-                                <div class="activity-status completed">
-                                    <i class="fas fa-check-circle"></i>
-                                </div>
-                            </div>
-
-                            <div class="activity-item">
-                                <div class="activity-content">
-                                    <p><strong>Lê Văn C</strong> - 0976543210</p>
-                                    <p>example@email.com</p>
-                                    <p class="activity-details">Hỏi về học phí và thủ tục</p>
-                                    <span class="activity-time">1 giờ trước</span>
-                                </div>
-                                <div class="activity-status pending">
-                                    <i class="fas fa-clock"></i>
-                                </div>
-                            </div>
-
-                            <div class="activity-item">
-                                <div class="activity-content">
-                                    <p><strong>Phạm Thị D</strong> - phamd@email.com</p>
-                                    <p>example@email.com</p>
-                                    <p class="activity-details">Gửi email tư vấn trường tiếng Nhật</p>
-                                    <span class="activity-time">2 giờ trước</span>
-                                </div>
-                                <div class="activity-status completed">
-                                    <i class="fas fa-check-circle"></i>
+                                <div class="activity-status" :class="contactStatusClass(item.status)">
+                                    <i class="fas" :class="contactStatusIcon(item.status)"></i>
                                 </div>
                             </div>
                         </div>
@@ -196,31 +228,31 @@
                     </div>
                     <div class="card-content">
                         <div class="quick-actions">
-                            <a href="contacts.html" class="quick-action-btn priority">
+                            <NuxtLink to="/admin/contacts" class="quick-action-btn priority">
                                 <i class="fas fa-phone"></i>
                                 <span>Liên hệ mới</span>
-                                <span class="badge">7</span>
-                            </a>
-                            <NuxtLink to="/schools" class="quick-action-btn">
+                                <span class="badge">{{ formatNumber(overview.contactsPending) }}</span>
+                            </NuxtLink>
+                            <NuxtLink to="/admin/schools" class="quick-action-btn">
                                 <i class="fas fa-university"></i>
                                 <span>Quản lý trường</span>
                             </NuxtLink>
-                            <NuxtLink to="/news" class="quick-action-btn">
+                            <NuxtLink to="/admin/news" class="quick-action-btn">
                                 <i class="fas fa-newspaper"></i>
                                 <span>Đăng tin tức</span>
                             </NuxtLink>
-                            <a href="settings-seo.html" class="quick-action-btn">
+                            <NuxtLink to="/admin/settings/seo" class="quick-action-btn">
                                 <i class="fas fa-search"></i>
                                 <span>Cài đặt SEO</span>
-                            </a>
-                            <a href="homepage-content.html" class="quick-action-btn">
+                            </NuxtLink>
+                            <NuxtLink to="/admin/content/homepage" class="quick-action-btn">
                                 <i class="fas fa-edit"></i>
                                 <span>Sửa nội dung</span>
-                            </a>
-                            <a href="settings-backup.html" class="quick-action-btn">
+                            </NuxtLink>
+                            <NuxtLink to="/admin/settings/backup" class="quick-action-btn">
                                 <i class="fas fa-download"></i>
                                 <span>Sao lưu</span>
-                            </a>
+                            </NuxtLink>
                         </div>
                     </div>
                 </div>
@@ -229,67 +261,25 @@
                 <div class="dashboard-card">
                     <div class="card-header">
                         <h3 class="card-title">5 Trường đối tác</h3>
-                        <NuxtLink to="/schools" class="view-all-btn">Quản lý</NuxtLink>
+                        <NuxtLink to="/admin/schools" class="view-all-btn">Quản lý</NuxtLink>
                     </div>
                     <div class="card-content">
-                        <div class="school-list">
-                            <div class="school-item">
-                                <div class="school-rank top">1</div>
+                        <div v-if="!hasPermission('schools')" class="school-list">
+                            <p>Không có quyền xem trường học.</p>
+                        </div>
+                        <div v-else-if="topSchools.length === 0" class="school-list">
+                            <p>Chưa có dữ liệu trường học.</p>
+                        </div>
+                        <div v-else class="school-list">
+                            <div v-for="(school, index) in topSchools" :key="school.id" class="school-item">
+                                <div class="school-rank" :class="{ top: index === 0 }">{{ index + 1 }}</div>
                                 <div class="school-info">
-                                    <h4>Đại học Tokyo</h4>
-                                    <p>Tokyo, Nhật Bản</p>
-                                    <span class="school-type">Đại học công lập</span>
+                                    <h4>{{ school.name }}</h4>
+                                    <p>{{ school.location || 'Chưa có địa điểm' }}</p>
+                                    <span class="school-type">{{ school.status || 'N/A' }}</span>
                                 </div>
                                 <div class="school-stats">
-                                    <span class="interest-count">45 quan tâm</span>
-                                </div>
-                            </div>
-
-                            <div class="school-item">
-                                <div class="school-rank">2</div>
-                                <div class="school-info">
-                                    <h4>Trường Nhật ngữ Waseda</h4>
-                                    <p>Tokyo, Nhật Bản</p>
-                                    <span class="school-type">Trường tiếng Nhật</span>
-                                </div>
-                                <div class="school-stats">
-                                    <span class="interest-count">32 quan tâm</span>
-                                </div>
-                            </div>
-
-                            <div class="school-item">
-                                <div class="school-rank">3</div>
-                                <div class="school-info">
-                                    <h4>Cao đẳng Osaka</h4>
-                                    <p>Osaka, Nhật Bản</p>
-                                    <span class="school-type">Cao đẳng chuyên nghiệp</span>
-                                </div>
-                                <div class="school-stats">
-                                    <span class="interest-count">28 quan tâm</span>
-                                </div>
-                            </div>
-
-                            <div class="school-item">
-                                <div class="school-rank">4</div>
-                                <div class="school-info">
-                                    <h4>Học viện tiếng Nhật KAI</h4>
-                                    <p>Tokyo, Nhật Bản</p>
-                                    <span class="school-type">Trường tiếng Nhật</span>
-                                </div>
-                                <div class="school-stats">
-                                    <span class="interest-count">19 quan tâm</span>
-                                </div>
-                            </div>
-
-                            <div class="school-item">
-                                <div class="school-rank">5</div>
-                                <div class="school-info">
-                                    <h4>Đại học Kyoto</h4>
-                                    <p>Kyoto, Nhật Bản</p>
-                                    <span class="school-type">Đại học quốc lập</span>
-                                </div>
-                                <div class="school-stats">
-                                    <span class="interest-count">15 quan tâm</span>
+                                    <span class="interest-count">⭐ {{ Number(school.rating || 0).toFixed(1) }} ({{ school.review_count || 0 }} đánh giá)</span>
                                 </div>
                             </div>
                         </div>
@@ -300,44 +290,44 @@
                 <div class="dashboard-card">
                     <div class="card-header">
                         <h3 class="card-title">Thống kê website</h3>
-                        <a href="#" class="view-all-btn">Chi tiết</a>
+                        <button class="view-all-btn" @click="fetchDashboardData">Làm mới</button>
                     </div>
                     <div class="card-content">
                         <div class="website-stats">
                             <div class="stat-row">
                                 <div class="stat-label">
                                     <i class="fas fa-eye"></i>
-                                    <span>Lượt xem hôm nay</span>
+                                    <span>Tổng liên hệ</span>
                                 </div>
-                                <div class="stat-value">1,247</div>
+                                <div class="stat-value">{{ formatNumber(overview.contactsTotal) }}</div>
                             </div>
                             <div class="stat-row">
                                 <div class="stat-label">
                                     <i class="fas fa-users"></i>
-                                    <span>Người dùng duy nhất</span>
+                                    <span>Tổng trường học</span>
                                 </div>
-                                <div class="stat-value">892</div>
+                                <div class="stat-value">{{ formatNumber(overview.schoolsTotal) }}</div>
                             </div>
                             <div class="stat-row">
                                 <div class="stat-label">
                                     <i class="fas fa-clock"></i>
-                                    <span>Thời gian trung bình</span>
+                                    <span>Tổng bài viết</span>
                                 </div>
-                                <div class="stat-value">3:42</div>
+                                <div class="stat-value">{{ formatNumber(overview.newsTotal) }}</div>
                             </div>
                             <div class="stat-row">
                                 <div class="stat-label">
                                     <i class="fas fa-mobile-alt"></i>
-                                    <span>Truy cập mobile</span>
+                                    <span>Liên hệ chờ xử lý</span>
                                 </div>
-                                <div class="stat-value">68%</div>
+                                <div class="stat-value">{{ formatNumber(overview.contactsPending) }}</div>
                             </div>
                             <div class="stat-row">
                                 <div class="stat-label">
                                     <i class="fas fa-star"></i>
-                                    <span>Trang phổ biến nhất</span>
+                                    <span>Cập nhật lần cuối</span>
                                 </div>
-                                <div class="stat-value">Trang chủ</div>
+                                <div class="stat-value">{{ generatedAtLabel }}</div>
                             </div>
                         </div>
                     </div>
@@ -349,10 +339,154 @@
 </template>
 
 <script setup>
+import { computed, onMounted, ref } from "vue";
 import "~/assets/css/admin/dashboard.css";
+
 definePageMeta({
     layout: "admin",
-    middleware: ["auth"],  // Sử dụng auth middleware thật
+    middleware: ["auth", "permission"],
     ssr: false
 });
+
+const config = useRuntimeConfig();
+const API_BASE = config.public.apiBase;
+
+const period = ref("week");
+const loading = ref(false);
+const error = ref("");
+const dashboardData = ref(null);
+
+const overview = computed(() => dashboardData.value?.overview || {});
+const role = computed(() => dashboardData.value?.role || {});
+const roleName = computed(() => role.value?.name || "Unknown");
+const permissions = computed(() => dashboardData.value?.permissions || {});
+const visibleWidgets = computed(() => dashboardData.value?.visibleWidgets || []);
+const kpis = computed(() => dashboardData.value?.kpis || []);
+const alerts = computed(() => dashboardData.value?.alerts || []);
+const todoToday = computed(() => dashboardData.value?.lists?.todoToday || []);
+const recentContacts = computed(() => dashboardData.value?.lists?.recentContacts || []);
+const topSchools = computed(() => dashboardData.value?.lists?.topSchools || []);
+const contactsByDay = computed(() => dashboardData.value?.charts?.contactsByDay || []);
+const kpiMap = computed(() => {
+    return kpis.value.reduce((acc, item) => {
+        acc[item.key] = item;
+        return acc;
+    }, {});
+});
+const maxChartValue = computed(() => {
+    const max = Math.max(...contactsByDay.value.map((item) => Number(item.count || 0)), 0);
+    return max > 0 ? max : 1;
+});
+
+const contactsChart = computed(() => {
+    return contactsByDay.value.map((item) => {
+        const count = Number(item.count || 0);
+        const ratio = (count / maxChartValue.value) * 100;
+        return {
+            ...item,
+            count,
+            height: Math.max(10, Math.round(ratio))
+        };
+    });
+});
+
+const generatedAtLabel = computed(() => {
+    const value = dashboardData.value?.generatedAt;
+    if (!value) return "-";
+    return new Date(value).toLocaleString("vi-VN");
+});
+
+const hasPermission = (key) => Boolean(permissions.value?.[key]);
+const isWidgetVisible = (key) => visibleWidgets.value.includes(key);
+
+const kpiValue = (key, fallback = null) => {
+    if (!isWidgetVisible(`kpi.${key}`) && fallback !== null) {
+        return fallback;
+    }
+    return kpiMap.value[key]?.value ?? fallback;
+};
+
+const kpiTrendText = (key, fallback = "") => {
+    if (!isWidgetVisible(`kpi.${key}`)) return fallback;
+    const trend = kpiMap.value[key]?.trend;
+    if (!trend) return fallback;
+    if (trend.direction === "flat") return "Không thay đổi so với kỳ trước";
+    const sign = trend.direction === "up" ? "+" : "";
+    return `${sign}${trend.delta} (${sign}${trend.deltaPercent}%)`;
+};
+
+const formatNumber = (value) => {
+    const num = Number(value);
+    if (!Number.isFinite(num)) return "-";
+    return num.toLocaleString("vi-VN");
+};
+
+const shortMessage = (text) => {
+    if (!text) return "Không có nội dung";
+    if (text.length <= 64) return text;
+    return `${text.slice(0, 64)}...`;
+};
+
+const contactStatusClass = (status) => {
+    const map = {
+        new: "new",
+        pending: "pending",
+        responded: "completed",
+        closed: "completed"
+    };
+    return map[status] || "pending";
+};
+
+const contactStatusIcon = (status) => {
+    const map = {
+        new: "fa-circle",
+        pending: "fa-clock",
+        responded: "fa-check-circle",
+        closed: "fa-check-circle"
+    };
+    return map[status] || "fa-circle";
+};
+
+const timeAgo = (dateValue) => {
+    if (!dateValue) return "Không rõ";
+    const date = new Date(dateValue);
+    const diffMs = Date.now() - date.getTime();
+    const minute = 60 * 1000;
+    const hour = 60 * minute;
+    const day = 24 * hour;
+
+    if (diffMs < minute) return "Vừa xong";
+    if (diffMs < hour) return `${Math.floor(diffMs / minute)} phút trước`;
+    if (diffMs < day) return `${Math.floor(diffMs / hour)} giờ trước`;
+    return `${Math.floor(diffMs / day)} ngày trước`;
+};
+
+const fetchDashboardData = async () => {
+    loading.value = true;
+    error.value = "";
+
+    try {
+        const response = await fetch(`${API_BASE}/dashboard/overview?period=${period.value}`, {
+            method: "GET",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+            throw new Error(data.message || `Không thể tải dashboard (HTTP ${response.status})`);
+        }
+
+        dashboardData.value = data.data;
+    } catch (err) {
+        error.value = err?.message || "Đã xảy ra lỗi khi tải dashboard";
+    } finally {
+        loading.value = false;
+    }
+};
+
+onMounted(fetchDashboardData);
 </script>

@@ -103,6 +103,8 @@ feature/hompage-crud
 feature/notifications-crud
 feature/popup-campaigns-crud
 feature/profile-crud
+feature/dashboard-crud
+
 
 
 # frontend
